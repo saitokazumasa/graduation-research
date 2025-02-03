@@ -1,5 +1,15 @@
+// 送信されるmodalFormの種別
+const ModalType = Object.freeze({
+    start: 'start',
+    end: 'end',
+    places: 'places',
+    updateStart: 'updateStart',
+    updateEnd: 'updateEnd',
+    updatePlaces: 'updatePlaces'
+});
+
 class PlaceNum {
-    #value = 1;
+    #value = 0;
 
     value() {
         return this.#value;
@@ -10,158 +20,19 @@ class PlaceNum {
     }
 }
 
-class SessionStorageList {
-    #startPlaceList = new Array(0);
-    #endPlaceList = new Array(0);
-    #placesList = new Array(0);
-
-    constructor() {
-        // Sessionがあった時に配列に入れる
-        if (this.getStartData()) this.#startPlaceList = this.getStartData();
-        if (this.getEndData()) this.#endPlaceList = this.getEndData();
-        if (!this.getPlacesList()) return;
-
-        // sessionから取得
-        this.#placesList = this.getPlacesList();
-        // sessionのnull|undefinedを除外
-        this.#placesList = this.#placesList.filter(place => place !== null && place !== undefined);
-        // 再保存して整合性を保つ
-        sessionStorage.setItem('place', JSON.stringify(this.#placesList));
-    }
-
-    /**
-     * 出発地点の情報をsessionに登録
-     */
-    setStartPlace() {
-        this.#startPlaceList = [];
-        this.#startPlaceList.push({
-            placeId: document.getElementById('startPlaceId').value,
-            lat: document.getElementById('startLat').value,
-            lng: document.getElementById('startLng').value,
-            name: document.getElementById('startPlace').value,
-            startTime: document.getElementById('startTime').value
-        });
-
-        sessionStorage.setItem('startPlace', JSON.stringify(this.#startPlaceList));
-    }
-
-    /**
-     * 終了地点の情報をsessionに登録
-     */
-    setEndPlace() {
-        this.#endPlaceList = [];
-        this.#endPlaceList.push({
-            placeId: document.getElementById('endPlaceId').value,
-            lat: document.getElementById('endLat').value,
-            lng: document.getElementById('endLng').value,
-            name: document.getElementById('endPlace').value
-        });
-
-        sessionStorage.setItem('endPlace', JSON.stringify(this.#endPlaceList));
-    }
-
-    /**
-     * 目的地の情報をsessionに登録
-     * @param formNum formの項番
-     */
-    setPlaces(formNum) {
-        this.#placesList[formNum-1] = {
-            placeId: document.getElementById(`placeId${formNum}`).value,
-            lat: document.getElementById(`placeLat${formNum}`).value,
-            lng: document.getElementById(`placeLng${formNum}`).value,
-            name: document.getElementById(`place${formNum}`).value,
-            budget: document.getElementById(`budget${formNum}`).value,
-            stayTime: document.getElementById(`stayTime${formNum}`).value,
-            desiredStartTime: document.getElementById(`desiredStartTime${formNum}`).value,
-            desiredEndTime: document.getElementById(`desiredEndTime${formNum}`).value,
-        };
-
-        sessionStorage.setItem('place', JSON.stringify(this.#placesList));
-    }
-
-    /**
-     * オススメ目的地をsessionStorage placeに登録
-     * @param formNum formの項番
-     * @param num オススメ目的地の識別番号
-     */
-    setRecommendPlace(formNum, num) {
-        this.#placesList[formNum-1] = {
-            placeId: document.getElementById(`recommendPlaceId${num}`).value,
-            lat: document.getElementById(`recommendLat${num}`).value,
-            lng: document.getElementById(`recommendLng${num}`).value,
-            name: document.getElementById(`recommend${num}`).value,
-            budget: document.getElementById(`recommendBudget${num}`).value,
-            stayTime: document.getElementById(`recommendStayTime${num}`).value,
-            desiredStartTime: document.getElementById(`recommendDesiredStartTime${num}`).value,
-            desiredEndTime: document.getElementById(`recommendDesiredEndTime${num}`).value,
-        };
-
-        sessionStorage.setItem('place', JSON.stringify(this.#placesList));
-    }
-
-    /**
-     * 出発地点をsessionから取得
-     * @returns {*}
-     */
-    getStartData() {
-        const startPlaceData = sessionStorage.getItem('startPlace');
-
-        if (!startPlaceData) return;
-        const startPlaceList = JSON.parse(startPlaceData);
-        return startPlaceList[0];
-    }
-
-    /**
-     * 終了地点をsessionから取得
-     * @returns {*}
-     */
-    getEndData() {
-        const endPlaceData = sessionStorage.getItem('endPlace');
-
-        if (!endPlaceData) return;
-        const endPlaceList = JSON.parse(endPlaceData);
-        return endPlaceList[0];
-    }
-
-    /**
-     * 目的地をsessionから取得
-     * @param num session.placeの項番
-     * @returns {*}
-     */
-    getPlacesData(num) {
-        const placeData = sessionStorage.getItem('place');
-
-        if (!placeData) return;
-        const placeList = JSON.parse(placeData);
-        return placeList[num];
-    }
-
-    /**
-     * 目的地のsession配列を取得
-     * @returns {any}
-     */
-    getPlacesList() {
-        const placesList = sessionStorage.getItem('place');
-
-        if (!placesList) return;
-        return JSON.parse(placesList);
-    }
-
-    /**
-     * 目的地sessionの一部削除
-     * @param num 削除したい項番（formNum-1）
-     */
-    deletePlace(num) {
-        this.#placesList[num] = null;
-        sessionStorage.setItem('place', JSON.stringify(this.#placesList));
-    }
-}
-
 class Fragment {
-    #value;
+    #toggle;
+    #form;
+    #startUpdateForm;
+    #endUpdateForm;
+    #placesUpdateForm;
 
     constructor() {
-        this.#value = null;
+        this.#toggle = null;
+        this.#form = null;
+        this.#startUpdateForm = null;
+        this.#endUpdateForm = null;
+        this.#placesUpdateForm = null;
     }
 
     /**
@@ -169,40 +40,145 @@ class Fragment {
      * @returns {Promise<void>}
      */
     async initialize() {
+        // toggle取得 /fragment/modal/placesToggle
         try {
-            const response = await fetch(`/fragment/modal/places?num=${(placeNum.value()+1)}`);
+            const response = await fetch(`/fragment/modal/placesToggle?num=${(placeNum.value()+1)}`);
             if (!response.ok) { throw new Error('フラグメントの取得に失敗しました'); }
-            this.#value = await response.text();
+            this.#toggle = await response.text();
+        } catch (error) {
+            throw new Error('initialize Error : ' + error);
+        }
+        // form取得 /fragment/modal/placesForm
+        try {
+            const response = await fetch(`/fragment/modal/placesForm?num=${(placeNum.value()+1)}`);
+            if (!response.ok) { throw new Error('フラグメントの取得に失敗しました'); }
+            this.#form = await response.text();
         } catch (error) {
             throw new Error('initialize Error : ' + error);
         }
     }
 
     /**
-     * HTMLにfragment追加
+     * 出発地点更新formフラグメントの初期化
+     * @param placeId placesテーブルのid
+     * @returns {Promise<void>}
      */
-    addFragment() {
-        if (this.#value === null) throw new Error('このインスタンスは初期化されていません。initialize()を実行してください。');
-        // id=destination の子要素に追加
-        const container = document.getElementById('destination');
-        const item = document.createElement('div');
-        item.innerHTML = this.#value;
-        container.appendChild(item);
+    async initStartUpdateForm(placeId) {
+        // 出発地点更新form取得 /fragment/modal/startUpdateForm
+        try {
+            const response = await fetch(`/fragment/update-modal/startUpdateForm?placeId=${placeId}`);
+            if (!response.ok) { throw new Error('フラグメントの取得に失敗しました'); }
+            this.#startUpdateForm = await response.text();
+        } catch (error) {
+            throw new Error('initialize Error : ' + error);
+        }
     }
 
     /**
-     * 追加するfragment取得
-     * @returns {*}
+     * 終了地点更新formフラグメントの初期化
+     * @param placeId placesテーブルのid
+     * @returns {Promise<void>}
      */
-    value() {
-        if (this.#value === null) throw new Error('このインスタンスは初期化されていません。initialize()を実行してください。');
-        return this.#value;
+    async initEndUpdateForm(placeId) {
+        // 終了地点更新form取得 /fragment/modal/endUpdateForm
+        try {
+            const response = await fetch(`/fragment/update-modal/endUpdateForm?placeId=${placeId}`);
+            if (!response.ok) { throw new Error('フラグメントの取得に失敗しました'); }
+            this.#endUpdateForm = await response.text();
+        } catch (error) {
+            throw new Error('initialize Error : ' + error);
+        }
+    }
+
+    /**
+     * 目的地更新formフラグメントの初期化
+     * @param placeId placesテーブルのid
+     * @param formNum formの項番
+     * @returns {Promise<void>}
+     */
+    async initPlacesUpdateForm(placeId, formNum) {
+        // 目的地更新form取得 /fragment/modal/placesUpdateForm?num=
+        try {
+            const response = await fetch(`/fragment/update-modal/placesUpdateForm?placeId=${placeId}&num=${formNum}`);
+            if (!response.ok) { throw new Error('フラグメントの取得に失敗しました'); }
+            this.#placesUpdateForm = await response.text();
+        } catch (error) {
+            throw new Error('initialize Error : ' + error);
+        }
+    }
+
+    /**
+     * HTMLにfragment追加 toggleとform
+     */
+    addFragment() {
+        if (!this.#toggle || !this.#form) throw new Error('このインスタンスは初期化されていません。initialize()を実行してください。');
+
+        // id=destination の子要素にToggleを追加
+        const destination = document.getElementById('destination');
+        const newToggle = document.createElement('div');
+        newToggle.innerHTML = this.#toggle;
+        destination.appendChild(newToggle);
+
+        // id=formDiv の子要素に Form を追加
+        const formDiv = document.getElementById('formDiv');
+        const newForm = document.createElement('div');
+        newForm.innerHTML = this.#form;
+        formDiv.appendChild(newForm);
+    }
+
+    /**
+     * HTMLにstartUpdateFormフラグメント追加
+     */
+    addStartUpdateForm() {
+        if (!this.#startUpdateForm) return;
+
+        // id=formDivの子要素に #startUpdateForm を追加
+        this.#addUpdateFragment(this.#startUpdateForm);
+    }
+
+    /**
+     * HTMLにendUpdateFormフラグメント追加
+     */
+    addEndUpdateForm() {
+        if (!this.#endUpdateForm) return;
+
+        // id=formDivの子要素に #endUpdateForm を追加
+        this.#addUpdateFragment(this.#endUpdateForm);
+    }
+
+    /**
+     * HTMLにplacesUpdateFormフラグメント追加
+     */
+    addPlacesUpdateForm() {
+        if (!this.#placesUpdateForm) return;
+
+        // id=formDivの子要素に placesUpdateForm を追加
+        this.#addUpdateFragment(this.#placesUpdateForm);
+    }
+
+    /**
+     * id=formDivの子要素に UpdateForm を追加
+     */
+    #addUpdateFragment(updateForm) {
+        const formDiv = document.getElementById('formDiv');
+        const newForm = document.createElement('div');
+        newForm.innerHTML = updateForm;
+        formDiv.appendChild(newForm);
     }
 }
 
 class ModalElement {
+    /**
+     * モーダル要素を格納するオブジェクト
+     */
     #modals;
+    /**
+     * トグルボタンを格納するオブジェクト
+     */
     #toggleButtons;
+    /**
+     * クローズボタンを格納するオブジェクト
+     */
     #closeButtons;
 
     constructor() {
@@ -210,6 +186,9 @@ class ModalElement {
             start: document.getElementById('startModal'),
             end: document.getElementById('endModal'),
             places: [document.getElementById(`placeModal${placeNum.value()}`)],
+            updateStart: null,
+            updateEnd: null,
+            updatePlaces: []
         };
 
         this.#toggleButtons = {
@@ -222,6 +201,9 @@ class ModalElement {
             start: document.getElementById('startClose'),
             end: document.getElementById('endClose'),
             places: [document.getElementById(`placeCloseBtn${placeNum.value()}`)],
+            updateStart: null,
+            updateEnd: null,
+            updatePlaces: []
         };
     }
 
@@ -237,20 +219,19 @@ class ModalElement {
         this.#toggleButtons.places.push(toggleButton);
         this.#closeButtons.places.push(closeButton);
 
-        const inputElement = document.getElementById(`place${placeNum.value()}`);
-        const autoComplete = new AutoComplete(inputElement);
-        autoCompleteList.add(autoComplete);
+        // autocomplete適用
+        this.setAutoComplete(document.getElementById(`place${placeNum.value()}`));
     }
 
     /**
      * ModalButtonイベント アタッチ
-     * @param modalType (start,end,places)が入る
+     * @param modalType {String}
      * @Param num formId-1
      */
     addButtonEvent(modalType, num) {
-        const modal = this.#getModal(modalType, num);
-        const toggleBtn = this.#getToggleBtn(modalType, num);
-        const closeBtn = this.#getCloseBtn(modalType);
+        const modal = this.getModal(modalType, num);
+        const toggleBtn = this.getToggleBtn(modalType, num);
+        const closeBtn = this.getCloseBtn(modalType, num);
 
         // イベントのアタッチ
         toggleBtn.addEventListener('click', () => modal.toggle() );
@@ -262,25 +243,25 @@ class ModalElement {
 
     /**
      * modal取得
-     * @param modalType {'places','start','end'} モーダルの種別
-     * @param num formNum-1
+     * @param modalType {String} モーダルの種別
+     * @param num formNum
      * @returns {Modal}
      */
-    #getModal(modalType, num) {
-        if (modalType === 'places') {
-            return new Modal(this.#modals[modalType][num]);
+    getModal(modalType, num=null) {
+        if (modalType === ModalType.places) {
+            return new Modal(this.#modals.places[num]);
         }
         return new Modal(this.#modals[modalType]);
     }
 
     /**
      * toggle取得
-     * @param modalType {'places','start','end'} モーダルの種別
-     * @param num formNum-1
+     * @param modalType {String} モーダルの種別
+     * @param num formNum
      * @returns {*}
      */
-    #getToggleBtn(modalType, num) {
-        if (modalType === 'places') {
+    getToggleBtn(modalType, num=null) {
+        if (modalType === ModalType.places) {
             return this.#toggleButtons.places[num];
         }
         return this.#toggleButtons[modalType];
@@ -288,84 +269,15 @@ class ModalElement {
 
     /**
      * close取得
-     * @param modalType {'places','start','end'} モーダルの種別
+     * @param modalType {String} モーダルの種別
+     * @param num formNum
      * @returns {*}
      */
-    #getCloseBtn(modalType) {
-        if (modalType === 'places') {
-            return this.#closeButtons.places[placeNum.value()-1];
+    getCloseBtn(modalType, num=null) {
+        if (modalType === ModalType.places) {
+            return this.#closeButtons.places[num];
         }
         return this.#closeButtons[modalType];
-    }
-
-    /**
-     * modalを閉じる
-     * @param modalType {'places','start','end'} モーダルの種別
-     * @param num modalListのnumber(form項番-1)
-     */
-    closeModal(modalType, num) {
-        const modal = this.#getModal(modalType, num);
-        modal.hide();
-    }
-
-    /**
-     * 出発地点の表示を変更
-     */
-    changeStartDisplay() {
-        const spans = document.querySelectorAll('#startToggle span'); // spanタグ取得
-
-        const data = sessionStorageList.getStartData();
-        spans[0].textContent = data.startTime; // 開始時間を入れる
-        spans[1].textContent = data.name; // spanの文字を場所名に
-        spans[0].classList.remove('absolute');
-    }
-
-    /**
-     * 終了地点の表示を変更
-     */
-    changeEndDisplay() {
-        const span = document.querySelector('#endToggle span'); // spanタグ取得
-
-        span.textContent = sessionStorageList.getEndData().name; // spanの文字を場所名に
-    }
-
-    /**
-     * 目的地の表示を変更
-     * @param formNum formの項番
-     */
-    changePlaceDisplay(formNum) {
-        // buttonの子要素のspanタグ取得
-        const spans = document.querySelectorAll(`#placeToggleBtn${formNum} > span`);
-        const placeInput = document.getElementById(`place${formNum}`);
-
-        placeInput.disabled = true; // 目的地部分をdisabledに
-        placeInput.classList.add('bg-gray-100');
-
-        const data = sessionStorageList.getPlacesData(formNum-1);
-
-        // 場所名
-        spans[1].textContent = data.name;
-
-        // 希望時間
-        if (!data.desiredStartTime) spans[0].textContent = '';
-        else spans[0].textContent = data.desiredStartTime + '~' + data.desiredEndTime;
-        spans[0].classList.remove('absolute');
-
-        // 予算
-        const budget = document.getElementById(`budgetDisplay${formNum}`);
-        if (!data.budget) budget.textContent = '予算：----' + '円';
-        else budget.textContent = '予算：' + data.budget + '円';
-
-        // 滞在時間
-        const stayTime = document.getElementById(`stayTimeDisplay${formNum}`);
-        if (!data.stayTime) stayTime.textContent = '滞在時間：30分';
-        else stayTime.textContent = '滞在時間：' + data.stayTime + '分';
-
-        // 緑色の枠線をけす
-        const toggleBtn = this.#getToggleBtn('places', formNum-1);
-        toggleBtn.classList.remove('border-interactive');
-
-        this.#displayDeleteButton(formNum);
     }
 
     /**
@@ -377,58 +289,238 @@ class ModalElement {
         deleteBtn.classList.remove('hidden');
 
         deleteBtn.addEventListener('click', () => {
-            const toggleBtn = this.#getToggleBtn('places', formNum-1);
+            const toggleBtn = this.getToggleBtn(ModalType.places, formNum);
             toggleBtn.classList.add('hidden'); // Modal表示のボタンを隠す
             deleteBtn.classList.add('hidden'); // ✕ボタンを隠す
-
-            // sessionから消す
-            sessionStorageList.deletePlace(formNum-1);
         });
-    }
-}
-
-class ModalSubmitButton {
-    #startBtnElement;
-    placeBtnElement = [];
-    #endBtnElement;
-
-    constructor() {
-        this.#startBtnElement = document.getElementById('startPlaceSubmit');
-        for (let i = 1; i <= placeNum.value(); i++) {
-            this.placeBtnElement.push(document.getElementById(`placesSubmit${i}`));
-        }
-        this.#endBtnElement = document.getElementById('endPlaceSubmit');
-        this.initFormEvent();
-    }
-
-    initFormEvent() {
-        if (!this.#startBtnElement || !this.placeBtnElement || !this.#endBtnElement) return;
-        this.#startBtnElement.addEventListener('click', (e) => this.#startFormSubmit(e) );
-        this.#endBtnElement.addEventListener('click', (e) => this.#endFormSubmit(e) );
-        this.placeBtnElement.forEach((element) => element.addEventListener('click', async(e) => await this.#placesFormSubmit(e)));
     }
 
     /**
-     * 出発地点のsubmitイベント
-     * @param e イベント
+     * 出発地点更新のelementを配列に追加・autocomplete適用
      */
-    #startFormSubmit(e) {
-        e.preventDefault();
+    setStartUpdateModal() {
+        this.#modals.updateStart = document.getElementById('startUpdateModal');
+        this.#closeButtons.updateStart = document.getElementById('startUpdateClose');
 
-        // 値の検証（nullがあるか）
-        if (!this.#startFormCheck()) {
-            // エラーメッセージ表示
-            document.getElementById('startError').textContent = '出発地点・予定時間を正しく入力してください。';
-            return;
+        // autocomplete適用
+        this.setAutoComplete(document.getElementById('startUpdatePlace'));
+    }
+
+    /**
+     * 終了地点更新のelementを配列に追加・autocomplete適用
+     */
+    setEndUpdateModal() {
+        this.#modals.updateEnd = document.getElementById('endUpdateModal');
+        this.#closeButtons.updateEnd = document.getElementById('endUpdateClose');
+
+        // autocomplete適用
+        this.setAutoComplete(document.getElementById('endUpdatePlace'));
+    }
+
+    /**
+     * 目的地更新のelementを配列に追加・autocomplete適用
+     */
+    setPlacesUpdateModal() {
+        this.#modals.updatePlaces.push(document.getElementById('placesUpdateModal'));
+        this.#closeButtons.updatePlaces.push(document.getElementById('placesUpdateClose'));
+
+        // autocomplete適用
+        this.setAutoComplete(document.getElementById(`placeModal${placeNum.value()}`));
+    }
+
+    /**
+     * autocomplete適用
+     * @param inputElement 適用するInputElement
+     */
+    setAutoComplete(inputElement) {
+        const autoComplete = new AutoComplete(inputElement);
+        autoCompleteList.add(autoComplete);
+    }
+
+    /**
+     * modalを閉じる
+     * @param modalType {String} モーダルの種別
+     * @param num modalListのnumber(form項番-1)
+     */
+    closeModal(modalType, num=null) {
+        const modal = this.getModal(modalType, num);
+        modal.hide();
+    }
+
+    /**
+     * 出発地点の表示を変更
+     */
+    changeStartDisplay() {
+        const timeSpan = document.getElementById('startTimeSpan'); // 時間spanタグ取得
+        const placeSpan = document.getElementById('startPlaceSpan'); // 場所名spanタグ
+
+        const startTime = document.getElementById('startTime');
+        timeSpan.textContent = startTime.value; // 開始時間を入れる
+        const startPlace = document.getElementById('startPlace');
+        placeSpan.textContent = startPlace.value; // spanの文字を場所名に
+
+        timeSpan.classList.remove('absolute');
+    }
+
+    /**
+     * 終了地点の表示を変更
+     */
+    changeEndDisplay() {
+        const placeSpan = document.getElementById('endPlaceSpan'); // spanタグ取得
+
+        const endPlace = document.getElementById('endPlace');
+        placeSpan.textContent = endPlace.value; // spanの文字を場所名に
+    }
+
+    /**
+     * 目的地の表示を変更
+     * @param formNum formの項番
+     */
+    changePlaceDisplay(formNum) {
+        // buttonの子要素のspanタグ取得
+        const timeSpan = document.getElementById(`placeTimeSpan${formNum}`);
+        const placeSpan = document.getElementById(`placeNameSpan${formNum}`);
+        const budgetSpan = document.getElementById(`budgetSpan${formNum}`);
+        const stayTimeSpan = document.getElementById(`stayTimeSpan${formNum}`);
+
+        // inputの要素取得
+        const placeInput = document.getElementById(`place${formNum}`);
+        const desiredStartTimeInput = document.getElementById(`desiredStartTime${formNum}`);
+        const desiredEndTimeInput = document.getElementById(`desiredEndTime${formNum}`);
+        const budgetInput = document.getElementById(`budget${formNum}`);
+        const stayTimeInput = document.getElementById(`stayTime${formNum}`);
+
+        /* ---- 表示を変更 ---- */
+        placeInput.disabled = true; // 目的地部分をdisabledに
+        placeInput.classList.add('bg-gray-100');
+
+        // 場所名
+        placeSpan.textContent = placeInput.value;
+
+        // 希望時間
+        if (!desiredStartTimeInput.value) timeSpan.textContent = '';
+        else timeSpan.textContent = desiredStartTimeInput.value + '~' + desiredEndTimeInput.value;
+        timeSpan.classList.remove('absolute');
+
+        // 予算
+        if (!budgetInput.value) budgetSpan.textContent = '予算：----' + '円';
+        else budgetSpan.textContent = '予算：' + budgetInput.value + '円';
+
+        // 滞在時間
+        if (!stayTimeInput.value) stayTimeSpan.textContent = '滞在時間：30分';
+        else stayTimeSpan.textContent = '滞在時間：' + stayTimeInput.value + '分';
+
+        // 緑色の枠線をけす
+        const toggleBtn = this.getToggleBtn(ModalType.places, formNum);
+        toggleBtn.classList.remove('border-interactive');
+
+        this.#displayDeleteButton(formNum);
+    }
+
+    /**
+     * 開くModalをUpdateFormに切り替える
+     * createのFormを削除
+     * @param modalType {String}
+     * @param num
+     */
+    changeToggleTarget(modalType, num=null) {
+        const toggleBtn = this.getToggleBtn(modalType, num);
+
+        // '○○UpdateModal' にターゲットを変える
+        const newTarget = num ? `${modalType}UpdateModal${num}` : `${modalType}UpdateModal`;
+
+        // data-modal-target data-modal-toggleを変更
+        toggleBtn.setAttribute('data-modal-target', newTarget);
+        toggleBtn.setAttribute('data-modal-toggle', newTarget);
+
+        // createのFormを削除
+        const createForm = this.getModal(modalType, num);
+        if (!createForm) return;
+        createForm.remove();
+    }
+}
+
+class ModalForm {
+    #startFormElement;
+    placeFormElement = [];
+    #endFormElement;
+    #startUpdateFormElement;
+    #endUpdateFormElement;
+    #placesUpdateFormElement;
+
+    constructor() {
+        this.#startFormElement = document.getElementById('startPlaceForm');
+        for (let i = 0; i <= placeNum.value(); i++) {
+            this.placeFormElement.push(document.getElementById(`placeForm${i}`));
+        }
+        this.#endFormElement = document.getElementById('endPlaceForm');
+        this.initFormEvent();
+    }
+
+    /**
+     * #startFormElement placeFormElement #endFormElementにsubmitイベント割り当て
+     */
+    initFormEvent() {
+        if (this.#startFormElement) this.#startFormElement.addEventListener('submit', (e) => this.#createFormSubmit(e, ModalType.start) );
+        if (this.#endFormElement) this.#endFormElement.addEventListener('submit', (e) => this.#createFormSubmit(e, ModalType.end) );
+        if (this.placeFormElement) this.placeFormElement.forEach((element) =>
+            element.addEventListener('submit', async(e) => await this.#createFormSubmit(e, ModalType.places)));
+    }
+
+    /**
+     * CreateFormのsubmitイベント
+     * @param e
+     * @param modalType
+     * @param formNum
+     * @returns {Promise<void>}
+     */
+    async #createFormSubmit(e, modalType, formNum=null) {
+        e.preventDefault();
+        if (modalType === ModalType.places) {
+            formNum = Number(e.target.id.replace('placeForm',''));
         }
 
-        sessionStorageList.setStartPlace();
+        // 値の検証（nullがあるか）
+        switch (modalType) {
+        case ModalType.start:
+            if (!this.#startFormCheck()) {
+                this.#setErrorMessage('startError', '出発地点・予定時間を正しく入力してください。');
+                return;
+            }
+            this.#setErrorMessage('startError', '');
+            break;
+        case ModalType.end:
+            if (!this.#endFormCheck()) {
+                this.#setErrorMessage('endError', '終了地点を正しく入力してください。');
+                return;
+            }
+            this.#setErrorMessage('endError', '');
+            break;
+        case ModalType.places:
+            if (!this.#placeFormCheck(formNum)) {
+                this.#setErrorMessage(`placeError${formNum}`, '目的地を正しく入力してください。');
+                return;
+            }
+            this.#setErrorMessage(`placeError${formNum}`, '');
+            break;
+        }
 
-        const modalType = 'start';
-        modal.closeModal(modalType, 0);
-        modal.addButtonEvent(modalType, 0);
+        // api/create-planに送信
+        const formData = new FormData(e.target);
+        if (modalType === ModalType.places) {
+            this.#setEndTime(formNum, formData);
+            formData.delete(`stayTime${formNum}`);
+        }
+        await this.postCreatePlaceAPI(formData, modalType, formNum);
+    }
 
-        modal.changeStartDisplay(); // 表示を変える
+    /**
+     * エラーメッセージの設定
+     * @param {string} elementId エラーメッセージを表示する要素のID
+     * @param {string} message エラーメッセージ
+     */
+    #setErrorMessage(elementId, message) {
+        document.getElementById(elementId).textContent = message;
     }
 
     /**
@@ -446,29 +538,7 @@ class ModalSubmitButton {
     }
 
     /**
-     * 終了地点のsubmitイベント
-     * @param e イベント
-     */
-    #endFormSubmit(e) {
-        e.preventDefault();
-
-        // 値の検証（nullがあるか）
-        if (!this.#endFormCheck()) {
-            document.getElementById('endError').textContent = '終了地点を正しく入力してください。';
-            return;
-        }
-
-        sessionStorageList.setEndPlace();
-
-        const modalType = 'end';
-        modal.closeModal(modalType, 0);
-        modal.addButtonEvent(modalType, 0);
-
-        modal.changeEndDisplay(); // 表示を変える
-    }
-
-    /**
-     * 出発地点のrequiredチェック
+     * 終了地点のrequiredチェック
      * @returns {boolean} すべて値が入ってたらtrue
      */
     #endFormCheck() {
@@ -481,183 +551,344 @@ class ModalSubmitButton {
     }
 
     /**
-     * 目的地のsubmitイベント
-     * @param e イベント
-     * @returns {Promise<void>}
-     */
-    async #placesFormSubmit(e) {
-        e.preventDefault();
-
-        const formId = e.target.id; // formのid取得
-        const formNum = Number(formId.replace('placesSubmit', '')); // placesSubmit{num}の数字だけ取得
-
-        // 値の検証（nullがあるか）
-        if (!this.#placeFormCheck(formNum)) {
-            document.getElementById(`placeError${formNum}`).textContent = '目的地を正しく入力してください。';
-            return;
-        }
-
-        sessionStorageList.setPlaces(formNum);
-
-        // modal設定
-        const modalType = 'places';
-        modal.closeModal(modalType, formNum-1);
-        modal.changePlaceDisplay(formNum);
-        modal.addButtonEvent(modalType, formNum-1); // 送信したmodalのイベント再アタッチ
-
-        if(formNum !== placeNum.value()) return; // 目的地再設定はreturn
-
-        await this.newAddFragment();
-    };
-
-    /**
-     * 出発地点のrequiredチェック
+     * 目的地のrequiredチェック
      * @returns {boolean} すべて値が入ってたらtrue
      */
-    #placeFormCheck(formNum) {
-        const placeName = document.getElementById(`place${formNum}`).value;
-        const placeId = document.getElementById(`placeId${formNum}`).value;
-        const lat = document.getElementById(`placeLat${formNum}`).value;
-        const lng = document.getElementById(`placeLng${formNum}`).value;
+    #placeFormCheck(num) {
+        const placeName = document.getElementById(`place${num}`).value;
+        const placeId = document.getElementById(`placeId${num}`).value;
+        const lat = document.getElementById(`placeLat${num}`).value;
+        const lng = document.getElementById(`placeLng${num}`).value;
 
         return !!(placeName && placeId && lat && lng);
+    }
+
+    /**
+     * 出発地点更新のrequiredチェック
+     * @returns {boolean} すべて値が入ってたらtrue
+     */
+    #updateStartFormCheck() {
+        const placeName = document.getElementById('startUpdatePlace').value;
+        const placeId = document.getElementById('startUpdatePlaceId').value;
+        const lat = document.getElementById('startUpdateLat').value;
+        const lng = document.getElementById('startUpdateLng').value;
+        const time = document.getElementById('startUpdateTime').value;
+
+        return !!(placeName && placeId && lat && lng && time);
+    }
+
+    /**
+     * 終了地点更新のrequiredチェック
+     * @returns {boolean} すべて値が入ってたらtrue
+     */
+    #updateEndFormCheck() {
+        const placeName = document.getElementById('endUpdatePlace').value;
+        const placeId = document.getElementById('endUpdatePlaceId').value;
+        const lat = document.getElementById('endUpdateLat').value;
+        const lng = document.getElementById('endUpdateLng').value;
+
+        return !!(placeName && placeId && lat && lng);
+    }
+
+    /**
+     * 目的地更新のrequiredチェック
+     * @returns {boolean} すべて値が入ってたらtrue
+     */
+    #updatePlaceFormCheck(num) {
+        const placeName = document.getElementById(`updatePlace${num}`).value;
+        const placeId = document.getElementById(`placeUpdatePlaceId${num}`).value;
+        const lat = document.getElementById(`placeUpdateLat${num}`).value;
+        const lng = document.getElementById(`placeUpdateLng${num}`).value;
+
+        return !!(placeName && placeId && lat && lng);
+    }
+
+    /**
+     * 出発地点の /api/create-placeが成功したとき
+     * @param placeId {number} placesテーブルのid
+     */
+    async #startPlaceCreateSuccess(placeId) {
+        // modal関連の動作
+        modal.closeModal(ModalType.start);
+        modal.changeStartDisplay();
+
+        // startUpdateFormを呼び出す
+        const fragment = new Fragment();
+        await fragment.initStartUpdateForm(placeId); // 追加フラグメントの初期化
+        fragment.addStartUpdateForm(); // HTMLに追加
+        modal.setStartUpdateModal(); // 変数にElement追加・autocomplete適用
+
+        // startToggleの data-modal-target data-modal-toggleを変更
+        modal.changeToggleTarget(ModalType.start);
+
+        // formのsubmitイベントをアタッチ
+        this.#startUpdateFormElement = modal.getModal(ModalType.updateStart);
+        this.#startUpdateFormElement.addEventListener('submit', (e) => this.#startUpdateFormSubmit(e));
+    }
+
+    /**
+     * 終了地点の /api/create-placeが成功したとき
+     * @param placeId {number} placesテーブルのid
+     */
+    async #endPlaceCreateSuccess(placeId) {
+        // modal関連の動作
+        modal.closeModal(ModalType.end);
+        modal.changeEndDisplay();
+
+        // endUpdateFormフラグメントを追加
+        const fragment = new Fragment();
+        await fragment.initEndUpdateForm(placeId); // 追加フラグメントの初期化
+        fragment.addEndUpdateForm(); // HTMLに追加
+        modal.setEndUpdateModal(); // 変数にElement追加・autocomplete適用
+
+        // endToggleの data-modal-target data-modal-toggleを変更
+        modal.changeToggleTarget(ModalType.end);
+
+        // formのsubmitイベントをアタッチ
+        this.#endUpdateFormElement = modal.getModal(ModalType.updateEnd);
+        this.#endUpdateFormElement.addEventListener('submit', (e) => this.#endUpdateFormSubmit(e));
+    }
+
+    /**
+     * 目的地の /api/create-placeが成功したとき
+     * @param placeId {number} placesテーブルのid
+     * @param formNum {number} formの項番
+     */
+    async #placesCreateSuccess(placeId, formNum) {
+        // modal関連の動作
+        modal.closeModal(ModalType.places);
+        modal.changePlaceDisplay();
+
+        // 目的地追加フラグメント呼び出し
+        await this.newAddPlaceFragment();
+
+        // placesUpdateFormを呼び出す
+        const fragment = new Fragment();
+        await fragment.initPlacesUpdateForm(placeId, formNum); // fragment初期化
+        fragment.addPlacesUpdateForm(); // HTMLに追加
+        modal.setPlacesUpdateModal(); // Elementを追加
+
+        // stayTimeのvalueを更新
+        this.#setStayTimeValue(formNum);
+
+        // placesToggleの data-modal-target data-modal-toggleを変更
+        modal.changeToggleTarget(ModalType.places, formNum);
+
+        // formのsubmitイベントをアタッチ
+        this.#placesUpdateFormElement = modal.getModal(ModalType.updatePlaces, formNum);
+        this.#placesUpdateFormElement.addEventListener('submit', (e) => this.#placeUpdateFormSubmit(e));
+    }
+
+    /**
+     * 出発地点の更新submitイベント
+     * @param e
+     */
+    async #startUpdateFormSubmit(e) {
+        e.preventDefault();
+
+        // 値の検証
+        if (!this.#updateStartFormCheck()) {
+            document.getElementById('updateStartError').textContent = '予定時間を正しく入力してください。';
+            return;
+        }
+        document.getElementById('updateStartError').textContent = '';
+
+        const formData = new FormData(e.target);
+        await this.postUpdatePlaceAPI(formData, ModalType.start);
+    }
+
+    /**
+     * 終了地点の更新submitイベント
+     * @param e
+     */
+    async #endUpdateFormSubmit(e) {
+        e.preventDefault();
+
+        // 値の検証
+        if (!this.#updateEndFormCheck()) {
+            document.getElementById('updateEndError').textContent = '予定時間を正しく入力してください。';
+            return;
+        }
+        document.getElementById('updateEndError').textContent = '';
+
+        // api/update-planに送信
+        const formData = new FormData(e.target);
+        await this.postUpdatePlaceAPI(formData, ModalType.end);
+    }
+
+    /**
+     * 目的地の更新submitイベント
+     * @param e
+     */
+    async #placeUpdateFormSubmit(e) {
+        e.preventDefault();
+
+        const formId = e.target.id;
+        const formNum = Number(formId.replace('updatePlaceForm', ));
+
+        // 値の検証
+        if (!this.#updatePlaceFormCheck(formNum)) {
+            document.getElementById(`placeUpdateError${formNum}`).textContent = '予定時間を正しく入力してください。';
+            return;
+        }
+        document.getElementById(`placeUpdateError${formNum}`).textContent = '';
+
+        const formData = new FormData(e.target);
+        // updatePlaceがdisabledなので手動で追加
+        const updateNameInput = document.getElementById(`updatePlace${formNum}`);
+        formData.append(updateNameInput.name, updateNameInput.value);
+        // api/update-planに送信
+        await this.postUpdatePlaceAPI(formData, ModalType.places, formNum);
     }
 
     /**
      * 追加フラグメントを挿入
      * @returns {Promise<void>}
      */
-    async newAddFragment() {
+    async newAddPlaceFragment() {
         const newFragment = new Fragment();
         await newFragment.initialize();
-
-        if (!newFragment.value()) return; // 取得できなかったとき
 
         newFragment.addFragment();
         placeNum.increment();
         modal.addPlacesElement();
-        modal.addButtonEvent('places', placeNum.value()-1); // 新しいModalにイベント追加
-        new ModalSubmitButton(); // modalFormイベントをアタッチ
-    }
-}
-
-/**
- * sessionに値がある時の初期設定用Class
- */
-class InitSessionModals {
-    #startData;
-    #endData;
-    #placesData;
-
-    constructor() {
-        this.#startData = sessionStorageList.getStartData();
-        this.#endData = sessionStorageList.getEndData();
-        this.#placesData = sessionStorageList.getPlacesList();
+        modal.addButtonEvent(ModalType.places, placeNum.value()); // 新しいModalにイベント追加
+        new ModalForm(); // modalFormイベントをアタッチ
     }
 
-    async initialize() {
-        // 開始地点がある場合
-        if (this.#startData) {
-            modal.changeStartDisplay();
-            this.#setStartFormValue();
+    /**
+     * endTimeを(startTime+stayTime)に
+     */
+    #setEndTime(formNum, formData) {
+        const startTime = formData.get('startTime');
+        const stayTime = formData.get(`stayTime${formNum}`);
+        // startTimeをパースしてDate型に変換
+        const [startHours, startMinutes] = startTime.split(':').map(Number);
+        const startDate = new Date();
+        startDate.setHours(startHours, startMinutes, 0, 0); // 時間, 分, 秒, ミリ秒
+        // stayTime(分)を加算
+        const endDate = new Date(startDate.getTime() + stayTime * 60000); // 60000ms = 1分
+        // endDateをHH:mm形式にフォーマット
+        const endHours = String(endDate.getHours()).padStart(2, '0'); // ゼロ埋め
+        const endMinutes = String(endDate.getMinutes()).padStart(2, '0'); // ゼロ埋め
+        const endTime = `${endHours}:${endMinutes}`;
+        // FormDataにendTimeをセット
+        formData.set('endTime', endTime);
+    }
+
+    /**
+     * 更新用FormのstayTimeのvalueを更新
+     * @param num {number} formの項番
+     */
+    #setStayTimeValue(num) {
+        const stayTimeInput = document.getElementById(`updateStayTime${num}`);
+        const startTime = document.getElementById(`placeUpdateStartTime${num}`).value;
+        const endTime = document.getElementById(`placeUpdateEndTime${num}`).value;
+
+        // 開始時間の分数取得
+        const [startHours, startMinutes] = startTime.split(':').map(Number);
+        const startMin = startHours * 60 + startMinutes;
+
+        // 終了時間の分数取得
+        const [endHours, endMinutes] = endTime.split(':').map(Number);
+        const endMin = endHours * 60 + endMinutes;
+
+        // 終了時間と開始時間の差分を value に設定
+        stayTimeInput.value = endMin - startMin;
+    }
+
+    /**
+     * /api/crate-placeに送信する
+     * @param formData {FormData} 送信するformのデータ
+     * @param modalType {String} 送信するformのタイプ
+     * @param formNum {number | null} 送信するformの項番 placeFormのみ
+     */
+    async postCreatePlaceAPI(formData, modalType, formNum=null) {
+        const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+        const csrfHeaderName = document.querySelector('meta[name="_csrf_header"]').content;
+        let placeId = null;
+        try {
+            // 非同期でPOSTリクエストを送信
+            const response = await fetch('/api/create-place', {
+                method: 'POST',
+                headers: {
+                    [csrfHeaderName]: csrfToken
+                },
+                body: formData,
+            });
+
+            // 通信が成功しないとき
+            if (!response.ok) {
+                throw new Error(`送信エラー: ${response.status}`);
+            }
+
+            // /api/create-placeでFailedが返される
+            const data = await response.json();
+            if (data.status === 'Failed') {
+                console.error(`APIエラー：${data}`);
+                throw new Error('エラーが発生しました。');
+            }
+            // 成功時の処理
+            placeId = data.placeId;
+            if (modalType === ModalType.start) {
+                await this.#startPlaceCreateSuccess(placeId);
+            } else if (modalType === ModalType.end) {
+                await this.#endPlaceCreateSuccess(placeId);
+            } else {
+                await this.#placesCreateSuccess(placeId, formNum);
+            }
+        } catch (error) {
+            console.error(`エラー詳細：${error}`);
+            const errorMessage = '送信中にエラーが発生しました。もう一度お試しください。';
+            if (modalType === ModalType.start) {
+                document.getElementById('startError').textContent = errorMessage;
+            } else if (modalType === ModalType.end) {
+                document.getElementById('endError').textContent = errorMessage;
+            } else {
+                document.getElementById(`placeError${formNum}`).textContent = errorMessage;
+            }
         }
-
-        // 終了地点がある時
-        if (this.#endData) {
-            modal.changeEndDisplay();
-            this.#setEndFormValue();
-        }
-
-        // 目的地がある時
-        if (this.#placesData && this.#placesData.length > 0) {
-            await this.#initializePlaces();
-        }
     }
 
     /**
-     * 出発地点inputにsessionの値をvalueで挿入
+     * /api/update-placeに送信する
+     * @param formData {FormData} 送信formData
+     * @param modalType {String} 更新するformのType
+     * @param formNum {number | null} 送信formの項番
      */
-    #setStartFormValue() {
-        document.getElementById('startPlaceId').value = this.#startData.placeId;
-        document.getElementById('startLat').value = this.#startData.lat;
-        document.getElementById('startLng').value = this.#startData.lng;
-        document.getElementById('startPlace').value = this.#startData.name;
-        document.getElementById('startTime').value = this.#startData.startTime;
-    }
-
-    /**
-     * 終了地点inputにsessionの値をvalueで挿入
-     */
-    #setEndFormValue() {
-        document.getElementById('endPlaceId').value = this.#endData.placeId;
-        document.getElementById('endLat').value = this.#endData.lat;
-        document.getElementById('endLng').value = this.#endData.lng;
-        document.getElementById('endPlace').value = this.#endData.name;
-    }
-
-    /**
-     * 目的地inputにsessionの値をvalueで挿入
-     * @param formNum formIDの項番
-     * @param num session.placeの項番
-     */
-    #setPlaceFormValue(formNum ,num) {
-        document.getElementById(`placeId${formNum}`).value = this.#placesData[num].placeId;
-        document.getElementById(`placeLat${formNum}`).value = this.#placesData[num].lat;
-        document.getElementById(`placeLng${formNum}`).value = this.#placesData[num].lng;
-        document.getElementById(`place${formNum}`).value = this.#placesData[num].name;
-
-        if (this.#placesData[num].budget)
-            document.getElementById(`budget${formNum}`).value = this.#placesData[num].budget;
-
-        if (this.#placesData[num].stayTime)
-            document.getElementById(`stayTime${formNum}`).value = this.#placesData[num].stayTime;
-        else
-            document.getElementById(`stayTime${formNum}`).value = 30;
-
-        if (this.#placesData[num].desiredStartTime)
-            document.getElementById(`desiredStartTime${formNum}`).value = this.#placesData[num].desiredStartTime;
-
-        if (this.#placesData[num].desiredEndTime)
-            document.getElementById(`desiredEndTime${formNum}`).value = this.#placesData[num].desiredEndTime;
-    }
-
-    /**
-     * 目的地の設定
-     * inputにvalue
-     * fragment追加
-     * placeNum合わせる
-     * @returns {Promise<void>}
-     */
-    async #initializePlaces() {
-        // 無効なデータ（nullやundefined）を除外
-        this.#placesData = this.#placesData.filter(place => place !== null && place !== undefined);
-        for (let i = 0; i < this.#placesData.length; i++) {
-            modal.changePlaceDisplay(i+1);
-            this.#setPlaceFormValue(i+1, i);
-
-            // 新規フラグメント呼び出し
-            const newFragment = new Fragment();
-            await newFragment.initialize();
-
-            if (!newFragment.value()) return;
-
-            newFragment.addFragment();
-            if (i !== 0) modal.addButtonEvent('places', i);
-            placeNum.increment();
-            modal.addPlacesElement();
-            if (i !== 0 && i === this.#placesData.length-1) modal.addButtonEvent('places', i+1);
+    postUpdatePlaceAPI(formData, modalType, formNum=null) {
+        try {
+            // 非同期でPOSTリクエストを送信
+            fetch('/api/update-place', {
+                method: 'POST',
+                body: formData,
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`送信エラー: ${response.status}`);
+                    }
+                    return response.json(); // 必要に応じてレスポンスを処理
+                })
+                .then(data => {
+                    if (data.status === 'Failed')
+                        throw new Error('エラーが発生しました。');
+                });
+        } catch (error) {
+            const errorMessage = '送信中にエラーが発生しました。もう一度お試しください。';
+            if (modalType === ModalType.updateStart) {
+                document.getElementById('updateStartError').textContent = errorMessage;
+            } else if (modalType === ModalType.updateEnd) {
+                document.getElementById('updateEndError').textContent = errorMessage;
+            } else {
+                document.getElementById(`placesUpdateModal${formNum}`).textContent = errorMessage;
+            }
         }
     }
 }
 
 const placeNum = new PlaceNum();
-const sessionStorageList = new SessionStorageList();
 const modal = new ModalElement();
 
-async function initModal() {
-    const initializeDisplay = new InitSessionModals();
-    await initializeDisplay.initialize();
-    new ModalSubmitButton();
-}
-
-initModal();
+document.addEventListener('DOMContentLoaded', () => {
+    new ModalForm();
+});

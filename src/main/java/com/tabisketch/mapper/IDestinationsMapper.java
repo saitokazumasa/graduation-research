@@ -6,6 +6,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Select;
 
+import java.util.List;
+
 @Mapper
 public interface IDestinationsMapper {
     @Insert("INSERT INTO destinations (" +
@@ -28,4 +30,7 @@ public interface IDestinationsMapper {
 
     @Select("SELECT * FROM destinations WHERE id = #{id}")
     Destination selectById(final int id);
+
+    @Select("SELECT * FROM destinations WHERE destination_list_id = #{destinationListId}")
+    List<Destination> selectByDestinationListId(final int destinationListId);
 }

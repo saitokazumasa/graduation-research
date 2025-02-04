@@ -6,25 +6,31 @@
 </head>
 <body>
 <!-- 識別用の number , フォームで使うクラス を受け取る -->
-<th:block th:fragment="recommendToggle(number, formObject)">
-    <!-- Modal toggle -->
-    <button class="input border-interactive text-center text-label max-w-md w-4/5 flex justify-between items-center h-10 sm:h-12"
-            th:data-modal-target="'recommendModal'+${number}" th:data-modal-toggle="'recommendModal'+${number}" th:id="'recommendToggle'+${number}" type="button">
-        <span class="absolute block text-[10px] sm:text-base">
-            <th:block th:replace="~{fragment/svg :: plus}"/>
-        </span>
-        <span class="flex-1 text-base sm:text-xl truncate ... px-2" th:id="'recommendPlace'" th:text="${formObject.placeName}">目的地の名前</span>
-        <span class="flex flex-col items-end text-[8px] sm:text-xs">
-            <span class="block" th:text="'平均予算：'+${formObject.budget}+'分'">平均予算</span>
-            <span class="block" th:text="'平均滞在時間：'+${formObject.stayTime}+'分'">平均滞在時間</span>
-        </span>
-    </button>
+<th:block th:fragment="recommendToggle(placeList)">
+    <div th:if="${!#lists.isEmpty(placeList)}" th:each="place, placeStatus : ${placeList}">
+        <!-- Modal toggle -->
+        <button class="input border-interactive text-center text-label max-w-md w-4/5 flex justify-between items-center h-10 sm:h-12"
+                th:data-modal-target="'recommendModal'+${placeStatus.index}" th:data-modal-toggle="'recommendModal'+${placeStatus.index}" th:id="'recommendToggle'+${placeStatus.index}"
+                type="button">
+            <span class="absolute block text-[10px] sm:text-base">
+                <th:block th:replace="~{fragment/svg :: plus}"/>
+            </span>
+            <span class="flex-1 text-base sm:text-xl truncate ... px-2" th:id="'recommendPlace'" th:text="${place.name}">目的地の名前</span>
+            <span class="flex flex-col items-end text-[8px] sm:text-xs">
+                <span class="block" th:text="'平均予算：'+${place.budget}+'円'">平均予算</span>
+                <span class="block" th:text="'平均滞在時間：'+${place.endTime}+'分'">平均滞在時間</span>
+            </span>
+        </button>
+    </div>
 </th:block>
 
 <!-- 識別用の number , フォームで使うクラス を受け取る -->
-<th:block th:fragment="recommendForm(number, formObject)">
+<th:block th:fragment="recommendForm(placeList)">
     <!-- Main modal -->
-    <div aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full sm:inset-0 h-[calc(100%-1rem)] max-h-full text-label text-base" th:id="'recommendModal'+${number}" tabindex="-1">
+    <div th:if="${!#lists.isEmpty(placeList)}" th:each="place, placeStatus : ${placeList}"
+         aria-hidden="true"
+         class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full sm:inset-0 h-[calc(100%-1rem)] max-h-full text-label text-base"
+         th:id="'recommendModal'+${placeStatus.index}" tabindex="-1">
         <div class="relative p-4 w-full max-w-md max-h-full">
             <!-- Modal content -->
             <div class="relative bg-white rounded-lg shadow">

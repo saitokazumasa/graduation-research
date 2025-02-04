@@ -39,7 +39,7 @@
                     <h3 class="text-xl text-black">
                         おすすめ目的地を追加する
                     </h3>
-                    <button class="end-2.5 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center" th:data-modal-hide="'recommendModal'+${number}" type="button">
+                    <button class="end-2.5 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center" th:data-modal-hide="'recommendModal'+${placeStatus.index}" type="button">
                         <svg aria-hidden="true" class="w-3 h-3" fill="none" viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg">
                             <path d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
                         </svg>
@@ -47,33 +47,33 @@
                     </button>
                 </div>
                 <!-- Modal body -->
-                <form th:object="${formObject}" class="p-4 sm:p-5 recommend" th:id="'recommendForm'+${number}">
+                <form class="p-4 sm:p-5 recommend" th:id="'recommendForm'+${placeStatus.index}">
                     <div class="space-y-4 w-full">
-                        <input th:field="*{googlePlaceId}" class="hidden" th:id="'recommendPlaceId'+${number}" type="text"/>
-                        <input th:field="*{latitude}" class="hidden" th:id="'recommendLat'+${number}" type="text"/>
-                        <input th:field="*{longitude}" class="hidden" th:id="'recommendLng'+${number}" type="text"/>
+                        <input class="hidden" name="googlePlaceId" th:value="${place.googlePlaceId}" th:id="'recommendPlaceId'+${placeStatus.index}" type="text"/>
+                        <input class="hidden" name="latitude" th:value="${place.latitude}" th:id="'recommendLat'+${placeStatus.index}" type="text"/>
+                        <input class="hidden" name="longitude" th:value="${place.longitude}" th:id="'recommendLng'+${placeStatus.index}" type="text"/>
                         <div>
-                            <label class="block mb-2" th:for="'recommend'+${number}">目的地<span class="ml-2 text-sm text-danger">必須</span></label>
-                            <input th:field="*{placeName}" class="w-full input focus:ring-0 bg-gray-100" disabled th:id="'recommend'+${number}" th:name="'recommend'+${number}" type="text"/>
+                            <label class="block mb-2" th:for="'recommend'+${placeStatus.index}">目的地<span class="ml-2 text-sm text-danger">必須</span></label>
+                            <input class="w-full input focus:ring-0 bg-gray-100" th:id="'recommend'+${placeStatus.index}" name="name" th:value="${place.name}" type="text" disabled/>
                         </div>
                         <div class="flex items-center justify-between">
                             <div class="w-1/2 pr-3">
-                                <label class="block mb-2" th:for="'recommendBudget'+${number}">予算</label>
+                                <label class="block mb-2" th:for="'recommendBudget'+${placeStatus.index}">予算</label>
                                 <div class="flex items-end">
-                                    <input th:field="*{budget}" class="w-full input focus:ring-0" th:id="'recommendBudget'+${number}" th:name="'recommendBudget'+${number}" type="number"/>
+                                    <input class="w-full input focus:ring-0" th:id="'recommendBudget'+${placeStatus.index}" name="budget" th:value="${place.budget}" type="number"/>
                                     <span>円</span>
                                 </div>
                             </div>
                             <div class="w-1/2 pl-3">
-                                <label class="block mb-2" th:for="'recommendStayTime'+${number}">滞在時間</label>
+                                <label class="block mb-2" th:for="'recommendStayTime'+${placeStatus.index}">滞在時間</label>
                                 <div class="flex items-end">
-                                    <input th:field="*{stayTime}" class="w-full input focus:ring-0" th:id="'recommendStayTime'+${number}" th:name="'recommendStayTime'+${number}" type="number" />
+                                    <input class="w-full input focus:ring-0" th:id="'recommendStayTime'+${placeStatus.index}" name="stayTime" type="number" />
                                     <span>分</span>
                                 </div>
                             </div>
                         </div>
                         <div>
-                            <label class="block" th:for="'recommendDesiredStartTime'+${number}">希望時間</label>
+                            <label class="block" th:for="'recommendDesiredStartTime'+${placeStatus.index}">希望時間</label>
                             <p class="text-sm mb-2">入力された時刻の範囲内で目的地に向かうことが出来ます</p>
                             <div class="flex items-center justify-between">
                                 <div class="relative w-1/2">
@@ -82,7 +82,7 @@
                                             <path clip-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z" fill-rule="evenodd"/>
                                         </svg>
                                     </div>
-                                    <input th:field="*{desiredStartTime}" class="w-full input focus:ring-0" max="23:59" min="00:00" placeholder="--:--" th:id="'recommendDesiredStartTime'+${number}" th:name="'recommendDesiredStartTime'+${number}" type="time"/>
+                                    <input class="w-full input focus:ring-0" max="23:59" min="00:00" placeholder="--:--" th:id="'recommendDesiredStartTime'+${placeStatus.index}" name="desiredStartTime" th:value="${place.desiredStartTime}" type="time"/>
                                 </div>
                                 <span class="pr-3 pl-3">～</span>
                                 <div class="relative w-1/2">
@@ -91,7 +91,7 @@
                                             <path clip-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z" fill-rule="evenodd"/>
                                         </svg>
                                     </div>
-                                    <input th:field="*{desiredEndTime}" class="w-full input focus:ring-0" max="23:59" min="00:00" placeholder="--:--" th:id="'recommendDesiredEndTime'+${number}" th:name="'recommendDesiredEndTime'+${number}" type="time"/>
+                                    <input class="w-full input focus:ring-0" max="23:59" min="00:00" placeholder="--:--" th:id="'recommendDesiredEndTime'+${placeStatus.index}" name="desiredEndTime" th:value="${place.desiredStartTime}" type="time"/>
                                 </div>
                             </div>
                         </div>

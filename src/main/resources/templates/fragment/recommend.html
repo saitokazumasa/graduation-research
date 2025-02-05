@@ -16,10 +16,7 @@
                 <th:block th:replace="~{fragment/svg :: plus}"/>
             </span>
             <span class="flex-1 text-base sm:text-xl truncate ... px-2" th:id="'recommendPlace'" th:text="${place.name}">目的地の名前</span>
-            <span class="flex flex-col items-end text-[8px] sm:text-xs">
-                <span class="block" th:text="'平均予算：'+${place.budget}+'円'">平均予算</span>
-                <span class="block" th:text="'平均滞在時間：'+${place.endTime}+'分'">平均滞在時間</span>
-            </span>
+            <span class="block text-[8px] sm:text-xs" th:text="'平均予算：'+${place.budget}+'円'">平均予算</span>
         </button>
     </div>
 </th:block>

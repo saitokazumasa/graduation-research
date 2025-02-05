@@ -483,6 +483,71 @@ class ModalElement {
     }
 }
 
+class FormValidator {
+    #isFilled(fields) {
+        return fields.every(id => document.getElementById(`${id}`).value);
+    }
+
+    #getFieldIds(prefix, num) {
+        if (prefix.startsWith('place'))
+            return [`place${num}`, `placeId${num}`, `placeLat${num}`, `placeLng${num}`];
+        if (prefix.startsWith('updatePlace'))
+            return [`updatePlace${num}`, `placeUpdatePlaceId${num}`, `placeUpdateLat${num}`, `placeUpdateLng${num}`, `placeUpdateLng${num}`];
+        return [`${prefix}Place`, `${prefix}PlaceId`, `${prefix}Lat`, `${prefix}Lng`];
+    }
+
+    #getFieldIdsWithTime(prefix) {
+        return [...this.#getFieldIds(prefix), `${prefix}Time`];
+    }
+
+    #formCheck(prefix, hasTime = false, num = null) {
+        return this.#isFilled(hasTime ? this.#getFieldIdsWithTime(prefix) : this.#getFieldIds(prefix, num));
+    }
+
+    #startFormCheck() {
+        return this.#formCheck('start', true);
+    }
+
+    #endFormCheck() {
+        return this.#formCheck('end');
+    }
+
+    #placeFormCheck(num) {
+        return this.#formCheck('place', false, num);
+    }
+
+    #updateStartFormCheck() {
+        return this.#formCheck('startUpdate',true);
+    }
+
+    #updateEndFormCheck() {
+        return this.#formCheck('endUpdate');
+    }
+
+    #updatePlaceFormCheck(num) {
+        return this.#formCheck('updatePlace', false, num);
+    }
+
+    validate(modalType, num) {
+        switch (modalType) {
+        case ModalType.start:
+            return this.#startFormCheck();
+        case ModalType.end:
+            return this.#endFormCheck();
+        case ModalType.places:
+            return this.#placeFormCheck(num);
+        case ModalType.updateStart:
+            return this.#updateStartFormCheck();
+        case ModalType.updateEnd:
+            return this.#updateEndFormCheck();
+        case ModalType.updatePlaces:
+            return this.#updatePlaceFormCheck(num);
+        default:
+            return false;
+        }
+    }
+}
+
 class ModalForm {
     #startFormElement;
     placeFormElement = [];
@@ -524,29 +589,12 @@ class ModalForm {
         }
 
         // 値の検証（nullがあるか）
-        switch (modalType) {
-        case ModalType.start:
-            if (!this.#startFormCheck()) {
-                this.#setErrorMessage('startError', '出発地点・予定時間を正しく入力してください。');
-                return;
-            }
-            this.#setErrorMessage('startError', '');
-            break;
-        case ModalType.end:
-            if (!this.#endFormCheck()) {
-                this.#setErrorMessage('endError', '終了地点を正しく入力してください。');
-                return;
-            }
-            this.#setErrorMessage('endError', '');
-            break;
-        case ModalType.places:
-            if (!this.#placeFormCheck(formNum)) {
-                this.#setErrorMessage(`placeError${formNum}`, '目的地を正しく入力してください。');
-                return;
-            }
-            this.#setErrorMessage(`placeError${formNum}`, '');
-            break;
+        if (!formValidate.validate(modalType,formNum)) {
+            errorMessage.displayFormError(modalType, formNum);
+            return;
         }
+        // エラーメッセージ削除
+        errorMessage.hiddenFormError(modalType, formNum);
 
         // api/create-planに送信
         const formData = new FormData(e.target);
@@ -932,6 +980,7 @@ class ModalForm {
 const placeNum = new PlaceNum();
 const modal = new ModalElement();
 const errorMessage = new ErrorMessage();
+const formValidate = new FormValidator();
 
 document.addEventListener('DOMContentLoaded', () => {
     new ModalForm();

@@ -7,7 +7,7 @@
 <body>
 <!-- おすすめ目的地の入った配列を受け取り、ボタンの表示を呼び出す -->
 <th:block th:fragment="recommendToggle(placeList)">
-    <div th:if="${!#lists.isEmpty(placeList)}" th:each="place, placeStatus : ${placeList}">
+    <div th:if="${!#lists.isEmpty(placeList)}" th:each="place, placeStatus : ${placeList}" class="my-3">
         <!-- Modal toggle -->
         <button class="input border-interactive text-center text-label max-w-md w-4/5 flex justify-between items-center h-10 sm:h-12"
                 th:data-modal-target="'recommendModal'+${placeStatus.index}" th:data-modal-toggle="'recommendModal'+${placeStatus.index}" th:id="'recommendToggle'+${placeStatus.index}"

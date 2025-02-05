@@ -49,9 +49,9 @@
                 <!-- Modal body -->
                 <form class="p-4 sm:p-5 recommend" th:id="'recommendForm'+${placeStatus.index}">
                     <div class="space-y-4 w-full">
-                        <input class="hidden" name="googlePlaceId" th:value="${place.googlePlaceId}" th:id="'recommendPlaceId'+${placeStatus.index}" type="text"/>
-                        <input class="hidden" name="latitude" th:value="${place.latitude}" th:id="'recommendLat'+${placeStatus.index}" type="text"/>
-                        <input class="hidden" name="longitude" th:value="${place.longitude}" th:id="'recommendLng'+${placeStatus.index}" type="text"/>
+                        <input class="hidden" name="googlePlaceId" th:value="${place.googlePlaceId}" th:id="'recommendPlaceId'+${placeStatus.index}" type="text" required/>
+                        <input class="hidden" name="latitude" th:value="${place.latitude}" th:id="'recommendLat'+${placeStatus.index}" type="text" required/>
+                        <input class="hidden" name="longitude" th:value="${place.longitude}" th:id="'recommendLng'+${placeStatus.index}" type="text" required/>
                         <div>
                             <label class="block mb-2" th:for="'recommend'+${placeStatus.index}">目的地<span class="ml-2 text-sm text-danger">必須</span></label>
                             <input class="w-full input focus:ring-0 bg-gray-100" th:id="'recommend'+${placeStatus.index}" name="name" th:value="${place.name}" type="text" disabled/>
@@ -67,7 +67,7 @@
                             <div class="w-1/2 pl-3">
                                 <label class="block mb-2" th:for="'recommendStayTime'+${placeStatus.index}">滞在時間</label>
                                 <div class="flex items-end">
-                                    <input class="w-full input focus:ring-0" th:id="'recommendStayTime'+${placeStatus.index}" name="stayTime" type="number" />
+                                    <input class="w-full input focus:ring-0" th:id="'recommendStayTime'+${placeStatus.index}" name="stayTime" type="number"/>
                                     <span>分</span>
                                 </div>
                             </div>

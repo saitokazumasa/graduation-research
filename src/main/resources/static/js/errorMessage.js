@@ -4,19 +4,25 @@ class ErrorMessage {
 
     constructor() {
         this.#elementKeys = {
-            start : 'startError',
+            start: 'startError',
             end: 'endError',
-            places: 'placeError'
+            places: 'placeError',
+            updateStart: 'updateStartError',
+            updateEnd: 'updateEndError',
+            updatePlaces: 'updatePlaceError',
         };
         this.#errorMessages = {
             start: '出発地点・予定時間を正しく入力してください。',
             end: '終了地点を正しく入力してください。',
-            places: '目的地を正しく入力してください。'
+            places: '目的地を正しく入力してください。',
+            updateStart: '出発地点・予定時間を正しく入力して下さい。',
+            updateEnd: '終了地点を正しく入力して下さい。',
+            updatePlaces: '目的地を正しく入力してください。'
         };
     }
 
     displayFormError(modalType, formNum) {
-        if (modalType === ModalType.places) {
+        if (formNum !== null) {
             this.#setErrorMessage(`${this.#elementKeys[modalType]}${formNum}`, this.#errorMessages[modalType]);
             return;
         }
@@ -24,7 +30,7 @@ class ErrorMessage {
     }
 
     hiddenFormError(modalType, formNum) {
-        if (modalType === ModalType.places) {
+        if (formNum !== null) {
             this.#setErrorMessage(`${this.#elementKeys[modalType]}${formNum}`, '');
             return;
         }

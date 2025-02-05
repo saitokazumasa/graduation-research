@@ -1,14 +1,26 @@
 class FormValidator {
+    #fieldIds;
+
+    constructor() {
+        this.#fieldIds = {
+            start: ['startPlace', 'startPlaceId', 'startLat', 'startLng'],
+            end: ['endPlace', 'endPlaceId', 'endLat', 'endLng'],
+            place: ['place', 'placeId', 'placeLat', 'placeLng'],
+            updateStart: ['startUpdatePlace', 'startUpdatePlaceId', 'startUpdateLat', 'startUpdateLng'],
+            updateEnd: ['endUpdatePlace', 'endUpdateLat', 'endUpdateLng'],
+            updatePlace: ['updatePlace', 'placeUpdatePlaceId', 'placeUpdateLat', 'placeUpdateLng']
+        };
+    }
+
     #isFilled(fields) {
         return fields.every(id => document.getElementById(`${id}`).value);
     }
 
-    #getFieldIds(prefix, num) {
-        if (prefix.startsWith('place'))
-            return [`place${num}`, `placeId${num}`, `placeLat${num}`, `placeLng${num}`];
-        if (prefix.startsWith('updatePlace'))
-            return [`updatePlace${num}`, `placeUpdatePlaceId${num}`, `placeUpdateLat${num}`, `placeUpdateLng${num}`, `placeUpdateLng${num}`];
-        return [`${prefix}Place`, `${prefix}PlaceId`, `${prefix}Lat`, `${prefix}Lng`];
+    #getFieldIds(prefix, num=null) {
+        if (num !== null) {
+            return [this.#fieldIds[prefix][0]+num,this.#fieldIds[prefix][1]+num,this.#fieldIds[prefix][2]+num, this.#fieldIds[prefix][3]+num];
+        }
+        return this.#fieldIds[prefix];
     }
 
     #getFieldIdsWithTime(prefix) {

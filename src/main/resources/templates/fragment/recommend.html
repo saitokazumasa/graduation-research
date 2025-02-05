@@ -5,7 +5,7 @@
     <title>Title</title>
 </head>
 <body>
-<!-- 識別用の number , フォームで使うクラス を受け取る -->
+<!-- おすすめ目的地の入った配列を受け取り、ボタンの表示を呼び出す -->
 <th:block th:fragment="recommendToggle(placeList)">
     <div th:if="${!#lists.isEmpty(placeList)}" th:each="place, placeStatus : ${placeList}">
         <!-- Modal toggle -->
@@ -21,7 +21,7 @@
     </div>
 </th:block>
 
-<!-- 識別用の number , フォームで使うクラス を受け取る -->
+<!-- おすすめ目的地の入った配列を受け取り、modal切り替えで表示するformを呼び出す -->
 <th:block th:fragment="recommendForm(placeList)">
     <!-- Main modal -->
     <div th:if="${!#lists.isEmpty(placeList)}" th:each="place, placeStatus : ${placeList}"

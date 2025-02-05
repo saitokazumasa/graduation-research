@@ -1,32 +1,46 @@
 package com.tabisketch.optimize_route.bean.valueobject;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 /// 到着地点
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 public class ArrivalPoint {
     /// 識別子
-    private int id;
+    private final int id;
     /// 地名
-    private String name;
+    private final String name;
     /// 住所
-    private String address;
+    private final String address;
     /// 到着日時
-    private LocalDateTime arrivalDateTime;
-    /// 滞在時間
-    private int duration;
+    private final LocalDateTime arrivalDateTime;
+    /// 滞在時間（分）
+    private final int stayTimeMinutes;
 
-    public ArrivalPoint(final int id, final String name, final String address, final int duration) {
+    public ArrivalPoint() {
+        this.id = -1;
+        this.name = null;
+        this.address = null;
+        this.arrivalDateTime = null;
+        this.stayTimeMinutes = -1;
+    }
+
+    public ArrivalPoint(final int id, final String name, final String address, final int stayTimeMinutes) {
+        assert id > 0;
+        assert name != null && !name.isEmpty();
+        assert address != null && !address.isEmpty();
+        assert stayTimeMinutes >= 0;
+
         this.id = id;
         this.name = name;
         this.address = address;
         this.arrivalDateTime = null;
-        this.duration = duration;
+        this.stayTimeMinutes = stayTimeMinutes;
+    }
+
+    public LocalDateTime departureDateTime() {
+        assert arrivalDateTime != null;
+        return arrivalDateTime.plusMinutes(stayTimeMinutes);
     }
 }

@@ -46,10 +46,6 @@ class MapDisplayController {
                 origin: { placeId: placeIds[i] },
                 destination: { placeId: placeIds[i + 1] },
                 travelMode: travelModes[i],
-                transitOptions: {
-                    modes: ['BUS', 'RAIL', 'SUBWAY', 'TRAIN', 'TRAM'],
-                    routingPreference: 'FEWER_TRANSFERS',
-                },
                 drivingOptions: {
                     departureTime: new Date(Date.now()),
                     trafficModel: 'pessimistic',

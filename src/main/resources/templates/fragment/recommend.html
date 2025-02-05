@@ -44,7 +44,7 @@
                     </button>
                 </div>
                 <!-- Modal body -->
-                <form class="p-4 sm:p-5 recommend" th:id="'recommendForm'+${placeStatus.index}">
+                <form class="p-4 sm:p-5 recommend" th:id="'recommendForm'+${placeStatus.index}" onsubmit="recommendPlace.submitEvent(event)">
                     <div class="space-y-4 w-full">
                         <input class="hidden" name="googlePlaceId" th:value="${place.googlePlaceId}" th:id="'recommendPlaceId'+${placeStatus.index}" type="text" required/>
                         <input class="hidden" name="latitude" th:value="${place.latitude}" th:id="'recommendLat'+${placeStatus.index}" type="text" required/>

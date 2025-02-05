@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ja">
+<th:block th:replace="~{fragment/head :: head(持ち物リスト)}"/>
+<body class="flex flex-col min-h-screen">
+<th:block th:replace="~{fragment/header :: header}"/>
+<main class="flex flex-col items-center flex-grow">
+    <h2 class="text-center sm:text-3xl text-2xl font-medium mt-10">持ち物リスト</h2>
+    <form id="item-form" action="/share/packings" method="POST" class="w-full sm:max-w-lg max-w-xs m-24">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+        <div id="item-list" class="space-y-4">
+            <!-- リストを表示 -->
+            <div class="item-set flex items-center space-x-4" th:each="packing, iterStat : ${packings}">
+                <input type="checkbox" name="items[${iterStat.index}].checked" th:checked="${packing.checked}" class="w-5 h-5">
+                <input id="item-${iterStat.index}" name="items[${iterStat.index}].value" type="text" th:value="${packing.value}" placeholder="持ち物を入力" class="w-full input">
+                <button type="button" class="delete-button">
+                    <th:block th:replace="~{fragment/svg :: trash}"/>
+                </button>
+            </div>
+            <!-- 持ち物がない場合、空のinputを表示 -->
+            <div th:if="${#lists.isEmpty(packings)}" class="item-set flex items-center space-x-4">
+                <input type="checkbox" name="items[0].checked" class="w-5 h-5">
+                <input id="item-0" name="items[0].value" type="text" placeholder="持ち物を入力" class="w-full input">
+                <button type="button" class="delete-button">
+                    <th:block th:replace="~{fragment/svg :: trash}"/>
+                </button>
+            </div>
+        </div>
+        <div class="flex flex-col items-center">
+            <button type="button" id="add-button" class="my-8">
+                <th:block th:replace="~{fragment/svg :: plus}"/>
+            </button>
+            <button type="submit" id="save-button" class="mt-4 button-secondary">
+                保存
+            </button>
+        </div>
+    </form>
+</main>
+<th:block th:replace="~{fragment/footer :: footer}"/>
+<th:block th:replace="~{fragment/script :: header}"/>
+<th:block th:replace="~{fragment/script :: packing}"/>
+</body>
+</html>

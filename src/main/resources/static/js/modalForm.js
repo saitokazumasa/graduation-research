@@ -265,23 +265,10 @@ class ModalForm {
             }
             // 成功時の処理
             placeId = data.placeId;
-            if (modalType === ModalType.start) {
-                await this.#startPlaceCreateSuccess(placeId);
-            } else if (modalType === ModalType.end) {
-                await this.#endPlaceCreateSuccess(placeId);
-            } else {
-                await this.#placesCreateSuccess(placeId, formNum);
-            }
+            await this.#createPlaceSuccess(placeId, modalType, formNum);
         } catch (error) {
-            console.error(`エラー詳細：${error}`);
             const errorText = '送信中にエラーが発生しました。もう一度お試しください。';
-            if (modalType === ModalType.start) {
-                document.getElementById('startError').textContent = errorText;
-            } else if (modalType === ModalType.end) {
-                document.getElementById('endError').textContent = errorText;
-            } else {
-                document.getElementById(`placeError${formNum}`).textContent = errorText;
-            }
+            errorMessage.displayFormError(modalType, formNum, errorText);
         }
     }
 
@@ -309,14 +296,8 @@ class ModalForm {
                         throw new Error('エラーが発生しました。');
                 });
         } catch (error) {
-            const errorMessage = '送信中にエラーが発生しました。もう一度お試しください。';
-            if (modalType === ModalType.updateStart) {
-                document.getElementById('updateStartError').textContent = errorMessage;
-            } else if (modalType === ModalType.updateEnd) {
-                document.getElementById('updateEndError').textContent = errorMessage;
-            } else {
-                document.getElementById(`placesUpdateModal${formNum}`).textContent = errorMessage;
-            }
+            const errorText = '送信中にエラーが発生しました。もう一度お試しください。';
+            errorMessage.displayFormError(modalType, formNum, errorText);
         }
     }
 }

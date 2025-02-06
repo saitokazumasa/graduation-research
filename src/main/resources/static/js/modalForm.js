@@ -132,65 +132,50 @@ class ModalForm {
     }
 
     /**
-     * 出発地点の更新submitイベント
-     * @param e
+     * 更新フォーム送信submitイベントの共通処理
+     * @param e イベントオブジェクト
+     * @param modalType モーダルの種類
+     * @param formNum (任意) フォーム番号
      */
+    async #updateFormSubmit(e, modalType, formNum = null) {
+        e.preventDefault();
+
+        if (modalType === ModalType.updatePlaces) {
+            formNum = Number(e.target.id.replace('updatePlaceForm',''));
+        }
+
+        // 値の検証
+        if (!formValidate.validate(modalType, formNum)) {
+            errorMessage.displayFormError(modalType, formNum);
+            return;
+        }
+        errorMessage.hiddenFormError(modalType, formNum);
+
+        const formData = new FormData(e.target);
+
+        // 目的地更新フォームの場合は追加データを設定
+        if (formNum !== null) {
+            // disabledになってる目的地をformObjectに手動で追加
+            const updateNameInput = document.getElementById(`updatePlace${formNum}`);
+            formData.append(updateNameInput.name, updateNameInput.value);
+            this.#setEndTime(formNum, formData);
+        }
+
+        await this.postUpdatePlaceAPI(formData, modalType, formNum);
+    }
+
     async #startUpdateFormSubmit(e) {
-        e.preventDefault();
-
-        // 値の検証
-        if (!this.#updateStartFormCheck()) {
-            document.getElementById('updateStartError').textContent = '予定時間を正しく入力してください。';
-            return;
-        }
-        document.getElementById('updateStartError').textContent = '';
-
-        const formData = new FormData(e.target);
-        await this.postUpdatePlaceAPI(formData, ModalType.start);
+        await this.#updateFormSubmit(e, ModalType.updateStart);
     }
 
-    /**
-     * 終了地点の更新submitイベント
-     * @param e
-     */
     async #endUpdateFormSubmit(e) {
-        e.preventDefault();
-
-        // 値の検証
-        if (!this.#updateEndFormCheck()) {
-            document.getElementById('updateEndError').textContent = '予定時間を正しく入力してください。';
-            return;
-        }
-        document.getElementById('updateEndError').textContent = '';
-
-        // api/update-planに送信
-        const formData = new FormData(e.target);
-        await this.postUpdatePlaceAPI(formData, ModalType.end);
+        await this.#updateFormSubmit(e, ModalType.updateEnd);
     }
 
-    /**
-     * 目的地の更新submitイベント
-     * @param e
-     */
     async #placeUpdateFormSubmit(e) {
-        e.preventDefault();
-
         const formId = e.target.id;
-        const formNum = Number(formId.replace('updatePlaceForm', ));
-
-        // 値の検証
-        if (!this.#updatePlaceFormCheck(formNum)) {
-            document.getElementById(`placeUpdateError${formNum}`).textContent = '予定時間を正しく入力してください。';
-            return;
-        }
-        document.getElementById(`placeUpdateError${formNum}`).textContent = '';
-
-        const formData = new FormData(e.target);
-        // updatePlaceがdisabledなので手動で追加
-        const updateNameInput = document.getElementById(`updatePlace${formNum}`);
-        formData.append(updateNameInput.name, updateNameInput.value);
-        // api/update-planに送信
-        await this.postUpdatePlaceAPI(formData, ModalType.places, formNum);
+        const formNum = Number(formId.replace('updatePlaceForm', ''));
+        await this.#updateFormSubmit(e, ModalType.updatePlaces, formNum);
     }
 
     /**

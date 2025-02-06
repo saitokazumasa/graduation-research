@@ -1,0 +1,12 @@
+services:
+  test:
+    container_name: test
+    build:
+      context: ../
+      dockerfile: ./docker/test/Dockerfile
+    depends_on:
+      - postgresql
+    env_file:
+      - ../.env
+    environment:
+      POSTGRES_HOST: postgresql

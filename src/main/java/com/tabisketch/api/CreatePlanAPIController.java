@@ -1,6 +1,6 @@
 package com.tabisketch.api;
 
-import com.tabisketch.bean.response.CreatePlanResponse;
+import com.tabisketch.bean.response.implement.CreatePlanResponse;
 import com.tabisketch.bean.form.CreatePlanForm;
 import com.tabisketch.exception.InsertFailedException;
 import com.tabisketch.exception.SelectFailedException;

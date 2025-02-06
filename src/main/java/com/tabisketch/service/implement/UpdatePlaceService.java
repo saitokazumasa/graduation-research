@@ -2,6 +2,7 @@ package com.tabisketch.service.implement;
 
 import com.tabisketch.bean.entity.GooglePlace;
 import com.tabisketch.bean.entity.Place;
+import com.tabisketch.bean.entity.Plan;
 import com.tabisketch.bean.form.UpdatePlaceForm;
 import com.tabisketch.exception.InsertFailedException;
 import com.tabisketch.exception.UpdateFailedException;
@@ -26,26 +27,27 @@ public class UpdatePlaceService implements IUpdatePlaceService {
     @Override
     public int execute(final UpdatePlaceForm updatePlaceForm)
             throws UpdateFailedException, InsertFailedException {
-        final GooglePlace selectedGooglePlace =
-                this.googlePlaceMapper.selectByPlaceId(updatePlaceForm.getGooglePlaceId());
+        // GooglePlaceを取得
+        final GooglePlace googlePlace = this.googlePlaceMapper.selectByPlaceId(updatePlaceForm.getGooglePlaceId());
 
-        if (selectedGooglePlace != null) {
-            final Place place = updatePlaceForm.toPlace(selectedGooglePlace.getId());
-            final int result = this.placesMapper.update(place);
-
-            if (result != 1) throw new UpdateFailedException("Placeの更新に失敗しました。");
+        // GooglePlaceが存在する場合、Placeを更新
+        if (googlePlace != null) {
+            final var place = updatePlaceForm.toPlace(googlePlace.getId());
+            final int updatePlaceResult = this.placesMapper.update(place);
+            if (updatePlaceResult != 1) throw new UpdateFailedException(Plan.class.getName());
 
             return place.getId();
         }
 
-        final GooglePlace googlePlace = updatePlaceForm.toGooglePlace();
-        final int googlePlaceResult = this.googlePlaceMapper.insert(googlePlace);
+        // GooglePlaceを追加
+        final var createdGooglePlace = updatePlaceForm.toGooglePlace();
+        final int insertGooglePlaceResult = this.googlePlaceMapper.insert(createdGooglePlace);
+        if (insertGooglePlaceResult != 1) throw new InsertFailedException(GooglePlace.class.getName());
 
-        final Place place = updatePlaceForm.toPlace(googlePlace.getId());
-        final int result = this.placesMapper.update(place);
-
-        if (googlePlaceResult != 1) throw new InsertFailedException("GooglePlaceの追加に失敗しました。");
-        if (result != 1) throw new UpdateFailedException("Placeの更新に失敗しました。");
+        // Placeを追加
+        final var place = updatePlaceForm.toPlace(createdGooglePlace.getId());
+        final int updatePlaceResult = this.placesMapper.update(place);
+        if (updatePlaceResult != 1) throw new UpdateFailedException(Place.class.getName());
 
         return place.getId();
     }

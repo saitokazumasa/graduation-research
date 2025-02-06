@@ -1,5 +1,6 @@
-package com.tabisketch.bean.response;
+package com.tabisketch.bean.response.implement;
 
+import com.tabisketch.bean.response.IResponse;
 import lombok.Getter;
 
 @Getter

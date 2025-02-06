@@ -2,7 +2,7 @@ package com.tabisketch.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tabisketch.bean.form.ExampleCreateDayForm;
-import com.tabisketch.bean.response.CreateDayResponse;
+import com.tabisketch.bean.response.implement.CreateDayResponse;
 import com.tabisketch.service.implement.CreateDayService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="ja">
-<th:block th:replace="fragment/head :: head(旅行プラン一覧)"/>
+<th:block th:replace="~{fragment/head :: head(旅行プラン一覧)}"/>
 <body class="flex flex-col min-h-screen">
-<th:block th:replace="fragment/header :: header"/>
+<th:block th:replace="~{fragment/header :: header}"/>
 <main class="flex-grow my-12">
     <div class="relative w-full">
         <div class="flex flex-col items-center justify-center text-center">
@@ -81,7 +81,7 @@
         </ul>
     </nav>
 </main>
-<th:block th:replace="fragment/footer :: footer"/>
-<th:block th:replace="fragment/script :: header"/>
+<th:block th:replace="~{fragment/footer :: footer}"/>
+<th:block th:replace="~{fragment/script :: header}"/>
 </body>
 </html>

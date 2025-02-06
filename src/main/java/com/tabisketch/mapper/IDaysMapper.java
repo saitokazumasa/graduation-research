@@ -16,6 +16,9 @@ public interface IDaysMapper {
     @Select("SELECT * FROM days WHERE plan_id = #{planId}")
     List<Day> selectByPlanId(final int planId);
 
+    @Delete("DELETE FROM days WHERE id = #{id}")
+    int deleteById(final int id);
+
     @Delete("DELETE FROM days " +
             "   USING plans " +
             "   WHERE plan_id = plans.id " +

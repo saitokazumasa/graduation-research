@@ -22,7 +22,7 @@
         </p>
     </div>
     <div class="flex justify-center whitespace-nowrap my-20">
-        <a th:href="@{/}" class="button-secondary flex items-center justify-center text-center h-12 w-48">プランを作成する</a>
+        <a th:href="@{/plan/create}" class="button-secondary flex items-center justify-center text-center h-12 w-48">プランを作成する</a>
     </div>
     <div class="grid grid-cols-1 xl:grid-cols-2 justify-items-center gap-4 m-10 xl:m-52">
         <div class="pr-10 pl-8 w-96 justify-center">
@@ -104,8 +104,9 @@
         </div>
     </div>
 </main>
-<script src="/js/top.js"></script>
 <th:block th:replace="~{fragment/footer :: footer}"/>
+
+<th:block th:replace="~{fragment/script :: top}"/>
 <th:block th:replace="~{fragment/script :: header}"/>
 </body>
 </html>

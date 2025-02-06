@@ -2,7 +2,7 @@ package com.tabisketch.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tabisketch.bean.form.ExampleUpdatePlaceForm;
-import com.tabisketch.bean.response.UpdatePlaceResponse;
+import com.tabisketch.bean.response.implement.UpdatePlaceResponse;
 import com.tabisketch.service.IUpdatePlaceService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

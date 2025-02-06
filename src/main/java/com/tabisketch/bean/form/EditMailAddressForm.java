@@ -1,5 +1,6 @@
 package com.tabisketch.bean.form;
 
+import com.tabisketch.bean.entity.MAAToken;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -21,5 +22,12 @@ public class EditMailAddressForm {
 
     public static EditMailAddressForm empty() {
         return new EditMailAddressForm("", "", "");
+    }
+
+    public MAAToken toMAAToken(final int userId) {
+        return MAAToken.generate(
+                userId,
+                this.newMailAddress
+        );
     }
 }

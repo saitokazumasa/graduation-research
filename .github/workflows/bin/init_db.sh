@@ -2,7 +2,6 @@
 
 # Set env
 set -o allexport
-source .env
 PGHOST="$POSTGRES_HOST"
 PGPORT="$POSTGRES_PORT"
 PGDATABASE="$POSTGRES_DB"

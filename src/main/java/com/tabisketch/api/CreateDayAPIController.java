@@ -1,7 +1,7 @@
 package com.tabisketch.api;
 
 import com.tabisketch.bean.form.CreateDayForm;
-import com.tabisketch.bean.response.CreateDayResponse;
+import com.tabisketch.bean.response.implement.CreateDayResponse;
 import com.tabisketch.exception.InsertFailedException;
 import com.tabisketch.service.ICreateDayService;
 import org.springframework.validation.BindingResult;

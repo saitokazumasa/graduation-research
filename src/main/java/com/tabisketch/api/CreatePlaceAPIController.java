@@ -1,7 +1,7 @@
 package com.tabisketch.api;
 
 import com.tabisketch.bean.form.CreatePlaceForm;
-import com.tabisketch.bean.response.CreatePlaceResponse;
+import com.tabisketch.bean.response.implement.CreatePlaceResponse;
 import com.tabisketch.exception.InsertFailedException;
 import com.tabisketch.service.ICreatePlaceService;
 import org.springframework.validation.BindingResult;

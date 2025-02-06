@@ -23,6 +23,7 @@ services:
       - ../.env
     environment:
       POSTGRES_HOST: postgresql
+    restart: always
 
 networks:
   tabisketch:

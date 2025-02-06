@@ -45,23 +45,31 @@ class AutoComplete {
         const sessionToken = new SessionToken();
         this.#value.setOptions({sessionToken: sessionToken.value()});
 
-        // placeId, lat, lng の更新
-        if (this.#inputElement.id === initInstanceKeys[0]) {
-            document.getElementById('startPlaceId').value = place.place_id;
-            document.getElementById('startLat').value = place.geometry.location.lat();
-            document.getElementById('startLng').value = place.geometry.location.lng();
-            return;
-        }
-        if (this.#inputElement.id === initInstanceKeys[1]) {
-            document.getElementById('endPlaceId').value = place.place_id;
-            document.getElementById('endLat').value = place.geometry.location.lat();
-            document.getElementById('endLng').value = place.geometry.location.lng();
-            return;
-        }
-        document.getElementById(`placeId${placeNum.value()}`).value = place.place_id;
-        document.getElementById(`placeLat${placeNum.value()}`).value = place.geometry.location.lat();
-        document.getElementById(`placeLng${placeNum.value()}`).value = place.geometry.location.lng();
+        this.updatePlaceValues(this.#inputElement.id, place);
     }
+
+    updatePlaceValues = (id, place) => {
+        const [placeIdKey, latKey, lngKey] = placeMapping[id] || [];
+        if (placeIdKey && latKey && lngKey) {
+            document.getElementById(placeIdKey).value = place.place_id;
+            document.getElementById(latKey).value = place.geometry.location.lat();
+            document.getElementById(lngKey).value = place.geometry.location.lng();
+            return;
+        }
+
+        if (id.startsWith('updatePlace')) {
+            document.getElementById('placeUpdatePlaceId').value = place.place_id;
+            document.getElementById('placeUpdateLat').value = place.geometry.location.lat();
+            document.getElementById('placeUpdateLng').value = place.geometry.location.lat();
+            return;
+        }
+
+        if (id.startsWith('place')) {
+            document.getElementById(`placeId${placeNum.value()}`).value = place.place_id;
+            document.getElementById(`placeLat${placeNum.value()}`).value = place.geometry.location.lat();
+            document.getElementById(`placeLng${placeNum.value()}`).value = place.geometry.location.lng();
+        }
+    };
 }
 
 class AutoCompleteList {
@@ -72,10 +80,17 @@ class AutoCompleteList {
     }
 }
 
+const placeMapping = {
+    'startPlace': ['startPlaceId', 'startLat', 'startLng'],
+    'endPlace': ['endPlaceId', 'endLat', 'endLng'],
+    'startUpdatePlace': ['startUpdatePlaceId', 'startUpdateLat', 'startUpdateLng'],
+    'endUpdatePlace': ['endUpdatePlaceId', 'endUpdateLat', 'endUpdateLng'],
+};
+
 const initInstanceKeys = [
     'startPlace',
     'endPlace',
-    'place1'
+    'place0',
 ];
 
 const autoCompleteList = new AutoCompleteList();

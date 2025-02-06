@@ -1,6 +1,5 @@
 package com.tabisketch.mapper;
 
-import com.tabisketch.bean.entity.Day;
 import com.tabisketch.bean.entity.ExampleDay;
 import com.tabisketch.bean.entity.ExamplePlan;
 import org.junit.jupiter.api.Test;
@@ -8,9 +7,6 @@ import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.test.context.jdbc.Sql;
-
-import java.util.UUID;
-import java.util.stream.Stream;
 
 @MybatisTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -48,7 +44,18 @@ public class DaysMapperTest {
             "classpath:/sql/CreatePlan.sql",
             "classpath:/sql/CreateDay.sql",
     })
-    public void testDelete() {
+    public void testDeleteById() {
+        final var getId = ExamplePlan.generate().getId();
+        assert this.daysMapper.deleteById(getId) == 1;
+    }
+
+    @Test
+    @Sql({
+            "classpath:/sql/CreateUser.sql",
+            "classpath:/sql/CreatePlan.sql",
+            "classpath:/sql/CreateDay.sql",
+    })
+    public void testDeleteByPlanUUID() {
         final var uuid = ExamplePlan.generate().getUuid();
         assert this.daysMapper.deleteByPlanUUID(uuid) == 1;
     }

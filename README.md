@@ -41,6 +41,11 @@ npm run docker:build
 npm run docker:up
 ```
 
+### Docker テスト実行
+```shell
+npm run docker:test
+```
+
 ### Docker 破棄
 ```shell
 npm run docker:down

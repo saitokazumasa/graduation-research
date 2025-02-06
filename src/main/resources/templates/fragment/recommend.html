@@ -5,93 +5,98 @@
     <title>Title</title>
 </head>
 <body>
-<!-- 識別用の number , 場所情報が入った place を受け取る -->
-<th:block th:fragment="place(number, place)">
-    <div>
+<!-- おすすめ目的地の入った配列を受け取り、ボタンの表示を呼び出す -->
+<th:block th:fragment="recommendToggle(placeList)">
+    <div th:if="${!#lists.isEmpty(placeList)}" th:each="place, placeStatus : ${placeList}" class="my-3">
         <!-- Modal toggle -->
         <button class="input border-interactive text-center text-label max-w-md w-4/5 flex justify-between items-center h-10 sm:h-12"
-                th:data-modal-target="'recommendModal'+${number}" th:data-modal-toggle="'recommendModal'+${number}" th:id="'recommendToggle'+${number}" type="button">
+                th:data-modal-target="'recommendModal'+${placeStatus.index}" th:data-modal-toggle="'recommendModal'+${placeStatus.index}" th:id="'recommendToggle'+${placeStatus.index}"
+                type="button">
             <span class="absolute block text-[10px] sm:text-base">
                 <th:block th:replace="~{fragment/svg :: plus}"/>
             </span>
             <span class="flex-1 text-base sm:text-xl truncate ... px-2" th:id="'recommendPlace'" th:text="${place.name}">目的地の名前</span>
-            <span class="flex flex-col items-end text-[8px] sm:text-xs">
-                <span class="block" th:text="'平均予算：'+${place.budget}+'分'">平均予算</span>
-                <span class="block" th:text="'平均滞在時間：'+${place.stayTime}+'分'">平均滞在時間</span>
-            </span>
+            <span class="block text-[8px] sm:text-xs" th:text="'平均予算：'+${place.budget}+'円'">平均予算</span>
         </button>
-        <!-- Main modal -->
-        <div aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full sm:inset-0 h-[calc(100%-1rem)] max-h-full text-label text-base" th:id="'recommendModal'+${number}" tabindex="-1">
-            <div class="relative p-4 w-full max-w-md max-h-full">
-                <!-- Modal content -->
-                <div class="relative bg-white rounded-lg shadow">
-                    <!-- Modal header -->
-                    <div class="flex items-center justify-between p-4 sm:p-5 rounded-t border-b border-frame">
-                        <h3 class="text-xl text-black">
-                            おすすめ目的地を追加する
-                        </h3>
-                        <button class="end-2.5 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center" th:data-modal-hide="'recommendModal'+${number}" type="button">
-                            <svg aria-hidden="true" class="w-3 h-3" fill="none" viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg">
-                                <path d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
-                            </svg>
-                            <span class="sr-only">Close modal</span>
-                        </button>
-                    </div>
-                    <!-- Modal body -->
-                    <div class="p-4 sm:p-5">
-                        <div class="space-y-4 w-full">
-                            <input class="hidden" th:id="'recommendPlaceId'+${number}" th:value="${place.placeId}" type="text"/>
-                            <input class="hidden" th:id="'recommendLat'+${number}" th:value="${place.lat}" type="text"/>
-                            <input class="hidden" th:id="'recommendLng'+${number}" th:value="${place.lng}" type="text"/>
-                            <div>
-                                <label class="block mb-2" th:for="'recommend'+${number}">目的地<span class="ml-2 text-sm text-danger">必須</span></label>
-                                <input class="w-full input focus:ring-0 bg-gray-100" disabled th:id="'recommend'+${number}" th:name="'recommend'+${number}" th:value="${place.name}" type="text"/>
-                            </div>
-                            <div class="flex items-center justify-between">
-                                <div class="w-1/2 pr-3">
-                                    <label class="block mb-2" th:for="'recommendBudget'+${number}">予算</label>
-                                    <div class="flex items-end">
-                                        <input class="w-full input focus:ring-0" th:id="'recommendBudget'+${number}" th:name="'recommendBudget'+${number}" th:value="${place.budget}" type="number"/>
-                                        <span>円</span>
-                                    </div>
-                                </div>
-                                <div class="w-1/2 pl-3">
-                                    <label class="block mb-2" th:for="'recommendStayTime'+${number}">滞在時間</label>
-                                    <div class="flex items-end">
-                                        <input class="w-full input focus:ring-0" th:id="'recommendStayTime'+${number}" th:name="'recommendStayTime'+${number}" th:value="${place.stayTime}" type="number" />
-                                        <span>分</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div>
-                                <label class="block" th:for="'recommendDesiredStartTime'+${number}">希望時間</label>
-                                <p class="text-sm mb-2">入力された時刻の範囲内で目的地に向かうことが出来ます</p>
-                                <div class="flex items-center justify-between">
-                                    <div class="relative w-1/2">
-                                        <div class="absolute inset-y-0 end-0 top-0 flex items-center pe-3.5 pointer-events-none">
-                                            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                                <path clip-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z" fill-rule="evenodd"/>
-                                            </svg>
-                                        </div>
-                                        <input class="w-full input focus:ring-0" max="23:59" min="00:00" placeholder="--:--" th:id="'recommendDesiredStartTime'+${number}" th:name="'recommendDesiredStartTime'+${number}" type="time"/>
-                                    </div>
-                                    <span class="pr-3 pl-3">～</span>
-                                    <div class="relative w-1/2">
-                                        <div class="absolute inset-y-0 end-0 top-0 flex items-center pe-3.5 pointer-events-none">
-                                            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                                <path clip-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z" fill-rule="evenodd"/>
-                                            </svg>
-                                        </div>
-                                        <input class="w-full input focus:ring-0" max="23:59" min="00:00" placeholder="--:--" th:id="'recommendDesiredEndTime'+${number}" th:name="'recommendDesiredEndTime'+${number}" type="time"/>
-                                    </div>
+    </div>
+</th:block>
+
+<!-- おすすめ目的地の入った配列を受け取り、modal切り替えで表示するformを呼び出す -->
+<th:block th:fragment="recommendForm(placeList)">
+    <!-- Main modal -->
+    <div th:if="${!#lists.isEmpty(placeList)}" th:each="place, placeStatus : ${placeList}"
+         aria-hidden="true"
+         class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full sm:inset-0 h-[calc(100%-1rem)] max-h-full text-label text-base"
+         th:id="'recommendModal'+${placeStatus.index}" tabindex="-1">
+        <div class="relative p-4 w-full max-w-md max-h-full">
+            <!-- Modal content -->
+            <div class="relative bg-white rounded-lg shadow">
+                <!-- Modal header -->
+                <div class="flex items-center justify-between p-4 sm:p-5 rounded-t border-b border-frame">
+                    <h3 class="text-xl text-black">
+                        おすすめ目的地を追加する
+                    </h3>
+                    <button class="end-2.5 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center" th:data-modal-hide="'recommendModal'+${placeStatus.index}" type="button">
+                        <svg aria-hidden="true" class="w-3 h-3" fill="none" viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg">
+                            <path d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                        </svg>
+                        <span class="sr-only">Close modal</span>
+                    </button>
+                </div>
+                <!-- Modal body -->
+                <form class="p-4 sm:p-5 recommend" th:id="'recommendForm'+${placeStatus.index}" onsubmit="recommendPlace.submitEvent(event)">
+                    <div class="space-y-4 w-full">
+                        <input class="hidden" name="googlePlaceId" th:value="${place.googlePlaceId}" th:id="'recommendPlaceId'+${placeStatus.index}" type="text" required/>
+                        <input class="hidden" name="latitude" th:value="${place.latitude}" th:id="'recommendLat'+${placeStatus.index}" type="text" required/>
+                        <input class="hidden" name="longitude" th:value="${place.longitude}" th:id="'recommendLng'+${placeStatus.index}" type="text" required/>
+                        <div>
+                            <label class="block mb-2" th:for="'recommend'+${placeStatus.index}">目的地<span class="ml-2 text-sm text-danger">必須</span></label>
+                            <input class="w-full input focus:ring-0 bg-gray-100" th:id="'recommend'+${placeStatus.index}" name="name" th:value="${place.name}" type="text" disabled/>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="w-1/2 pr-3">
+                                <label class="block mb-2" th:for="'recommendBudget'+${placeStatus.index}">予算</label>
+                                <div class="flex items-end">
+                                    <input class="w-full input focus:ring-0" th:id="'recommendBudget'+${placeStatus.index}" name="budget" th:value="${place.budget}" type="number"/>
+                                    <span>円</span>
                                 </div>
                             </div>
-                            <div class="flex justify-center">
-                                <button class="button-primary recommend" th:id="'recommendSubmit'+${number}" type="submit">追加</button>
+                            <div class="w-1/2 pl-3">
+                                <label class="block mb-2" th:for="'recommendStayTime'+${placeStatus.index}">滞在時間</label>
+                                <div class="flex items-end">
+                                    <input class="w-full input focus:ring-0" th:id="'recommendStayTime'+${placeStatus.index}" name="stayTime" type="number"/>
+                                    <span>分</span>
+                                </div>
                             </div>
                         </div>
+                        <div>
+                            <label class="block" th:for="'recommendDesiredStartTime'+${placeStatus.index}">希望時間</label>
+                            <p class="text-sm mb-2">入力された時刻の範囲内で目的地に向かうことが出来ます</p>
+                            <div class="flex items-center justify-between">
+                                <div class="relative w-1/2">
+                                    <div class="absolute inset-y-0 end-0 top-0 flex items-center pe-3.5 pointer-events-none">
+                                        <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path clip-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z" fill-rule="evenodd"/>
+                                        </svg>
+                                    </div>
+                                    <input class="w-full input focus:ring-0" max="23:59" min="00:00" placeholder="--:--" th:id="'recommendDesiredStartTime'+${placeStatus.index}" name="desiredStartTime" th:value="${place.desiredStartTime}" type="time"/>
+                                </div>
+                                <span class="pr-3 pl-3">～</span>
+                                <div class="relative w-1/2">
+                                    <div class="absolute inset-y-0 end-0 top-0 flex items-center pe-3.5 pointer-events-none">
+                                        <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path clip-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z" fill-rule="evenodd"/>
+                                        </svg>
+                                    </div>
+                                    <input class="w-full input focus:ring-0" max="23:59" min="00:00" placeholder="--:--" th:id="'recommendDesiredEndTime'+${placeStatus.index}" name="desiredEndTime" th:value="${place.desiredStartTime}" type="time"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex justify-center">
+                            <button class="button-primary" type="submit">追加</button>
+                        </div>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
     </div>

@@ -41,6 +41,9 @@ public interface IPlacesMapper {
             "   WHERE id = #{id}")
     int update(final Place place);
 
+    @Delete("DELETE FROM places WHERE id = #{id}")
+    int deleteById(final int id);
+
     @Delete("DELETE FROM places " +
             "   USING days, plans " +
             "   WHERE places.day_id = days.id " +

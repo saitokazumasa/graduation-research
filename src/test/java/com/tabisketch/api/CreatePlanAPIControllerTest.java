@@ -2,7 +2,7 @@ package com.tabisketch.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tabisketch.bean.form.ExampleCreatePlanForm;
-import com.tabisketch.bean.response.CreatePlanResponse;
+import com.tabisketch.bean.response.implement.CreatePlanResponse;
 import com.tabisketch.service.ICreatePlanService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,7 +1,7 @@
 package com.tabisketch.api;
 
 import com.tabisketch.bean.form.UpdatePlaceForm;
-import com.tabisketch.bean.response.UpdatePlaceResponse;
+import com.tabisketch.bean.response.implement.UpdatePlaceResponse;
 import com.tabisketch.exception.InsertFailedException;
 import com.tabisketch.exception.UpdateFailedException;
 import com.tabisketch.service.IUpdatePlaceService;

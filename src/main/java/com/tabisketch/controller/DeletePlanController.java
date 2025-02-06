@@ -17,7 +17,7 @@ public class DeletePlanController {
     }
 
     @DeleteMapping
-    public String post(final @PathVariable String uuid) throws DeleteFailedException {
+    public String delete(final @PathVariable String uuid) throws DeleteFailedException {
         this.deletePlanService.execute(uuid);
         return "redirect:/plan/list";
     }

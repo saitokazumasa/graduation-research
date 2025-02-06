@@ -5,15 +5,20 @@ import com.tabisketch.valueobject.Mail;
 import jakarta.mail.MessagingException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.util.UUID;
 
 @SpringBootTest
 public class SendMailServiceTest {
+    @Value("${SITE_URL}")
+    private String siteURL;
+    @Value("${spring.mail.username}")
+    private String fromMailAddress;
+
     @MockitoBean
     private JavaMailSender __; // DIで使用している
     @Autowired
@@ -22,23 +27,30 @@ public class SendMailServiceTest {
     // NOTE: アドレスエラーは検出されない
 
     @Test
-    public void testExecuteRegistrationMail() throws MessagingException {
-        final var mailAddress = ExampleUser.generate().getMailAddress();
-        final var registrationMail = Mail.registrationMail(mailAddress, UUID.randomUUID());
-        this.sendMailService.execute(registrationMail);
+    public void testExecuteMailAddressAuthMail() throws MessagingException {
+        final var toMailAddress = ExampleUser.generate().getMailAddress();
+        final var mail = Mail.mailAddressAuthMail(this.siteURL, this.fromMailAddress, toMailAddress, UUID.randomUUID());
+        this.sendMailService.execute(mail);
     }
 
     @Test
     public void testExecuteMailAddressEditMail() throws MessagingException {
-        final var mailAddress = ExampleUser.generate().getMailAddress();
-        final var mailAddressEditMail = Mail.mailAddressEditMail(mailAddress, UUID.randomUUID());
-        this.sendMailService.execute(mailAddressEditMail);
+        final var toMailAddress = ExampleUser.generate().getMailAddress();
+        final var mail = Mail.mailAddressEditMail(this.siteURL, this.fromMailAddress, toMailAddress, UUID.randomUUID());
+        this.sendMailService.execute(mail);
+    }
+
+    @Test
+    public void testExecutePasswordEditedNoticeMail() throws MessagingException {
+        final var toMailAddress = ExampleUser.generate().getMailAddress();
+        final var mail = Mail.passwordEditedNoticeMail(this.siteURL, this.fromMailAddress, toMailAddress);
+        this.sendMailService.execute(mail);
     }
 
     @Test
     public void testExecutePasswordResetMail() throws MessagingException {
-        final var mailAddress = ExampleUser.generate().getMailAddress();
-        final var passwordResetMail = Mail.passwordResetMail(mailAddress, UUID.randomUUID());
-        this.sendMailService.execute(passwordResetMail);
+        final var toMailAddress = ExampleUser.generate().getMailAddress();
+        final var mail = Mail.passwordResetMail(this.siteURL, this.fromMailAddress, toMailAddress, UUID.randomUUID());
+        this.sendMailService.execute(mail);
     }
 }

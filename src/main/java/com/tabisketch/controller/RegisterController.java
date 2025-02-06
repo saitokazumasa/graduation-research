@@ -2,6 +2,7 @@ package com.tabisketch.controller;
 
 import com.tabisketch.bean.form.RegisterForm;
 import com.tabisketch.exception.InsertFailedException;
+import com.tabisketch.exception.InvalidMailAddressException;
 import com.tabisketch.service.IRegisterService;
 import jakarta.mail.MessagingException;
 import org.springframework.stereotype.Controller;
@@ -33,7 +34,7 @@ public class RegisterController {
             final @Validated RegisterForm registerForm,
             final BindingResult bindingResult,
             final RedirectAttributes redirectAttributes
-    ) throws InsertFailedException, MessagingException {
+    ) throws InvalidMailAddressException, MessagingException, InsertFailedException {
         if (bindingResult.hasErrors()) return "register/index";
 
         this.registerService.execute(registerForm);

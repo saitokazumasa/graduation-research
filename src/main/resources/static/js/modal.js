@@ -226,15 +226,15 @@ class ModalElement {
     /**
      * ModalButtonイベント アタッチ
      * @param modalType {String}
-     * @Param num formId-1
+     * @Param num {number | null}
      */
-    addButtonEvent(modalType, num) {
+    addButtonEvent(modalType, num = null) {
         const modal = this.getModal(modalType, num);
         const toggleBtn = this.getToggleBtn(modalType, num);
         const closeBtn = this.getCloseBtn(modalType, num);
 
         // イベントのアタッチ
-        toggleBtn.addEventListener('click', () => modal.toggle() );
+        toggleBtn.addEventListener('click', () => modal.toggle());
         closeBtn.addEventListener('click', () => {
             modal.hide();
             document.activeElement.blur(); // フォーカスを外す
@@ -248,10 +248,7 @@ class ModalElement {
      * @returns {Modal}
      */
     getModal(modalType, num=null) {
-        if (modalType === ModalType.places) {
-            return new Modal(this.#modals.places[num]);
-        }
-        return new Modal(this.#modals[modalType]);
+        return num!==null ? new Modal(this.#modals[modalType][num]) :new Modal(this.#modals[modalType]);
     }
 
     /**
@@ -261,10 +258,10 @@ class ModalElement {
      * @returns {*}
      */
     getToggleBtn(modalType, num=null) {
-        if (modalType === ModalType.places) {
-            return this.#toggleButtons.places[num];
+        if (modalType.startsWith('update')) {
+            modalType = modalType.replace('update', '').toLowerCase();
         }
-        return this.#toggleButtons[modalType];
+        return num!==null ? this.#toggleButtons[modalType][num] : this.#toggleButtons[modalType];
     }
 
     /**
@@ -274,10 +271,7 @@ class ModalElement {
      * @returns {*}
      */
     getCloseBtn(modalType, num=null) {
-        if (modalType === ModalType.places) {
-            return this.#closeButtons.places[num];
-        }
-        return this.#closeButtons[modalType];
+        return num!==null ? this.#closeButtons[modalType][num] : this.#closeButtons[modalType];
     }
 
     /**
@@ -320,12 +314,12 @@ class ModalElement {
     /**
      * 目的地更新のelementを配列に追加・autocomplete適用
      */
-    setPlacesUpdateModal() {
-        this.#modals.updatePlaces.push(document.getElementById('placesUpdateModal'));
-        this.#closeButtons.updatePlaces.push(document.getElementById('placesUpdateClose'));
+    setPlacesUpdateModal(num) {
+        this.#modals.updatePlaces.push(document.getElementById(`placesUpdateModal${num}`));
+        this.#closeButtons.updatePlaces.push(document.getElementById(`placesUpdateClose${num}`));
 
         // autocomplete適用
-        this.setAutoComplete(document.getElementById(`placeModal${placeNum.value()}`));
+        this.setAutoComplete(document.getElementById(`updatePlace${num}`));
     }
 
     /**
@@ -433,7 +427,6 @@ class ModalElement {
      * @param num
      */
     changeToggleTarget(modalType, num=null) {
-        console.log(230);
         const toggleBtn = this.getToggleBtn(modalType, num);
 
         // '○○UpdateModal' にターゲットを変える
@@ -442,13 +435,6 @@ class ModalElement {
         // data-modal-target data-modal-toggleを変更
         toggleBtn.setAttribute('data-modal-target', newTarget);
         toggleBtn.setAttribute('data-modal-toggle', newTarget);
-        console.log(toggleBtn.getAttribute('data-modal-target'));
-        console.log(toggleBtn.getAttribute('data-modal-toggle'));
-
-        // createのFormを削除
-        // const createForm = document.getElementById(`placeModal${num}`);
-        // if (!createForm) return;
-        // createForm.remove();
     }
 }
 

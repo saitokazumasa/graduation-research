@@ -8,6 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "docker:build": "sh docker/bin/docker_compose_build.sh ./docker",
     "docker:up": "sh docker/bin/docker_compose_up.sh ./docker",
+    "docker:watch": "docker compose -f docker/01-docker-compose.yml -f docker/docker-compose.dev.yml up postgresql app --watch",
     "docker:test": "sh docker/bin/docker_compose_test.sh ./docker",
     "docker:down": "sh docker/bin/docker_compose_down.sh ./docker"
   },

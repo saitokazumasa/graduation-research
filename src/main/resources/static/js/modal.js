@@ -348,9 +348,25 @@ class ModalElement {
     }
 
     /**
-     * 出発地点の表示を変更
+     * modal切り替えのトグル表示を変える
+     * @param modalType {string} モーダルの種類
+     * @param formNum {number | null} フォーム項番
      */
-    changeStartDisplay() {
+    changeToggleDisplay(modalType, formNum = null) {
+        switch (modalType) {
+        case ModalType.start:
+            this.#changeStartDisplay();
+            break;
+        case ModalType.end:
+            this.#changeEndDisplay();
+            break;
+        case ModalType.places:
+            this.#changePlaceDisplay(formNum);
+            break;
+        }
+    }
+
+    #changeStartDisplay() {
         const timeSpan = document.getElementById('startTimeSpan'); // 時間spanタグ取得
         const placeSpan = document.getElementById('startPlaceSpan'); // 場所名spanタグ
 
@@ -362,21 +378,14 @@ class ModalElement {
         timeSpan.classList.remove('absolute');
     }
 
-    /**
-     * 終了地点の表示を変更
-     */
-    changeEndDisplay() {
+    #changeEndDisplay() {
         const placeSpan = document.getElementById('endPlaceSpan'); // spanタグ取得
 
         const endPlace = document.getElementById('endPlace');
         placeSpan.textContent = endPlace.value; // spanの文字を場所名に
     }
 
-    /**
-     * 目的地の表示を変更
-     * @param formNum formの項番
-     */
-    changePlaceDisplay(formNum) {
+    #changePlaceDisplay(formNum) {
         // buttonの子要素のspanタグ取得
         const timeSpan = document.getElementById(`placeTimeSpan${formNum}`);
         const placeSpan = document.getElementById(`placeNameSpan${formNum}`);
@@ -403,7 +412,7 @@ class ModalElement {
         timeSpan.classList.remove('absolute');
 
         // 予算
-        if (!budgetInput.value) budgetSpan.textContent = '予算：----' + '円';
+        if (budgetInput.value !== null) budgetSpan.textContent = '予算：---- ' + '円';
         else budgetSpan.textContent = '予算：' + budgetInput.value + '円';
 
         // 滞在時間
@@ -424,19 +433,22 @@ class ModalElement {
      * @param num
      */
     changeToggleTarget(modalType, num=null) {
+        console.log(230);
         const toggleBtn = this.getToggleBtn(modalType, num);
 
         // '○○UpdateModal' にターゲットを変える
-        const newTarget = num ? `${modalType}UpdateModal${num}` : `${modalType}UpdateModal`;
+        const newTarget = num!==null ? `${modalType}UpdateModal${num}` : `${modalType}UpdateModal`;
 
         // data-modal-target data-modal-toggleを変更
         toggleBtn.setAttribute('data-modal-target', newTarget);
         toggleBtn.setAttribute('data-modal-toggle', newTarget);
+        console.log(toggleBtn.getAttribute('data-modal-target'));
+        console.log(toggleBtn.getAttribute('data-modal-toggle'));
 
         // createのFormを削除
-        const createForm = this.getModal(modalType, num);
-        if (!createForm) return;
-        createForm.remove();
+        // const createForm = document.getElementById(`placeModal${num}`);
+        // if (!createForm) return;
+        // createForm.remove();
     }
 }
 

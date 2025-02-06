@@ -56,79 +56,55 @@ class ModalForm {
     }
 
     /**
-     * 出発地点の /api/create-placeが成功したとき
+     * /api/crate-place成功時処理
      * @param placeId {number} placesテーブルのid
+     * @param modalType {string} モーダルの種類
+     * @param formNum {number} formの項番(placesの時だけ)
      */
-    async #startPlaceCreateSuccess(placeId) {
-        // modal関連の動作
-        modal.closeModal(ModalType.start);
-        modal.changeStartDisplay();
+    async #createPlaceSuccess(placeId, modalType, formNum=null) {
+        // modalの動作
+        modal.closeModal(modalType, formNum);
+        modal.changeToggleDisplay(modalType, formNum);
 
-        // startUpdateFormを呼び出す
+        // 更新formフラグメントを追加
         const fragment = new Fragment();
-        await fragment.initStartUpdateForm(placeId); // 追加フラグメントの初期化
-        fragment.addStartUpdateForm(); // HTMLに追加
-        modal.setStartUpdateModal(); // 変数にElement追加・autocomplete適用
+        switch (modalType) {
+        case ModalType.start:
+            await fragment.initStartUpdateForm(placeId);
+            fragment.addStartUpdateForm();
+            modal.setStartUpdateModal();
+            break;
+        case ModalType.end:
+            await fragment.initEndUpdateForm(placeId);
+            fragment.addEndUpdateForm();
+            modal.setEndUpdateModal();
+            break;
+        case ModalType.places:
+            await fragment.initPlacesUpdateForm(placeId, formNum);
+            fragment.addPlacesUpdateForm();
+            modal.setPlacesUpdateModal();
+            this.#setStayTimeValue(formNum);
+            break;
+        }
 
         // startToggleの data-modal-target data-modal-toggleを変更
         modal.changeToggleTarget(ModalType.start);
 
-        // formのsubmitイベントをアタッチ
-        this.#startUpdateFormElement = modal.getModal(ModalType.updateStart);
-        this.#startUpdateFormElement.addEventListener('submit', (e) => this.#startUpdateFormSubmit(e));
-    }
-
-    /**
-     * 終了地点の /api/create-placeが成功したとき
-     * @param placeId {number} placesテーブルのid
-     */
-    async #endPlaceCreateSuccess(placeId) {
-        // modal関連の動作
-        modal.closeModal(ModalType.end);
-        modal.changeEndDisplay();
-
-        // endUpdateFormフラグメントを追加
-        const fragment = new Fragment();
-        await fragment.initEndUpdateForm(placeId); // 追加フラグメントの初期化
-        fragment.addEndUpdateForm(); // HTMLに追加
-        modal.setEndUpdateModal(); // 変数にElement追加・autocomplete適用
-
-        // endToggleの data-modal-target data-modal-toggleを変更
-        modal.changeToggleTarget(ModalType.end);
-
-        // formのsubmitイベントをアタッチ
-        this.#endUpdateFormElement = modal.getModal(ModalType.updateEnd);
-        this.#endUpdateFormElement.addEventListener('submit', (e) => this.#endUpdateFormSubmit(e));
-    }
-
-    /**
-     * 目的地の /api/create-placeが成功したとき
-     * @param placeId {number} placesテーブルのid
-     * @param formNum {number} formの項番
-     */
-    async #placesCreateSuccess(placeId, formNum) {
-        // modal関連の動作
-        modal.closeModal(ModalType.places);
-        modal.changePlaceDisplay();
-
-        // 目的地追加フラグメント呼び出し
-        await this.newAddPlaceFragment();
-
-        // placesUpdateFormを呼び出す
-        const fragment = new Fragment();
-        await fragment.initPlacesUpdateForm(placeId, formNum); // fragment初期化
-        fragment.addPlacesUpdateForm(); // HTMLに追加
-        modal.setPlacesUpdateModal(); // Elementを追加
-
-        // stayTimeのvalueを更新
-        this.#setStayTimeValue(formNum);
-
-        // placesToggleの data-modal-target data-modal-toggleを変更
-        modal.changeToggleTarget(ModalType.places, formNum);
-
-        // formのsubmitイベントをアタッチ
-        this.#placesUpdateFormElement = modal.getModal(ModalType.updatePlaces, formNum);
-        this.#placesUpdateFormElement.addEventListener('submit', (e) => this.#placeUpdateFormSubmit(e));
+        // updateFormのsubmitイベントをアタッチ
+        switch (modalType) {
+        case ModalType.start:
+            this.#startUpdateFormElement = modal.getModal(ModalType.updateStart);
+            this.#startUpdateFormElement.addEventListener('submit', (e) => this.#startUpdateFormSubmit(e));
+            break;
+        case ModalType.end:
+            this.#endUpdateFormElement = modal.getModal(ModalType.updateEnd);
+            this.#endUpdateFormElement.addEventListener('submit', (e) => this.#endUpdateFormSubmit(e));
+            break;
+        case ModalType.places:
+            this.#placesUpdateFormElement = modal.getModal(ModalType.updatePlaces, formNum);
+            this.#placesUpdateFormElement.addEventListener('submit', (e) => this.#placeUpdateFormSubmit(e));
+            break;
+        }
     }
 
     /**
@@ -276,13 +252,13 @@ class ModalForm {
             }
         } catch (error) {
             console.error(`エラー詳細：${error}`);
-            const errorMessage = '送信中にエラーが発生しました。もう一度お試しください。';
+            const errorText = '送信中にエラーが発生しました。もう一度お試しください。';
             if (modalType === ModalType.start) {
-                document.getElementById('startError').textContent = errorMessage;
+                document.getElementById('startError').textContent = errorText;
             } else if (modalType === ModalType.end) {
-                document.getElementById('endError').textContent = errorMessage;
+                document.getElementById('endError').textContent = errorText;
             } else {
-                document.getElementById(`placeError${formNum}`).textContent = errorMessage;
+                document.getElementById(`placeError${formNum}`).textContent = errorText;
             }
         }
     }

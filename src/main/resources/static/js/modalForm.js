@@ -4,7 +4,7 @@ class ModalForm {
     #endFormElement;
     #startUpdateFormElement;
     #endUpdateFormElement;
-    #placesUpdateFormElement;
+    #placesUpdateFormElement = [];
 
     constructor() {
         this.#startFormElement = document.getElementById('startPlaceForm');
@@ -115,16 +115,16 @@ class ModalForm {
         // updateFormのsubmitイベントをアタッチ
         switch (modalType) {
         case ModalType.start:
-            this.#startUpdateFormElement = modal.getModal(ModalType.updateStart);
+            this.#startUpdateFormElement = document.getElementById('updateStartForm');
             this.#startUpdateFormElement.addEventListener('submit', (e) => this.#startUpdateFormSubmit(e));
             break;
         case ModalType.end:
-            this.#endUpdateFormElement = modal.getModal(ModalType.updateEnd);
+            this.#endUpdateFormElement = document.getElementById('updateEndForm');
             this.#endUpdateFormElement.addEventListener('submit', (e) => this.#endUpdateFormSubmit(e));
             break;
         case ModalType.places:
-            this.#placesUpdateFormElement = modal.getModal(ModalType.updatePlaces, formNum);
-            this.#placesUpdateFormElement.addEventListener('submit', (e) => this.#placeUpdateFormSubmit(e));
+            this.#placesUpdateFormElement.push(document.getElementById(`updatePlaceForm${formNum}`));
+            this.#placesUpdateFormElement[formNum].addEventListener('submit', (e) => this.#placeUpdateFormSubmit(e));
             break;
         }
     }

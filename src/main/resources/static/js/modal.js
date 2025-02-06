@@ -248,7 +248,7 @@ class ModalElement {
      * @returns {Modal}
      */
     getModal(modalType, num=null) {
-        return num!==null ? new Modal(this.#modals[modalType][num]) :new Modal(this.#modals[modalType]);
+        return num!==null ? new Modal(this.#modals[modalType][num]) : new Modal(this.#modals[modalType]);
     }
 
     /**

@@ -25,6 +25,12 @@ class ModalForm {
             element.addEventListener('submit', async(e) => await this.#createFormSubmit(e, ModalType.places)));
     }
 
+    #addPlaceFormElement(num) {
+        this.placeFormElement.push(document.getElementById(`placeForm${num}`));
+        this.placeFormElement[num].addEventListener('submit', async(e) =>
+            await this.#createFormSubmit(e, ModalType.places));
+    }
+
     /**
      * CreateFormのsubmitイベント
      * @param e
@@ -104,27 +110,22 @@ class ModalForm {
 
         // 目的地追加フラグメントを呼び出し
         if (modalType === ModalType.places) {
-            await fragment.initialize();
-            fragment.addFragment();
-            placeNum.increment();
-            // 追加したフラグメントのmodalイベントのアタッチ
-            modal.addPlacesElement();
-            modal.addButtonEvent(modalType, placeNum.value());
+            await this.newAddPlaceFragment();
         }
 
         // updateFormのsubmitイベントをアタッチ
         switch (modalType) {
         case ModalType.start:
             this.#startUpdateFormElement = document.getElementById('updateStartForm');
-            this.#startUpdateFormElement.addEventListener('submit', (e) => this.#startUpdateFormSubmit(e));
+            this.#startUpdateFormElement.addEventListener('submit', (e) => this.#updateFormSubmit(e, ModalType.updateStart));
             break;
         case ModalType.end:
             this.#endUpdateFormElement = document.getElementById('updateEndForm');
-            this.#endUpdateFormElement.addEventListener('submit', (e) => this.#endUpdateFormSubmit(e));
+            this.#endUpdateFormElement.addEventListener('submit', (e) => this.#updateFormSubmit(e, ModalType.updateEnd));
             break;
         case ModalType.places:
             this.#placesUpdateFormElement.push(document.getElementById(`updatePlaceForm${formNum}`));
-            this.#placesUpdateFormElement[formNum].addEventListener('submit', (e) => this.#placeUpdateFormSubmit(e));
+            this.#placesUpdateFormElement[formNum].addEventListener('submit', (e) => this.#updateFormSubmit(e, ModalType.updatePlaces, formNum));
             break;
         }
     }
@@ -162,33 +163,22 @@ class ModalForm {
         await this.postUpdatePlaceAPI(formData, modalType, formNum);
     }
 
-    async #startUpdateFormSubmit(e) {
-        await this.#updateFormSubmit(e, ModalType.updateStart);
-    }
-
-    async #endUpdateFormSubmit(e) {
-        await this.#updateFormSubmit(e, ModalType.updateEnd);
-    }
-
-    async #placeUpdateFormSubmit(e) {
-        const formId = e.target.id;
-        const formNum = Number(formId.replace('updatePlaceForm', ''));
-        await this.#updateFormSubmit(e, ModalType.updatePlaces, formNum);
-    }
-
     /**
      * 追加フラグメントを挿入
      * @returns {Promise<void>}
      */
     async newAddPlaceFragment() {
+        // 目的地追加フラグメント呼び出し
         const newFragment = new Fragment();
         await newFragment.initialize();
-
         newFragment.addFragment();
+
+        // form項番を増やす
         placeNum.increment();
         modal.addPlacesElement();
-        modal.addButtonEvent(ModalType.places, placeNum.value()); // 新しいModalにイベント追加
-        new ModalForm(); // modalFormイベントをアタッチ
+        // 新しいModalにイベント追加
+        modal.addButtonEvent(ModalType.places, placeNum.value());
+        this.#addPlaceFormElement(placeNum.value());
     }
 
     /**

@@ -9,7 +9,7 @@ class ErrorMessage {
             places: 'placeError',
             updateStart: 'updateStartError',
             updateEnd: 'updateEndError',
-            updatePlaces: 'updatePlaceError',
+            updatePlaces: 'updatePlaceError'
         };
         this.#errorMessages = {
             start: '出発地点・予定時間を正しく入力してください。',
@@ -27,8 +27,8 @@ class ErrorMessage {
         this.#setErrorMessage(elementKey, message);
     }
 
-    hiddenFormError(modalType, formNum) {
-        formNum !== null ?
+    hiddenFormError(modalType, formNum=null) {
+        formNum !== null?
             this.#setErrorMessage(`${this.#elementKeys[modalType]}${formNum}`, '')
             : this.#setErrorMessage(this.#elementKeys[modalType], '');
     }

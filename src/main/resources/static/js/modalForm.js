@@ -1,4 +1,3 @@
-
 class ModalForm {
     #startFormElement;
     placeFormElement = [];
@@ -54,95 +53,6 @@ class ModalForm {
             formData.delete(`stayTime${formNum}`);
         }
         await this.postCreatePlaceAPI(formData, modalType, formNum);
-    }
-
-    /**
-     * エラーメッセージの設定
-     * @param {string} elementId エラーメッセージを表示する要素のID
-     * @param {string} message エラーメッセージ
-     */
-    #setErrorMessage(elementId, message) {
-        document.getElementById(elementId).textContent = message;
-    }
-
-    /**
-     * 出発地点のrequiredチェック
-     * @returns {boolean} すべて値が入ってたらtrue
-     */
-    #startFormCheck() {
-        const placeName = document.getElementById('startPlace').value;
-        const placeId = document.getElementById('startPlaceId').value;
-        const lat = document.getElementById('startLat').value;
-        const lng = document.getElementById('startLng').value;
-        const time = document.getElementById('startTime').value;
-
-        return !!(placeName && placeId && lat && lng && time);
-    }
-
-    /**
-     * 終了地点のrequiredチェック
-     * @returns {boolean} すべて値が入ってたらtrue
-     */
-    #endFormCheck() {
-        const placeName = document.getElementById('endPlace').value;
-        const placeId = document.getElementById('endPlaceId').value;
-        const lat = document.getElementById('endLat').value;
-        const lng = document.getElementById('endLng').value;
-
-        return !!(placeName && placeId && lat && lng);
-    }
-
-    /**
-     * 目的地のrequiredチェック
-     * @returns {boolean} すべて値が入ってたらtrue
-     */
-    #placeFormCheck(num) {
-        const placeName = document.getElementById(`place${num}`).value;
-        const placeId = document.getElementById(`placeId${num}`).value;
-        const lat = document.getElementById(`placeLat${num}`).value;
-        const lng = document.getElementById(`placeLng${num}`).value;
-
-        return !!(placeName && placeId && lat && lng);
-    }
-
-    /**
-     * 出発地点更新のrequiredチェック
-     * @returns {boolean} すべて値が入ってたらtrue
-     */
-    #updateStartFormCheck() {
-        const placeName = document.getElementById('startUpdatePlace').value;
-        const placeId = document.getElementById('startUpdatePlaceId').value;
-        const lat = document.getElementById('startUpdateLat').value;
-        const lng = document.getElementById('startUpdateLng').value;
-        const time = document.getElementById('startUpdateTime').value;
-
-        return !!(placeName && placeId && lat && lng && time);
-    }
-
-    /**
-     * 終了地点更新のrequiredチェック
-     * @returns {boolean} すべて値が入ってたらtrue
-     */
-    #updateEndFormCheck() {
-        const placeName = document.getElementById('endUpdatePlace').value;
-        const placeId = document.getElementById('endUpdatePlaceId').value;
-        const lat = document.getElementById('endUpdateLat').value;
-        const lng = document.getElementById('endUpdateLng').value;
-
-        return !!(placeName && placeId && lat && lng);
-    }
-
-    /**
-     * 目的地更新のrequiredチェック
-     * @returns {boolean} すべて値が入ってたらtrue
-     */
-    #updatePlaceFormCheck(num) {
-        const placeName = document.getElementById(`updatePlace${num}`).value;
-        const placeId = document.getElementById(`placeUpdatePlaceId${num}`).value;
-        const lat = document.getElementById(`placeUpdateLat${num}`).value;
-        const lng = document.getElementById(`placeUpdateLng${num}`).value;
-
-        return !!(placeName && placeId && lat && lng);
     }
 
     /**

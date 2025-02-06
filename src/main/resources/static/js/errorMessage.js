@@ -21,20 +21,16 @@ class ErrorMessage {
         };
     }
 
-    displayFormError(modalType, formNum) {
-        if (formNum !== null) {
-            this.#setErrorMessage(`${this.#elementKeys[modalType]}${formNum}`, this.#errorMessages[modalType]);
-            return;
-        }
-        this.#setErrorMessage(this.#elementKeys[modalType], this.#errorMessages[modalType]);
+    displayFormError(modalType, formNum = null, message = null) {
+        const elementKey = formNum!==null ? `${this.#elementKeys[modalType]}${formNum}` : this.#elementKeys[modalType];
+        if (message === null) message = this.#errorMessages[modalType];
+        this.#setErrorMessage(elementKey, message);
     }
 
     hiddenFormError(modalType, formNum) {
-        if (formNum !== null) {
-            this.#setErrorMessage(`${this.#elementKeys[modalType]}${formNum}`, '');
-            return;
-        }
-        this.#setErrorMessage(this.#elementKeys[modalType], '');
+        formNum !== null ?
+            this.#setErrorMessage(`${this.#elementKeys[modalType]}${formNum}`, '')
+            : this.#setErrorMessage(this.#elementKeys[modalType], '');
     }
 
     /**

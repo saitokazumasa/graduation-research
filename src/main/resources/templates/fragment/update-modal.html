@@ -187,7 +187,7 @@
                         <input th:field="*{id}" class="hidden" type="number">
                         <input th:field="*{dayId}" class="hidden" type="number"/>
                         <input th:field="*{startTime}" th:id="'placeUpdateStartTime'+${num}" class="hidden" type="time"/>
-                        <input th:field="*{endTime}" th:if="'placeUpdateEndTime'+${num}" class="hidden" type="time"/>
+                        <input th:field="*{endTime}" th:id="'placeUpdateEndTime'+${num}" class="hidden" type="time"/>
                         <input th:field="*{toPolyLine}" class="hidden" type="text"/>
                         <input th:field="*{toTravelTime}" class="hidden" type="number"/>
                         <input th:field="*{toTransportation}" class="hidden" type="text"/>

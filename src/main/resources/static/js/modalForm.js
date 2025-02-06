@@ -82,13 +82,35 @@ class ModalForm {
         case ModalType.places:
             await fragment.initPlacesUpdateForm(placeId, formNum);
             fragment.addPlacesUpdateForm();
-            modal.setPlacesUpdateModal();
+            modal.setPlacesUpdateModal(formNum);
             this.#setStayTimeValue(formNum);
             break;
         }
 
-        // startToggleの data-modal-target data-modal-toggleを変更
-        modal.changeToggleTarget(ModalType.start);
+        // modalを切り替えるターゲット変更
+        modal.changeToggleTarget(modalType, formNum);
+        // ターゲット切り替え後のmodalイベントのアタッチ
+        switch (modalType) {
+        case ModalType.start:
+            modal.addButtonEvent(ModalType.updateStart);
+            break;
+        case ModalType.end:
+            modal.addButtonEvent(ModalType.updateEnd);
+            break;
+        case ModalType.places:
+            modal.addButtonEvent(ModalType.updatePlaces, formNum);
+            break;
+        }
+
+        // 目的地追加フラグメントを呼び出し
+        if (modalType === ModalType.places) {
+            await fragment.initialize();
+            fragment.addFragment();
+            placeNum.increment();
+            // 追加したフラグメントのmodalイベントのアタッチ
+            modal.addPlacesElement();
+            modal.addButtonEvent(modalType, placeNum.value());
+        }
 
         // updateFormのsubmitイベントをアタッチ
         switch (modalType) {

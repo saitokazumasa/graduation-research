@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalTime;
 
@@ -36,20 +37,24 @@ public class CreatePlaceForm {
      * 開始時間
      */
     @NotNull
+    @DateTimeFormat(pattern = "HH:mm")
     private LocalTime startTime;
     /**
      * 終了時間
      */
     @NotNull
+    @DateTimeFormat(pattern = "HH:mm")
     private LocalTime endTime;
 
     /**
      * 希望開始時間
      */
+    @DateTimeFormat(pattern = "HH:mm")
     private LocalTime desiredStartTime;
     /**
      * 希望終了時間
      */
+    @DateTimeFormat(pattern = "HH:mm")
     private LocalTime desiredEndTime;
 
     private String toPolyLine;

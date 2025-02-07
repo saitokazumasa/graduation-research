@@ -95,17 +95,7 @@ class ModalForm {
         // modalを切り替えるターゲット変更
         modal.changeToggleTarget(modalType, formNum);
         // ターゲット切り替え後のmodalイベントのアタッチ
-        switch (modalType) {
-        case ModalType.start:
-            modal.addButtonEvent(ModalType.updateStart);
-            break;
-        case ModalType.end:
-            modal.addButtonEvent(ModalType.updateEnd);
-            break;
-        case ModalType.places:
-            modal.addButtonEvent(ModalType.updatePlaces, formNum);
-            break;
-        }
+        initFlowbite();
 
         // 目的地追加フラグメントを呼び出し
         if (modalType === ModalType.places) {
@@ -143,7 +133,7 @@ class ModalForm {
         placeNum.increment();
         modal.addPlacesElement();
         // 新しいModalにイベント追加
-        modal.addButtonEvent(ModalType.places, placeNum.value());
+        initFlowbite();
         this.#addPlaceFormElement(placeNum.value());
     }
 

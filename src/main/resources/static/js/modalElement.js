@@ -55,24 +55,6 @@ class ModalElement {
     }
 
     /**
-     * ModalButtonイベント アタッチ
-     * @param modalType {String}
-     * @Param num {number | null}
-     */
-    addButtonEvent(modalType, num = null) {
-        const modal = this.getModal(modalType, num);
-        const toggleBtn = this.getToggleBtn(modalType, num);
-        const closeBtn = this.getCloseBtn(modalType, num);
-
-        // イベントのアタッチ
-        toggleBtn.addEventListener('click', () => modal.toggle());
-        closeBtn.addEventListener('click', () => {
-            modal.hide();
-            document.activeElement.blur(); // フォーカスを外す
-        });
-    }
-
-    /**
      * modal取得
      * @param modalType {String} モーダルの種別
      * @param num formNum
@@ -93,16 +75,6 @@ class ModalElement {
             modalType = modalType.replace('update', '').toLowerCase();
         }
         return num!==null ? this.#toggleButtons[modalType][num] : this.#toggleButtons[modalType];
-    }
-
-    /**
-     * close取得
-     * @param modalType {String} モーダルの種別
-     * @param num formNum
-     * @returns {*}
-     */
-    getCloseBtn(modalType, num=null) {
-        return num!==null ? this.#closeButtons[modalType][num] : this.#closeButtons[modalType];
     }
 
     /**

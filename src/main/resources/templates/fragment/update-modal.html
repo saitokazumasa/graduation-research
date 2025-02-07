@@ -206,7 +206,7 @@
                             <div class="w-1/2 pl-3">
                                 <label class="block mb-2" th:for="'updateStayTime' + ${num}">滞在時間</label>
                                 <div class="flex items-end">
-                                    <input class="w-full input focus:ring-0" th:id="'updateStayTime' + ${num}" th:name="'updateStayTime' + ${num}" type="number"/>
+                                    <input class="w-full input focus:ring-0" th:id="'updateStayTime' + ${num}" th:name="'updateStayTime' + ${num}" type="number" min="1"/>
                                     <span>分</span>
                                 </div>
                             </div>

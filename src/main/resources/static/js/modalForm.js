@@ -55,8 +55,7 @@ class ModalForm {
         // api/create-planに送信
         const formData = new FormData(e.target);
         if (modalType === ModalType.places) {
-            this.#setEndTime(formNum, formData);
-            formData.delete(`stayTime${formNum}`);
+            this.#setEndTime(formNum, formData, modalType);
         }
         await this.postCreatePlaceAPI(formData, modalType, formNum);
     }
@@ -157,7 +156,7 @@ class ModalForm {
             // disabledになってる目的地をformObjectに手動で追加
             const updateNameInput = document.getElementById(`updatePlace${formNum}`);
             formData.append(updateNameInput.name, updateNameInput.value);
-            this.#setEndTime(formNum, formData);
+            this.#setEndTime(formNum, formData, modalType);
         }
 
         await this.postUpdatePlaceAPI(formData, modalType, formNum);
@@ -184,9 +183,10 @@ class ModalForm {
     /**
      * endTimeを(startTime+stayTime)に
      */
-    #setEndTime(formNum, formData) {
+    #setEndTime(formNum, formData, modalType) {
         const startTime = formData.get('startTime');
-        const stayTime = formData.get(`stayTime${formNum}`);
+        const stayTime = modalType === ModalType.places ?
+            formData.get(`staytTime${formNum}`) : formData.get(`updateStayTime${formNum}`);
         // startTimeをパースしてDate型に変換
         const [startHours, startMinutes] = startTime.split(':').map(Number);
         const startDate = new Date();
@@ -199,6 +199,9 @@ class ModalForm {
         const endTime = `${endHours}:${endMinutes}`;
         // FormDataにendTimeをセット
         formData.set('endTime', endTime);
+        // FormDataからstayTimeを削除
+        modalType === ModalType.places ?
+            formData.delete(`stayTime${formNum}`) : formData.delete(`updateStayTime${formNum}`);
     }
 
     /**

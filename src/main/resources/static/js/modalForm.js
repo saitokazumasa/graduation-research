@@ -227,6 +227,18 @@ class ModalForm {
     }
 
     /**
+     * /api/update-placeの成功時処理
+     * @param placeId {number} placesテーブルのid
+     * @param modalType {string} モーダルの種類
+     * @param formNum {number} formの項番(placesの時だけ)
+     */
+    async #updatePlaceSuccess(placeId, modalType, formNum=null) {
+        // modalの動作
+        modal.closeModal(modalType, formNum);
+        modal.changeToggleDisplay(modalType, formNum);
+    }
+
+    /**
      * /api/crate-placeに送信する
      * @param formData {FormData} 送信するformのデータ
      * @param modalType {String} 送信するformのタイプ
@@ -273,6 +285,7 @@ class ModalForm {
      * @param formNum {number | null} 送信formの項番
      */
     async postUpdatePlaceAPI(formData, modalType, formNum=null) {
+        console.log(modalType);
         const csrfToken = document.querySelector('meta[name="_csrf"]').content;
         const csrfHeaderName = document.querySelector('meta[name="_csrf_header"]').content;
         let placeId = null;
@@ -296,7 +309,7 @@ class ModalForm {
             }
             // 成功時の処理
             placeId = data.placeId;
-            await this.#updateFormSubmit(placeId, modalType, formNum);
+            await this.#updatePlaceSuccess(placeId, modalType, formNum);
         } catch (error) {
             const errorText = `送信中にエラーが発生しました。${error} もう一度お試しください。`;
             errorMessage.displayFormError(modalType, formNum, errorText);

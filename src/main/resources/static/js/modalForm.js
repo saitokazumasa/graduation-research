@@ -57,7 +57,8 @@ class ModalForm {
         if (modalType === ModalType.places) {
             this.#setEndTime(formNum, formData, modalType);
         }
-        await this.postCreatePlaceAPI(formData, modalType, formNum);
+        // await this.postCreatePlaceAPI(formData, modalType, formNum);
+        await this.#createPlaceSuccess(1, modalType, formNum);
     }
 
     /**
@@ -157,6 +158,8 @@ class ModalForm {
             const updateNameInput = document.getElementById(`updatePlace${formNum}`);
             formData.append(updateNameInput.name, updateNameInput.value);
             this.#setEndTime(formNum, formData, modalType);
+            const id = document.getElementById(`id${formNum}`);
+            formData.set('id', id.value);
         }
 
         await this.postUpdatePlaceAPI(formData, modalType, formNum);
@@ -271,25 +274,33 @@ class ModalForm {
      * @param modalType {String} 更新するformのType
      * @param formNum {number | null} 送信formの項番
      */
-    postUpdatePlaceAPI(formData, modalType, formNum=null) {
+    async postUpdatePlaceAPI(formData, modalType, formNum=null) {
+        const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+        const csrfHeaderName = document.querySelector('meta[name="_csrf_header"]').content;
+        let placeId = null;
         try {
             // 非同期でPOSTリクエストを送信
-            fetch('/api/update-place', {
+            const response = await fetch('/api/update-place', {
                 method: 'POST',
+                headers: {
+                    [csrfHeaderName]: csrfToken
+                },
                 body: formData,
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`送信エラー: ${response.status}`);
-                    }
-                    return response.json(); // 必要に応じてレスポンスを処理
-                })
-                .then(data => {
-                    if (data.status === 'Failed')
-                        throw new Error('エラーが発生しました。');
-                });
+            });
+
+            // 通信が成功しないとき
+            if (!response.ok) throw new Error(`送信エラー: ${response.status}`);
+
+            // /api/create-placeでFailedが返される
+            const data = await response.json();
+            if (data.status === 'Failed') {
+                throw new Error(`APIエラー：${data} が発生しました。`);
+            }
+            // 成功時の処理
+            placeId = data.placeId;
+            await this.#updateFormSubmit(placeId, modalType, formNum);
         } catch (error) {
-            const errorText = '送信中にエラーが発生しました。もう一度お試しください。';
+            const errorText = `送信中にエラーが発生しました。${error} もう一度お試しください。`;
             errorMessage.displayFormError(modalType, formNum, errorText);
         }
     }

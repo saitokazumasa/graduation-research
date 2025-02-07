@@ -8,7 +8,7 @@
 
 <th:block th:fragment="startToggle">
     <!-- Modal toggle -->
-    <button class="input text-center text-label max-w-md w-4/5 h-10 sm:h-12 flex justify-between items-center"
+    <button class="input text-center text-label max-w-md w-4/5 h-10 sm:h-12 flex justify-between items-center my-3"
             data-modal-target="startModal" data-modal-toggle="startModal" id="startToggle" type="button">
         <span class="text-[10px] sm:text-base absolute" id="startTimeSpan"></span>
         <span class="flex-1 text-base sm:text-xl truncate ... px-2" id="startPlaceSpan">出発地点を入力する</span>
@@ -76,7 +76,7 @@
 </th:block>
 
 <th:block th:fragment="endToggle">
-    <button class="input text-center text-label max-w-md w-4/5 h-10 sm:h-12 flex justify-center items-center" data-modal-target="endModal" data-modal-toggle="endModal" id="endToggle" type="button">
+    <button class="input text-center text-label max-w-md w-4/5 h-10 sm:h-12 flex justify-center items-center my-3" data-modal-target="endModal" data-modal-toggle="endModal" id="endToggle" type="button">
         <span class="text-base sm:text-xl truncate ... px-2" id="endPlaceSpan">終了地点を入力する</span>
     </button>
 </th:block>
@@ -129,7 +129,7 @@
 </th:block>
 
 <th:block th:fragment="placesToggle(num)">
-    <div class="flex items-center">
+    <div class="flex items-center my-3">
         <!-- Modal toggle -->
         <button class="input border-interactive text-center text-label max-w-md w-4/5 flex justify-between items-center h-10 sm:h-12" th:data-modal-target="'placeModal' + ${num}" th:data-modal-toggle="'placeModal' + ${num}" th:id="'placeToggleBtn' + ${num}" type="button">
             <span class="absolute block text-[10px] sm:text-base" th:id="'placeTimeSpan' + ${num}">
@@ -148,7 +148,8 @@
 </th:block>
 
 <th:block th:fragment="placesForm(num, placeForm)">
-    <div aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full sm:inset-0 h-[calc(100%-1rem)] max-h-full text-label text-base" tabindex="-1" th:id="'placeModal' + ${num}">
+    <div aria-hidden="true" tabindex="-1" th:id="'placeModal' + ${num}"
+         class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full sm:inset-0 h-[calc(100%-1rem)] max-h-full text-label text-base">
         <div class="relative p-4 w-full max-w-md max-h-full">
             <!-- Modal content -->
             <div class="relative bg-white rounded-lg shadow">

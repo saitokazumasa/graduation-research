@@ -57,8 +57,7 @@ class ModalForm {
         if (modalType === ModalType.places) {
             this.#setEndTime(formNum, formData, modalType);
         }
-        // await this.postCreatePlaceAPI(formData, modalType, formNum);
-        await this.#createPlaceSuccess(1, modalType, formNum);
+        await this.postCreatePlaceAPI(formData, modalType, formNum);
     }
 
     /**
@@ -131,41 +130,6 @@ class ModalForm {
     }
 
     /**
-     * 更新フォーム送信submitイベントの共通処理
-     * @param e イベントオブジェクト
-     * @param modalType モーダルの種類
-     * @param formNum (任意) フォーム番号
-     */
-    async #updateFormSubmit(e, modalType, formNum = null) {
-        e.preventDefault();
-
-        if (modalType === ModalType.updatePlaces) {
-            formNum = Number(e.target.id.replace('updatePlaceForm',''));
-        }
-
-        // 値の検証
-        if (!formValidate.validate(modalType, formNum)) {
-            errorMessage.displayFormError(modalType, formNum);
-            return;
-        }
-        errorMessage.hiddenFormError(modalType, formNum);
-
-        const formData = new FormData(e.target);
-
-        // 目的地更新フォームの場合は追加データを設定
-        if (formNum !== null) {
-            // disabledになってる目的地をformObjectに手動で追加
-            const updateNameInput = document.getElementById(`updatePlace${formNum}`);
-            formData.append(updateNameInput.name, updateNameInput.value);
-            this.#setEndTime(formNum, formData, modalType);
-            const id = document.getElementById(`id${formNum}`);
-            formData.set('id', id.value);
-        }
-
-        await this.postUpdatePlaceAPI(formData, modalType, formNum);
-    }
-
-    /**
      * 追加フラグメントを挿入
      * @returns {Promise<void>}
      */
@@ -226,6 +190,40 @@ class ModalForm {
 
         // 終了時間と開始時間の差分を value に設定
         stayTimeInput.value = endMin - startMin;
+    }
+
+    /**
+     * 更新フォーム送信submitイベントの処理
+     * @param e イベントオブジェクト
+     * @param modalType モーダルの種類
+     * @param formNum (任意) フォーム番号
+     */
+    async #updateFormSubmit(e, modalType, formNum = null) {
+        e.preventDefault();
+
+        if (modalType === ModalType.updatePlaces) {
+            formNum = Number(e.target.id.replace('updatePlaceForm',''));
+        }
+
+        // 値の検証
+        if (!formValidate.validate(modalType, formNum)) {
+            errorMessage.displayFormError(modalType, formNum);
+            return;
+        }
+        errorMessage.hiddenFormError(modalType, formNum);
+
+        const formData = new FormData(e.target);
+        // 目的地更新フォームの場合は追加データを設定
+        if (formNum !== null) {
+            // disabledになってる目的地をformObjectに手動で追加
+            const updateNameInput = document.getElementById(`updatePlace${formNum}`);
+            formData.append(updateNameInput.name, updateNameInput.value);
+            this.#setEndTime(formNum, formData, modalType);
+            const id = document.getElementById(`id${formNum}`);
+            formData.set('id', id.value);
+        }
+
+        await this.postUpdatePlaceAPI(formData, modalType, formNum);
     }
 
     /**

@@ -347,51 +347,59 @@ class ModalElement {
      * @param formNum {number | null} フォーム項番
      */
     changeToggleDisplay(modalType, formNum = null) {
-        switch (modalType) {
-        case ModalType.start:
-            this.#changeStartDisplay();
-            break;
-        case ModalType.end:
+        if (modalType === ModalType.start || modalType === ModalType.updateStart) {
+            this.#changeStartDisplay(modalType);
+            return;
+        }
+        if (modalType === ModalType.end || modalType === ModalType.updateEnd) {
             this.#changeEndDisplay();
-            break;
-        case ModalType.places:
-            this.#changePlaceDisplay(formNum);
-            break;
+            return;
+        }
+        if (modalType === ModalType.places || modalType === ModalType.updatePlaces) {
+            this.#changePlaceDisplay(modalType, formNum);
         }
     }
 
-    #changeStartDisplay() {
+    #changeStartDisplay(modalType) {
         const timeSpan = document.getElementById('startTimeSpan'); // 時間spanタグ取得
-        const placeSpan = document.getElementById('startPlaceSpan'); // 場所名spanタグ
-
-        const startTime = document.getElementById('startTime');
+        const startTime = modalType === ModalType.start
+            ? document.getElementById('startTime')
+            : document.getElementById('startUpdateTime');
         timeSpan.textContent = startTime.value; // 開始時間を入れる
-        const startPlace = document.getElementById('startPlace');
-        placeSpan.textContent = startPlace.value; // spanの文字を場所名に
-
         timeSpan.classList.remove('absolute');
+
+        const placeSpan = document.getElementById('startPlaceSpan'); // 場所名spanタグ
+        const startPlace = modalType === ModalType.start
+            ? document.getElementById('startPlace')
+            : document.getElementById('startUpdatePlace');
+        placeSpan.textContent = startPlace.value; // spanの文字を場所名に
     }
 
-    #changeEndDisplay() {
+    #changeEndDisplay(modalType) {
         const placeSpan = document.getElementById('endPlaceSpan'); // spanタグ取得
-
-        const endPlace = document.getElementById('endPlace');
+        const endPlace = modalType === ModalType.end
+            ? document.getElementById('endPlace')
+            : document.getElementById('endUpdatePlace');
         placeSpan.textContent = endPlace.value; // spanの文字を場所名に
     }
 
-    #changePlaceDisplay(formNum) {
+    #changePlaceDisplay(modalType, formNum) {
         // buttonの子要素のspanタグ取得
         const timeSpan = document.getElementById(`placeTimeSpan${formNum}`);
         const placeSpan = document.getElementById(`placeNameSpan${formNum}`);
         const budgetSpan = document.getElementById(`budgetSpan${formNum}`);
         const stayTimeSpan = document.getElementById(`stayTimeSpan${formNum}`);
 
-        // inputの要素取得
-        const placeInput = document.getElementById(`place${formNum}`);
-        const desiredStartTimeInput = document.getElementById(`desiredStartTime${formNum}`);
-        const desiredEndTimeInput = document.getElementById(`desiredEndTime${formNum}`);
-        const budgetInput = document.getElementById(`budget${formNum}`);
-        const stayTimeInput = document.getElementById(`stayTime${formNum}`);
+        const placeInput = modalType === ModalType.places
+            ? document.getElementById(`place${formNum}`) : document.getElementById(`updatePlace${formNum}`);
+        const desiredStartTimeInput = modalType === ModalType.places
+            ? document.getElementById(`desiredStartTime${formNum}`) : document.getElementById(`placeUpdateDesiredStart${formNum}`);
+        const desiredEndTimeInput = modalType === ModalType.places
+            ? document.getElementById(`desiredEndTime${formNum}`) : document.getElementById(`placeUpdateDesiredEnd${formNum}`);
+        const budgetInput = modalType === ModalType.places
+            ? document.getElementById(`budget${formNum}`) : document.getElementById(`placeUpdateBudget${formNum}`);
+        const stayTimeInput = modalType === ModalType.places
+            ? document.getElementById(`stayTime${formNum}`) : document.getElementById(`updateStayTime${formNum}`);
 
         /* ---- 表示を変更 ---- */
         placeInput.disabled = true; // 目的地部分をdisabledに

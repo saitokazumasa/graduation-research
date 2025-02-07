@@ -7,7 +7,7 @@ import net.sf.geographiclib.Geodesic;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CalcDistanceService implements ICalcDistanceService {
+public class CalcStraightLineDistanceService implements ICalcDistanceService {
     @Override
     public StraightLineDistance execute(final LatLng start, final LatLng end) {
         final var geodesic = Geodesic.WGS84;

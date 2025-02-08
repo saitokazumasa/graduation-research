@@ -1,124 +1,121 @@
-<!--<!DOCTYPE html>-->
-<!--<html lang="ja" xmlns="http://www.w3.org/1999/html">-->
-<!--<th:block th:replace="~{fragment/head :: head(経路作成)}"/>-->
-<!--<body class="flex flex-col min-h-screen">-->
-<!--<th:block th:replace="~{fragment/header :: header}"/>-->
-<!--<main class="flex flex-col items-center flex-grow">-->
-<!--    <form class="w-full" th:object="${createPlanForm}">-->
-<!--        <div-->
-<!--                id="popup"-->
-<!--                class="hidden sm:hidden fixed inset-0 z-50 items-center justify-center bg-black bg-opacity-50"-->
-<!--                onclick="closePopup()">-->
-<!--            <div-->
-<!--                    class="relative w-4/5 h-4/5 bg-white shadow-lg rounded-md"-->
-<!--                    onclick="Event.stopPropagation()">-->
-<!--                <div id="sp-map" class="w-full h-full p-4">-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
+<!DOCTYPE html>
+<html lang="ja" xmlns="http://www.w3.org/1999/html">
+<th:block th:replace="~{fragment/head :: head(経路作成)}"/>
+<body class="flex flex-col min-h-screen">
+<th:block th:replace="~{fragment/header :: header}"/>
+<main class="flex flex-col items-center flex-grow">
+    <form class="w-full" th:object="${createPlanForm}">
+        <div id="popup"
+             class="hidden sm:hidden fixed inset-0 z-50 items-center justify-center bg-black bg-opacity-50"
+             onclick="closePopup()">
+            <div class="relative w-4/5 h-4/5 bg-white shadow-lg rounded-md"
+                 onclick="Event.stopPropagation()">
+                <div id="sp-map" class="w-full h-full p-4"></div>
+            </div>
+        </div>
 
-<!--        <div class="flex flex-col">-->
-<!--            <label class="text-center bg-red-50 flex justify-center items-center w-full" style="aspect-ratio: 5/1">-->
-<!--&lt;!&ndash;            TODO:画像インプット用のmodalを作成する&ndash;&gt;-->
-<!--&lt;!&ndash;            <th:block th:replace="~{fragment/modal :: }"/>&ndash;&gt;-->
-<!--                <th:block th:replace="~{fragment/svg :: camera}"/>-->
-<!--            </label>-->
-<!--            <div class="flex">-->
-<!--                <span class="inline-block h-12 w-12 my-auto ml-8"></span>-->
-<!--                <div class="sm:border-b-2 border-b w-1/2 text-center mx-auto my-10">-->
-<!--                    <input type="text" placeholder="タイトルを入力してください" th:field="*{title}" class="w-full sm:text-3xl text-xl text-center" style="border: none">-->
-<!--                </div>-->
-<!--                <button onclick="openPopup()" class="sm:hidden inline-block h-12 w-12 my-auto mr-8 cursor-pointer">-->
-<!--                    <th:block th:replace="~{fragment/svg :: map}"/>-->
-<!--                </button>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--        <div class="mx-10 flex">-->
-<!--            <section class="sm:w-1/2 w-full">-->
-<!--                <h1 class="sm:text-4xl text-2xl border-b">-->
-<!--                    <span th:field="*{day}"></span>日目-->
-<!--                </h1>-->
-<!--                <div class="flex flex-col mt-6 mb-10">-->
-<!--                    <div class="mb-6">-->
-<!--                        <p class="mb-2 sm:text-lg text-base">出発地点<span class="sm:ml-2 ml-1 text-sm text-danger">必須</span></p>-->
-<!--                        <th:block th:replace="~{fragment/modal :: start}"/>-->
-<!--                    </div>-->
-<!--                    <div class="mb-6">-->
-<!--                        <p class="mb-2 sm:text-lg text-base">目的地</p>-->
-<!--                        <th:block th:replace="~{fragment/modal :: places(1)}"/>-->
-<!--                    </div>-->
-<!--                    <div class="mb-6">-->
-<!--                        <p class="mb-2 sm:text-lg text-base">終了地点<span class="sm:ml-2 ml-1 text-sm text-danger">必須</span></p>-->
-<!--                        <th:block th:replace="~{fragment/modal :: end}"/>-->
-<!--                    </div>-->
-<!--                    &lt;!&ndash; おすすめ目的地のセクション &ndash;&gt;-->
-<!--                    <section class="pt-10">-->
-<!--                        <details open class="p-4 group overflow-hidden transition-[max-height] duration-500">-->
-<!--                            <summary class="sm:text-xl text-lg cursor-pointer font-semibold marker:text-transparent group-open:before:rotate-90  before:origin-center relative before:w-[18px] before:h-[18px] before:transition-transform before:duration-200 before:-left-1 before:top-2/4 before:-translate-y-2/4 before:absolute before:bg-no-repeat before:bg-[length:18px_18px] before:bg-center before:bg-[url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20class%3D%22h-6%20w-6%22%20fill%3D%22none%22%20viewBox%3D%220%200%2024%2024%22%20stroke%3D%22currentColor%22%20stroke-width%3D%222%22%3E%0A%20%20%3Cpath%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20d%3D%22M9%205l7%207-7%207%22%20%2F%3E%0A%3C%2Fsvg%3E')]">-->
-<!--                                おすすめ目的地を追加-->
-<!--                            </summary>-->
-<!--                            <hr class="my-2 scale-x-150"/>-->
-<!--                            <div class="sm:text-lg text-base -m-4 -mt-2 p-4">-->
-<!--                                目的地のジャンル別に絞る-->
-<!--                                <select class="focus:outline-none ml-6 rounded-xl h-8 text-xs" name="genre" onchange="redirect('plan/create')">-->
-<!--                                    <option th:value="${genre.id}" th:selected="${genre.id == selectedGenreId}" th:text="${genre.name}">ジャンルを選択してください</option>-->
-<!--                                    <th:block th:each="genre : ${genres}">-->
-<!--                                        <option th:value="${genre.id}" th:text="${genre.name}"></option>-->
-<!--                                    </th:block>-->
-<!--                                </select>-->
-<!--                            </div>-->
-<!--                            <p class="sm:text-lg text-base text-danger my-4">先に出発地点、終了地点、目的のどれかを入力してください。</p>-->
-<!--                        </details>-->
-<!--                    </section>-->
-<!--                    <section class="pt-10">-->
-<!--                        <details open class="p-4 group overflow-hidden transition-[max-height] duration-500">-->
-<!--                            <summary class="sm:text-xl text-lg cursor-pointer font-semibold marker:text-transparent group-open:before:rotate-90  before:origin-center relative before:w-[18px] before:h-[18px] before:transition-transform before:duration-200 before:-left-1 before:top-2/4 before:-translate-y-2/4 before:absolute before:bg-no-repeat before:bg-[length:18px_18px] before:bg-center before:bg-[url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20class%3D%22h-6%20w-6%22%20fill%3D%22none%22%20viewBox%3D%220%200%2024%2024%22%20stroke%3D%22currentColor%22%20stroke-width%3D%222%22%3E%0A%20%20%3Cpath%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20d%3D%22M9%205l7%207-7%207%22%20%2F%3E%0A%3C%2Fsvg%3E')]">-->
-<!--                                オプション-->
-<!--                            </summary>-->
-<!--                            <hr class="my-2 scale-x-150"/>-->
-<!--                            <div class="sm:text-lg text-base -m-4 -mt-2 p-4 flex flex-col">-->
-<!--                                利用する交通手段-->
-<!--                                <th:block th:replace="~{fragment/svg :: three-transportation}" />-->
-<!--                                <div class="my-1 sm:text-base text-sm">-->
-<!--                                    <label for="useHighway">-->
-<!--                                        <input type="checkbox" id="useHighway" name="useHighway" value="useHighway" th:checked="${editDayForm.useHighway}" class="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-5 before:w-5 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-blue-700 checked:bg-blue-700 checked:before:bg-blue-700 hover:before:opacity-10">-->
-<!--                                        <span class="ml-2 text-center">有料道路の利用</span>-->
-<!--                                    </label>-->
-<!--                                </div>-->
-<!--                                <div class="my-1 sm:text-base text-sm">-->
-<!--                                    <label for="useFerry">-->
-<!--                                        <input type="checkbox" id="useFerry" name="useFerry" value="useFerry" th:checked="${editDayForm.useFerry}" class="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-5 before:w-5 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-blue-700 checked:bg-blue-700 checked:before:bg-blue-700 hover:before:opacity-10">-->
-<!--                                        <span class="ml-2 text-center">フェリーの利用</span>-->
-<!--                                    </label>-->
-<!--                                </div>-->
-<!--                                <div class="my-1 sm:text-base text-sm">-->
-<!--                                    <label for="walkFlag">-->
-<!--                                        <input type="checkbox" id="walkFlag" name="walkFlag" value="walkFlag" th:checked="${editDayForm.walkFlag}" class="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-5 before:w-5 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-blue-700 checked:bg-blue-700 checked:before:bg-blue-700 hover:before:opacity-10">-->
-<!--                                        <span class="ml-2 text-center">徒歩で移動可能な時間を指定</span>-->
-<!--                                    </label>-->
-<!--                                </div>-->
-<!--                                <label class="ml-10"><input type="number" id="walkingTime" name="walkingTime" th:field="*{walkingTime}" class="sm:w-56 w-32 sm:h-8 h-6 border border-b-gray-400 rounded-lg text-base text-center disabled:bg-[#e5e5e5] disabled:border-[#888] disabled:text-[#888]" min="0" max="" disabled><span class="mx-4">分</span></label>-->
-<!--                            </div>-->
-<!--                        </details>-->
-<!--                    </section>-->
-<!--                </div>-->
-<!--                <div class="flex justify-center mb-20">-->
-<!--                    <button type="button" class="sm:mx-10 mx-5 block items-center justify-center button-secondary" onclick="window.location.href='/plan/list'">戻る</button>-->
-<!--                    <button type="submit" class="sm:mx-10 mx-5 block items-center justify-center button-primary">経路生成</button>-->
-<!--                </div>-->
-<!--            </section>-->
-<!--            <section class="sm:w-1/2 hidden sm:inline-block">-->
-<!--                <div id="map" class="w-full h-full"></div>-->
-<!--            </section>-->
-<!--        </div>-->
-<!--    </form>-->
-<!--</main>-->
-<!--<th:block th:replace="~{fragment/footer :: footer}"/>-->
-<!--<th:block th:replace="~{fragment/script :: flowbite}"/>-->
-<!--<th:block th:replace="~{fragment/script :: googleMapsAPI}"/>-->
-<!--<th:block th:replace="~{fragment/script :: map}"/>-->
-<!--<th:block th:replace="~{fragment/script :: modal}"/>-->
-<!--<th:block th:replace="~{fragment/script :: check}"/>-->
-<!--<th:block th:replace="~{fragment/script :: svgCheckbox}"/>-->
-<!--</body>-->
-<!--</html>-->
+        <div class="flex flex-col">
+            <label class="text-center bg-red-50 flex justify-center items-center w-full" style="aspect-ratio: 5/1">
+<!--            TODO:画像インプット用のmodalを作成する-->
+<!--            <th:block th:replace="~{fragment/modal :: }"/>-->
+                <th:block th:replace="~{fragment/svg :: camera}"/>
+            </label>
+            <div class="flex">
+                <span class="inline-block h-12 w-12 my-auto ml-8"></span>
+                <div class="sm:border-b-2 border-b w-1/2 text-center mx-auto my-10">
+                    <input type="text" placeholder="タイトルを入力してください" th:field="*{title}" class="w-full sm:text-3xl text-xl text-center" style="border: none">
+                </div>
+                <button onclick="openPopup()" class="sm:hidden inline-block h-12 w-12 my-auto mr-8 cursor-pointer">
+                    <th:block th:replace="~{fragment/svg :: map}"/>
+                </button>
+            </div>
+        </div>
+        <div class="mx-10 flex">
+            <section class="sm:w-1/2 w-full">
+                <h1 class="sm:text-4xl text-2xl border-b">
+                    <span th:field="*{day}"></span>日目
+                </h1>
+                <div class="flex flex-col mt-6 mb-10">
+                    <div class="mb-6">
+                        <p class="mb-2 sm:text-lg text-base">出発地点<span class="sm:ml-2 ml-1 text-sm text-danger">必須</span></p>
+                        <th:block th:replace="~{fragment/modal :: start}"/>
+                    </div>
+                    <div class="mb-6">
+                        <p class="mb-2 sm:text-lg text-base">目的地</p>
+                        <th:block th:replace="~{fragment/modal :: places(1)}"/>
+                    </div>
+                    <div class="mb-6">
+                        <p class="mb-2 sm:text-lg text-base">終了地点<span class="sm:ml-2 ml-1 text-sm text-danger">必須</span></p>
+                        <th:block th:replace="~{fragment/modal :: end}"/>
+                    </div>
+                    <!-- おすすめ目的地のセクション -->
+                    <section class="pt-10">
+                        <details open class="p-4 group overflow-hidden transition-[max-height] duration-500">
+                            <summary class="sm:text-xl text-lg cursor-pointer font-semibold marker:text-transparent group-open:before:rotate-90  before:origin-center relative before:w-[18px] before:h-[18px] before:transition-transform before:duration-200 before:-left-1 before:top-2/4 before:-translate-y-2/4 before:absolute before:bg-no-repeat before:bg-[length:18px_18px] before:bg-center before:bg-[url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20class%3D%22h-6%20w-6%22%20fill%3D%22none%22%20viewBox%3D%220%200%2024%2024%22%20stroke%3D%22currentColor%22%20stroke-width%3D%222%22%3E%0A%20%20%3Cpath%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20d%3D%22M9%205l7%207-7%207%22%20%2F%3E%0A%3C%2Fsvg%3E')]">
+                                おすすめ目的地を追加
+                            </summary>
+                            <hr class="my-2 scale-x-150"/>
+                            <div class="sm:text-lg text-base -m-4 -mt-2 p-4">
+                                目的地のジャンル別に絞る
+                                <select class="focus:outline-none ml-6 rounded-xl h-8 text-xs" name="genre" onchange="redirect('plan/create')">
+                                    <option th:value="${genre.id}" th:selected="${genre.id == selectedGenreId}" th:text="${genre.name}">ジャンルを選択してください</option>
+                                    <th:block th:each="genre : ${genres}">
+                                        <option th:value="${genre.id}" th:text="${genre.name}"></option>
+                                    </th:block>
+                                </select>
+                            </div>
+                            <p class="sm:text-lg text-base text-danger my-4">先に出発地点、終了地点、目的のどれかを入力してください。</p>
+                        </details>
+                    </section>
+                    <section class="pt-10">
+                        <details open class="p-4 group overflow-hidden transition-[max-height] duration-500">
+                            <summary class="sm:text-xl text-lg cursor-pointer font-semibold marker:text-transparent group-open:before:rotate-90  before:origin-center relative before:w-[18px] before:h-[18px] before:transition-transform before:duration-200 before:-left-1 before:top-2/4 before:-translate-y-2/4 before:absolute before:bg-no-repeat before:bg-[length:18px_18px] before:bg-center before:bg-[url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20class%3D%22h-6%20w-6%22%20fill%3D%22none%22%20viewBox%3D%220%200%2024%2024%22%20stroke%3D%22currentColor%22%20stroke-width%3D%222%22%3E%0A%20%20%3Cpath%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20d%3D%22M9%205l7%207-7%207%22%20%2F%3E%0A%3C%2Fsvg%3E')]">
+                                オプション
+                            </summary>
+                            <hr class="my-2 scale-x-150"/>
+                            <div class="sm:text-lg text-base -m-4 -mt-2 p-4 flex flex-col">
+                                利用する交通手段
+                                <th:block th:replace="~{fragment/svg :: three-transportation}" />
+                                <div class="my-1 sm:text-base text-sm">
+                                    <label for="useHighway">
+                                        <input type="checkbox" id="useHighway" name="useHighway" value="useHighway" th:checked="${editDayForm.useHighway}" class="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-5 before:w-5 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-blue-700 checked:bg-blue-700 checked:before:bg-blue-700 hover:before:opacity-10">
+                                        <span class="ml-2 text-center">有料道路の利用</span>
+                                    </label>
+                                </div>
+                                <div class="my-1 sm:text-base text-sm">
+                                    <label for="useFerry">
+                                        <input type="checkbox" id="useFerry" name="useFerry" value="useFerry" th:checked="${editDayForm.useFerry}" class="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-5 before:w-5 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-blue-700 checked:bg-blue-700 checked:before:bg-blue-700 hover:before:opacity-10">
+                                        <span class="ml-2 text-center">フェリーの利用</span>
+                                    </label>
+                                </div>
+                                <div class="my-1 sm:text-base text-sm">
+                                    <label for="walkFlag">
+                                        <input type="checkbox" id="walkFlag" name="walkFlag" value="walkFlag" th:checked="${editDayForm.walkFlag}" class="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-5 before:w-5 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-blue-700 checked:bg-blue-700 checked:before:bg-blue-700 hover:before:opacity-10">
+                                        <span class="ml-2 text-center">徒歩で移動可能な時間を指定</span>
+                                    </label>
+                                </div>
+                                <label class="ml-10"><input type="number" id="walkingTime" name="walkingTime" th:field="*{walkingTime}" class="sm:w-56 w-32 sm:h-8 h-6 border border-b-gray-400 rounded-lg text-base text-center disabled:bg-[#e5e5e5] disabled:border-[#888] disabled:text-[#888]" min="0" max="" disabled><span class="mx-4">分</span></label>
+                            </div>
+                        </details>
+                    </section>
+                </div>
+                <div class="flex justify-center mb-20">
+                    <button type="button" class="sm:mx-10 mx-5 block items-center justify-center button-secondary" onclick="window.location.href='/plan/list'">戻る</button>
+                    <button type="submit" class="sm:mx-10 mx-5 block items-center justify-center button-primary">経路生成</button>
+                </div>
+            </section>
+            <section class="sm:w-1/2 hidden sm:inline-block">
+                <div id="map" class="w-full h-full"></div>
+            </section>
+        </div>
+    </form>
+</main>
+<th:block th:replace="~{fragment/footer :: footer}"/>
+<th:block th:replace="~{fragment/script :: flowbite}"/>
+<th:block th:replace="~{fragment/script :: googleMapsAPI}"/>
+<th:block th:replace="~{fragment/script :: map}"/>
+<th:block th:replace="~{fragment/script :: modal}"/>
+<th:block th:replace="~{fragment/script :: check}"/>
+<th:block th:replace="~{fragment/script :: svgCheckbox}"/>
+</body>
+</html>

@@ -13,12 +13,12 @@
                 <div id="sp-map" class="w-full h-full p-4"></div>
             </div>
         </div>
-
         <div class="flex flex-col">
-            <label class="text-center bg-red-50 flex justify-center items-center w-full" style="aspect-ratio: 5/1">
+            <label class="text-center flex justify-center items-center w-full" style="aspect-ratio: 5/1">
                 <th:block th:replace="~{fragment/popup :: cover-image}"/>
             </label>
             <div class="flex">
+                <span class="sm:hidden w-12"></span>
                 <div class="sm:border-b-2 border-b w-1/2 text-center mx-auto my-10">
                     <input type="text" placeholder="タイトルを入力してください" th:field="*{title}" class="w-full sm:text-3xl text-xl text-center" style="border: none">
                 </div>
@@ -35,15 +35,15 @@
                 <div class="flex flex-col mt-6 mb-10">
                     <div class="mb-6">
                         <p class="mb-2 sm:text-lg text-base">出発地点<span class="sm:ml-2 ml-1 text-sm text-danger">必須</span></p>
-                        <th:block th:replace="~{fragment/modal :: start}"/>
+                        <th:block th:replace="~{fragment/modal :: startToggle}"/>
                     </div>
                     <div class="mb-6">
                         <p class="mb-2 sm:text-lg text-base">目的地</p>
-                        <th:block th:replace="~{fragment/modal :: places(1)}"/>
+                        <th:block th:replace="~{fragment/modal :: placesToggle(0)}"/>
                     </div>
                     <div class="mb-6">
                         <p class="mb-2 sm:text-lg text-base">終了地点<span class="sm:ml-2 ml-1 text-sm text-danger">必須</span></p>
-                        <th:block th:replace="~{fragment/modal :: end}"/>
+                        <th:block th:replace="~{fragment/modal :: endToggle}"/>
                     </div>
                     <!-- おすすめ目的地のセクション -->
                     <section class="pt-10">
@@ -106,13 +106,20 @@
             </section>
         </div>
     </form>
+    <div id="formDiv">
+        <th:block th:replace="~{fragment/modal :: startForm(startPlaceForm)}"/>
+        <th:block th:replace="~{fragment/modal :: endForm(endPlaceForm)}"/>
+        <th:block th:replace="~{fragment/modal :: placesForm(0, placeForm)}"/>
+        <th:block th:replace="~{fragment/recommend :: recommendForm(${recommendList})}"/>
+    </div>
 </main>
 <th:block th:replace="~{fragment/footer :: footer}"/>
+<th:block th:replace="~{fragment/script :: previewImage}"/>
 <th:block th:replace="~{fragment/script :: flowbite}"/>
-<th:block th:replace="~{fragment/script :: googleMapsAPI}"/>
 <th:block th:replace="~{fragment/script :: map}"/>
 <th:block th:replace="~{fragment/script :: modal}"/>
 <th:block th:replace="~{fragment/script :: check}"/>
 <th:block th:replace="~{fragment/script :: svgCheckbox}"/>
+<th:block th:replace="~{fragment/script :: googleMapsAPI}"/>
 </body>
 </html>

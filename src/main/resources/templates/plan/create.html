@@ -52,15 +52,6 @@
                                 おすすめ目的地を追加
                             </summary>
                             <hr class="my-2 scale-x-150"/>
-                            <div class="sm:text-lg text-base -m-4 -mt-2 p-4">
-                                目的地のジャンル別に絞る
-                                <select class="focus:outline-none ml-6 rounded-xl h-8 text-xs" name="genre" onchange="redirect('plan/create')">
-                                    <option th:value="${genre.id}" th:selected="${genre.id == selectedGenreId}" th:text="${genre.name}">ジャンルを選択してください</option>
-                                    <th:block th:each="genre : ${genres}">
-                                        <option th:value="${genre.id}" th:text="${genre.name}"></option>
-                                    </th:block>
-                                </select>
-                            </div>
                             <p class="sm:text-lg text-base text-danger my-4">先に出発地点、終了地点、目的のどれかを入力してください。</p>
                         </details>
                     </section>

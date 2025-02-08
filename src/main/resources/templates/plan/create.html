@@ -16,12 +16,9 @@
 
         <div class="flex flex-col">
             <label class="text-center bg-red-50 flex justify-center items-center w-full" style="aspect-ratio: 5/1">
-<!--            TODO:画像インプット用のmodalを作成する-->
-<!--            <th:block th:replace="~{fragment/modal :: }"/>-->
-                <th:block th:replace="~{fragment/svg :: camera}"/>
+                <th:block th:replace="~{fragment/popup :: cover-image}"/>
             </label>
             <div class="flex">
-                <span class="inline-block h-12 w-12 my-auto ml-8"></span>
                 <div class="sm:border-b-2 border-b w-1/2 text-center mx-auto my-10">
                     <input type="text" placeholder="タイトルを入力してください" th:field="*{title}" class="w-full sm:text-3xl text-xl text-center" style="border: none">
                 </div>

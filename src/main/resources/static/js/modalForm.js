@@ -164,8 +164,14 @@ class ModalForm {
     async newAddRecommendFragment() {
         // おすすめ目的地フラグメント呼び出し
         const newFragment = new Fragment();
+        // ローディング表示を出す
+        const loading = document.getElementById('loadingDiv');
+        loading.classList.remove('hidden');
+        // オススメ目的地を取得する
         await newFragment.initRecommendFragment();
         newFragment.addRecommendFragment();
+        // ローディング表示を消す
+        loading.classList.add('hidden');
     }
 
     /**

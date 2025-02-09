@@ -8,7 +8,8 @@ class FormValidator {
             places: ['place', 'placeId', 'placeLat', 'placeLng'],
             updateStart: ['startUpdatePlace', 'startUpdatePlaceId', 'startUpdateLat', 'startUpdateLng', 'startUpdateTime'],
             updateEnd: ['endUpdatePlace', 'endUpdateLat', 'endUpdateLng'],
-            updatePlaces: ['updatePlace', 'placeUpdatePlaceId', 'placeUpdateLat', 'placeUpdateLng']
+            updatePlaces: ['updatePlace', 'placeUpdatePlaceId', 'placeUpdateLat', 'placeUpdateLng'],
+            recommend: ['recommend', 'recommendPlaceId', 'recommendLat', 'recommendLng'],
         };
     }
 

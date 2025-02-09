@@ -27,6 +27,8 @@ class Fragment {
     #startUpdateForm;
     #endUpdateForm;
     #placesUpdateForm;
+    #recommendToggle;
+    #recommendForm;
 
     constructor() {
         this.#toggle = null;
@@ -109,6 +111,30 @@ class Fragment {
     }
 
     /**
+     * おすすめ目的地フラグメントの初期化
+     */
+    async initRecommendFragment() {
+        // おすすめ目的地toggle取得 /fragment/recommend/recommendToggle
+        try {
+            const response = await fetch('/fragment/recommend/recommendToggle');
+            if (!response.ok) { throw new Error('フラグメントの取得に失敗しました'); }
+            this.#recommendToggle = await response.text();
+        } catch (error) {
+            console.error(error);
+            throw new Error('initialize Error : ' + error);
+        }
+        // おすすめ目的地form取得 /fragment/recommend/recommendForm
+        try {
+            const response = await fetch('/fragment/recommend/recommendForm');
+            if (!response.ok) { throw new Error('フラグメントの取得に失敗しました'); }
+            this.#recommendForm = await response.text();
+        } catch (error) {
+            console.error(error);
+            throw new Error('initialize Error : ' + error);
+        }
+    }
+
+    /**
      * HTMLにfragment追加 toggleとform
      */
     addFragment() {
@@ -166,12 +192,43 @@ class Fragment {
         newForm.innerHTML = updateForm;
         formDiv.appendChild(newForm);
     }
+
+    /**
+     * HTMLにrecommendToggleとrecommendFormフラグメント追加
+     */
+    addRecommendFragment() {
+        if (!this.#recommendToggle || !this.#recommendForm) return;
+        // recommendToggle追加
+        const toggleDiv = document.getElementById('recommendToggleDiv');
+        const newToggle = document.createElement('div');
+        newToggle.innerHTML = this.#recommendToggle;
+        // 一度でも取得されたことがあったらフラグメントを置き換える
+        recommendReplace
+            ? toggleDiv.replaceWith(newToggle)
+            : toggleDiv.appendChild(newToggle);
+
+        // recommendForm追加
+        const formDiv = document.getElementById('recommendFormDiv');
+        const newForm = document.createElement('div');
+        newForm.innerHTML = this.#recommendForm;
+        // 一度でも取得されたことがあったらフラグメントを置き換える
+        recommendReplace
+            ? formDiv.replaceWith(newForm)
+            : formDiv.appendChild(newForm);
+
+        recommendReplace = true;
+    }
 }
 
 const placeNum = new PlaceNum();
 const modal = new ModalElement();
 const errorMessage = new ErrorMessage();
 const formValidate = new FormValidator();
+/**
+ * おすすめ目的地フラグメントを置き換えるか
+ * @type {boolean}
+ */
+let recommendReplace = false;
 
 document.addEventListener('DOMContentLoaded', () => {
     new ModalForm();

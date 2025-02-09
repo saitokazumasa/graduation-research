@@ -104,7 +104,7 @@ class ModalForm {
         case ModalType.places:
             await fragment.initPlacesUpdateForm(placeId, placeNum.value());
             fragment.addPlacesUpdateForm();
-            modal.setPlacesUpdateModal(placeId, placeNum.value());
+            modal.setPlacesUpdateModal(placeNum.value());
             this.#setStayTimeValue(placeNum.value());
         }
 

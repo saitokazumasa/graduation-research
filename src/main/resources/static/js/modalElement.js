@@ -183,7 +183,7 @@ class ModalElement {
             this.#changePlaceDisplay(modalType, formNum, placeId);
         }
         if (modalType === ModalType.recommend) {
-            this.#changePlaceDisplay(modalType, placeNum.value(), placeId);
+            this.#changePlaceDisplay(modalType, placeNum.value(), placeId, formNum);
         }
     }
 
@@ -210,7 +210,7 @@ class ModalElement {
         placeSpan.textContent = endPlace.value; // spanの文字を場所名に
     }
 
-    #changePlaceDisplay(modalType, formNum, placeId) {
+    #changePlaceDisplay(modalType, formNum, placeId, recommendNum=null) {
         // buttonの子要素のspanタグ取得
         const timeSpan = document.getElementById(`placeTimeSpan${formNum}`);
         const placeSpan = document.getElementById(`placeNameSpan${formNum}`);
@@ -238,11 +238,11 @@ class ModalElement {
             stayTimeInput = document.getElementById(`updateStayTime${formNum}`);
             break;
         case ModalType.recommend:
-            placeInput = document.getElementById(`recommend${formNum}`);
-            desiredStartTimeInput = document.getElementById(`recommendDesiredStartTime${formNum}`);
-            desiredEndTimeInput = document.getElementById(`recommendDesiredEndTime${formNum}`);
-            budgetInput = document.getElementById(`recommendBudget${formNum}`);
-            stayTimeInput = document.getElementById(`recommendStayTime${formNum}`);
+            placeInput = document.getElementById(`recommend${recommendNum}`);
+            desiredStartTimeInput = document.getElementById(`recommendDesiredStartTime${recommendNum}`);
+            desiredEndTimeInput = document.getElementById(`recommendDesiredEndTime${recommendNum}`);
+            budgetInput = document.getElementById(`recommendBudget${recommendNum}`);
+            stayTimeInput = document.getElementById(`recommendStayTime${recommendNum}`);
         }
 
         /* ---- 表示を変更 ---- */

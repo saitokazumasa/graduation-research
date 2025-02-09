@@ -141,16 +141,10 @@ class Fragment {
         if (!this.#toggle || !this.#form) throw new Error('このインスタンスは初期化されていません。initialize()を実行してください。');
 
         // id=destination の子要素にToggleを追加
-        const destination = document.getElementById('destination');
-        const newToggle = document.createElement('div');
-        newToggle.innerHTML = this.#toggle;
-        destination.appendChild(newToggle);
+        this.#addFragment(this.#toggle, 'destination', false);
 
-        // id=formDiv の子要素に Form を追加
-        const formDiv = document.getElementById('formDiv');
-        const newForm = document.createElement('div');
-        newForm.innerHTML = this.#form;
-        formDiv.appendChild(newForm);
+        // id=placeFormDivの子要素に #form を追加
+        this.#addFragment(this.#form, 'placeFormDiv');
     }
 
     /**
@@ -159,8 +153,8 @@ class Fragment {
     addStartUpdateForm() {
         if (!this.#startUpdateForm) return;
 
-        // id=formDivの子要素に #startUpdateForm を追加
-        this.#addUpdateFragment(this.#startUpdateForm);
+        // id=startFormDivの子要素に #startUpdateForm を追加
+        this.#addFragment(this.#startUpdateForm, 'startFormDiv');
     }
 
     /**
@@ -170,7 +164,7 @@ class Fragment {
         if (!this.#endUpdateForm) return;
 
         // id=formDivの子要素に #endUpdateForm を追加
-        this.#addUpdateFragment(this.#endUpdateForm);
+        this.#addFragment(this.#endUpdateForm, 'endFormDiv');
     }
 
     /**
@@ -180,16 +174,17 @@ class Fragment {
         if (!this.#placesUpdateForm) return;
 
         // id=formDivの子要素に placesUpdateForm を追加
-        this.#addUpdateFragment(this.#placesUpdateForm);
+        this.#addFragment(this.#placesUpdateForm, 'updatePlaceFormDiv', false);
     }
 
     /**
      * id=formDivの子要素に UpdateForm を追加
      */
-    #addUpdateFragment(updateForm) {
-        const formDiv = document.getElementById('formDiv');
+    #addFragment(form, formDivKey, replace=true) {
+        const formDiv = document.getElementById(formDivKey);
         const newForm = document.createElement('div');
-        newForm.innerHTML = updateForm;
+        newForm.innerHTML = form;
+        if (replace) formDiv.innerHTML = '';
         formDiv.appendChild(newForm);
     }
 
@@ -199,24 +194,10 @@ class Fragment {
     addRecommendFragment() {
         if (!this.#recommendToggle || !this.#recommendForm) return;
         // recommendToggle追加
-        const toggleDiv = document.getElementById('recommendToggleDiv');
-        const newToggle = document.createElement('div');
-        newToggle.innerHTML = this.#recommendToggle;
-        // 一度でも取得されたことがあったらフラグメントを置き換える
-        if (recommendReplace) {
-            toggleDiv.innerHTML = '';
-        }
-        toggleDiv.appendChild(newToggle);
+        this.#addFragment(this.#recommendToggle, 'recommendToggleDiv', recommendReplace);
 
         // recommendForm追加
-        const formDiv = document.getElementById('recommendFormDiv');
-        const newForm = document.createElement('div');
-        newForm.innerHTML = this.#recommendForm;
-        // 一度でも取得されたことがあったらフラグメントを置き換える
-        if (recommendReplace) {
-            formDiv.innerHTML = '';
-        }
-        formDiv.appendChild(newForm);
+        this.#addFragment(this.#recommendForm, 'recommendFormDiv', recommendReplace);
 
         recommendReplace = true;
     }

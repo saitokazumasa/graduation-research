@@ -165,6 +165,14 @@ class ModalElement {
     }
 
     /**
+     * modalを消す
+     */
+    deleteModal() {
+        const modal = this.getModal(ModalType.places, placeNum.value());
+        modal.destroyAndRemoveInstance();
+    }
+
+    /**
      * modal切り替えのトグル表示を変える
      * @param modalType {string} モーダルの種類
      * @param formNum {number | null} フォーム項番

@@ -83,8 +83,11 @@ class ModalForm {
      * @param formNum {number} formの項番(placesの時だけ)
      */
     async #createPlaceSuccess(placeId, modalType, formNum=null) {
-        // modalの動作
         modal.closeModal(modalType, formNum);
+        if (modalType === ModalType.recommend) {
+            modal.deleteModal();
+        }
+        // modalの動作
         modal.changeToggleDisplay(modalType, formNum, placeId);
 
         // 更新formフラグメントを追加

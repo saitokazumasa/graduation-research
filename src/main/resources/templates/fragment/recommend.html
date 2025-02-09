@@ -6,8 +6,8 @@
 </head>
 <body>
 <!-- おすすめ目的地の入った配列を受け取り、ボタンの表示を呼び出す -->
-<th:block th:fragment="recommendToggle(placeList)">
-    <div th:if="${!#lists.isEmpty(placeList)}" th:each="place, placeStatus : ${placeList}" class="my-3">
+<th:block th:fragment="recommendToggle(recommendList)">
+    <div th:if="${!#lists.isEmpty(recommendList)}" th:each="place, placeStatus : ${recommendList}" class="my-3">
         <!-- Modal toggle -->
         <button class="input border-interactive text-center text-label max-w-md w-4/5 flex justify-between items-center h-10 sm:h-12"
                 th:data-modal-target="'recommendModal'+${placeStatus.index}" th:data-modal-toggle="'recommendModal'+${placeStatus.index}" th:id="'recommendToggle'+${placeStatus.index}"
@@ -22,9 +22,9 @@
 </th:block>
 
 <!-- おすすめ目的地の入った配列を受け取り、modal切り替えで表示するformを呼び出す -->
-<th:block th:fragment="recommendForm(placeList)">
+<th:block th:fragment="recommendForm(recommendList)">
     <!-- Main modal -->
-    <div th:if="${!#lists.isEmpty(placeList)}" th:each="place, placeStatus : ${placeList}"
+    <div th:if="${!#lists.isEmpty(recommendList)}" th:each="place, placeStatus : ${recommendList}"
          aria-hidden="true"
          class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full sm:inset-0 h-[calc(100%-1rem)] max-h-full text-label text-base"
          th:id="'recommendModal'+${placeStatus.index}" tabindex="-1">
@@ -44,8 +44,8 @@
                     </button>
                 </div>
                 <!-- Modal body -->
-                <form class="p-4 sm:p-5 recommend" th:id="'recommendForm'+${placeStatus.index}" onsubmit="recommendPlace.submitEvent(event)">
-                    <span th:id="'recommendError' + ${num}" class="text-danger text-sm mb-2 flex justify-center"></span>
+                <form class="p-4 sm:p-5 recommend" th:id="'recommendForm'+${placeStatus.index}">
+                    <span th:id="'recommendError' + ${placeStatus.index}" class="text-danger text-sm mb-2 flex justify-center"></span>
                     <div class="space-y-4 w-full">
                         <input class="hidden" name="googlePlaceId" th:value="${place.googlePlaceId}" th:id="'recommendPlaceId'+${placeStatus.index}" type="text" required/>
                         <input class="hidden" name="latitude" th:value="${place.latitude}" th:id="'recommendLat'+${placeStatus.index}" type="text" required/>

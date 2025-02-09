@@ -180,6 +180,9 @@ class ModalElement {
         if (modalType === ModalType.places || modalType === ModalType.updatePlaces) {
             this.#changePlaceDisplay(modalType, formNum, placeId);
         }
+        if (modalType === ModalType.recommend) {
+            this.#changePlaceDisplay(modalType, placeNum.value(), placeId);
+        }
     }
 
     #changeStartDisplay(modalType) {
@@ -211,38 +214,50 @@ class ModalElement {
         const placeSpan = document.getElementById(`placeNameSpan${formNum}`);
         const budgetSpan = document.getElementById(`budgetSpan${formNum}`);
         const stayTimeSpan = document.getElementById(`stayTimeSpan${formNum}`);
-
-        const placeInput = modalType === ModalType.places
-            ? document.getElementById(`place${formNum}`) : document.getElementById(`updatePlace${formNum}`);
-        const desiredStartTimeInput = modalType === ModalType.places
-            ? document.getElementById(`desiredStartTime${formNum}`) : document.getElementById(`placeUpdateDesiredStart${formNum}`);
-        const desiredEndTimeInput = modalType === ModalType.places
-            ? document.getElementById(`desiredEndTime${formNum}`) : document.getElementById(`placeUpdateDesiredEnd${formNum}`);
-        const budgetInput = modalType === ModalType.places
-            ? document.getElementById(`budget${formNum}`) : document.getElementById(`placeUpdateBudget${formNum}`);
-        const stayTimeInput = modalType === ModalType.places
-            ? document.getElementById(`stayTime${formNum}`) : document.getElementById(`updateStayTime${formNum}`);
+        // input取得
+        let placeInput;
+        let desiredStartTimeInput;
+        let desiredEndTimeInput;
+        let budgetInput;
+        let stayTimeInput;
+        switch (modalType) {
+        case ModalType.places:
+            placeInput = document.getElementById(`place${formNum}`);
+            desiredStartTimeInput = document.getElementById(`desiredStartTime${formNum}`);
+            desiredEndTimeInput = document.getElementById(`desiredEndTime${formNum}`);
+            budgetInput = document.getElementById(`budget${formNum}`);
+            stayTimeInput = document.getElementById(`stayTime${formNum}`);
+            break;
+        case ModalType.updatePlaces:
+            placeInput = document.getElementById(`updatePlace${formNum}`);
+            desiredStartTimeInput = document.getElementById(`placeUpdateDesiredStart${formNum}`);
+            desiredEndTimeInput = document.getElementById(`placeUpdateDesiredEnd${formNum}`);
+            budgetInput = document.getElementById(`placeUpdateBudget${formNum}`);
+            stayTimeInput = document.getElementById(`updateStayTime${formNum}`);
+            break;
+        case ModalType.recommend:
+            placeInput = document.getElementById(`recommend${formNum}`);
+            desiredStartTimeInput = document.getElementById(`recommendDesiredStartTime${formNum}`);
+            desiredEndTimeInput = document.getElementById(`recommendDesiredEndTime${formNum}`);
+            budgetInput = document.getElementById(`recommendBudget${formNum}`);
+            stayTimeInput = document.getElementById(`recommendStayTime${formNum}`);
+        }
 
         /* ---- 表示を変更 ---- */
         placeInput.disabled = true; // 目的地部分をdisabledに
         placeInput.classList.add('bg-gray-100');
-
         // 場所名
         placeSpan.textContent = placeInput.value;
-
         // 希望時間
         if (!desiredStartTimeInput.value) timeSpan.textContent = '';
         else timeSpan.textContent = desiredStartTimeInput.value + '~' + desiredEndTimeInput.value;
         timeSpan.classList.remove('absolute');
-
         // 予算
         if (budgetInput.value !== null) budgetSpan.textContent = '予算：---- ' + '円';
         else budgetSpan.textContent = '予算：' + budgetInput.value + '円';
-
         // 滞在時間
         if (!stayTimeInput.value) stayTimeSpan.textContent = '滞在時間：30分';
         else stayTimeSpan.textContent = '滞在時間：' + stayTimeInput.value + '分';
-
         // 緑色の枠線をけす
         const toggleBtn = this.getToggleBtn(ModalType.places, formNum);
         toggleBtn.classList.remove('border-interactive');

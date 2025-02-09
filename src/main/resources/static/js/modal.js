@@ -203,18 +203,20 @@ class Fragment {
         const newToggle = document.createElement('div');
         newToggle.innerHTML = this.#recommendToggle;
         // 一度でも取得されたことがあったらフラグメントを置き換える
-        recommendReplace
-            ? toggleDiv.replaceWith(newToggle)
-            : toggleDiv.appendChild(newToggle);
+        if (recommendReplace) {
+            toggleDiv.innerHTML = '';
+        }
+        toggleDiv.appendChild(newToggle);
 
         // recommendForm追加
         const formDiv = document.getElementById('recommendFormDiv');
         const newForm = document.createElement('div');
         newForm.innerHTML = this.#recommendForm;
         // 一度でも取得されたことがあったらフラグメントを置き換える
-        recommendReplace
-            ? formDiv.replaceWith(newForm)
-            : formDiv.appendChild(newForm);
+        if (recommendReplace) {
+            formDiv.innerHTML = '';
+        }
+        formDiv.appendChild(newForm);
 
         recommendReplace = true;
     }

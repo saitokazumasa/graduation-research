@@ -5,7 +5,8 @@ const ModalType = Object.freeze({
     places: 'places',
     updateStart: 'updateStart',
     updateEnd: 'updateEnd',
-    updatePlaces: 'updatePlaces'
+    updatePlaces: 'updatePlaces',
+    recommend: 'recommend',
 });
 
 class PlaceNum {

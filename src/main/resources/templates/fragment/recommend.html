@@ -49,6 +49,12 @@
                         <input class="hidden" name="googlePlaceId" th:value="${place.googlePlaceId}" th:id="'recommendPlaceId'+${placeStatus.index}" type="text" required/>
                         <input class="hidden" name="latitude" th:value="${place.latitude}" th:id="'recommendLat'+${placeStatus.index}" type="text" required/>
                         <input class="hidden" name="longitude" th:value="${place.longitude}" th:id="'recommendLng'+${placeStatus.index}" type="text" required/>
+                        <input class="hidden" name="dayId" th:value="${place.dayId}" th:id="'recommendDayId' + ${num}" type="number"/>
+                        <input class="hidden" name="startTime" th:value="${place.startTime}" th:id="'recommendStartTime' + ${num}" type="time"/>
+                        <input class="hidden" name="endTime" th:value="${place.endTime}" th:id="'recommendEndTime' + ${num}" type="time"/>
+                        <input class="hidden" name="toPolyLine" th:value="${place.toPolyLine}" th:id="'recommendPolyline' + ${num}" type="text"/>
+                        <input class="hidden" name="toTravelTime" th:value="${place.toTravelTime}" th:id="'recommendTravelTime' + ${num}" type="number"/>
+                        <input class="hidden" name="toTransportation" th:value="${place.toTransportation}" th:id="'recommendTrans' + ${num}" type="text"/>
                         <div>
                             <label class="block mb-2" th:for="'recommend'+${placeStatus.index}">目的地<span class="ml-2 text-sm text-danger">必須</span></label>
                             <input class="w-full input focus:ring-0 bg-gray-100" th:id="'recommend'+${placeStatus.index}" name="name" th:value="${place.name}" type="text" disabled/>

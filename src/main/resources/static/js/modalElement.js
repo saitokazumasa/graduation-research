@@ -80,12 +80,30 @@ class ModalElement {
     /**
      * ✕ボタンの表示
      * @param formNum formの項番
+     * @param placeId 目的地の項番
      */
-    #displayDeleteButton(formNum) {
+    #displayDeleteButton(formNum, placeId) {
         const deleteBtn = document.getElementById(`modalDeleteBtn${formNum}`);
         deleteBtn.classList.remove('hidden');
 
         deleteBtn.addEventListener('click', () => {
+            const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+            const csrfHeaderName = document.querySelector('meta[name="_csrf_header"]').content;
+            try {
+                const response = fetch(`/api/delete-place?id=${placeId}`, {
+                    method: 'POST',
+                    headers: {
+                        [csrfHeaderName]: csrfToken
+                    }
+                });
+                if (!response.ok) throw new Error(`送信エラー：${response.status}`);
+
+                // /api/delete-placeでのレスポンス
+                const data = response.json();
+                if (data.status === 'Failed') throw new Error(`APIエラー：${data}が発生しました`);
+            } catch (error) {
+                console.error(error);
+            }
             const toggleBtn = this.getToggleBtn(ModalType.places, formNum);
             toggleBtn.classList.add('hidden'); // Modal表示のボタンを隠す
             deleteBtn.classList.add('hidden'); // ✕ボタンを隠す
@@ -148,8 +166,9 @@ class ModalElement {
      * modal切り替えのトグル表示を変える
      * @param modalType {string} モーダルの種類
      * @param formNum {number | null} フォーム項番
+     * @param placeId {number | null} 目的地のid
      */
-    changeToggleDisplay(modalType, formNum = null) {
+    changeToggleDisplay(modalType, formNum = null, placeId = null) {
         if (modalType === ModalType.start || modalType === ModalType.updateStart) {
             this.#changeStartDisplay(modalType);
             return;
@@ -159,7 +178,7 @@ class ModalElement {
             return;
         }
         if (modalType === ModalType.places || modalType === ModalType.updatePlaces) {
-            this.#changePlaceDisplay(modalType, formNum);
+            this.#changePlaceDisplay(modalType, formNum, placeId);
         }
     }
 
@@ -186,7 +205,7 @@ class ModalElement {
         placeSpan.textContent = endPlace.value; // spanの文字を場所名に
     }
 
-    #changePlaceDisplay(modalType, formNum) {
+    #changePlaceDisplay(modalType, formNum, placeId) {
         // buttonの子要素のspanタグ取得
         const timeSpan = document.getElementById(`placeTimeSpan${formNum}`);
         const placeSpan = document.getElementById(`placeNameSpan${formNum}`);
@@ -228,7 +247,7 @@ class ModalElement {
         const toggleBtn = this.getToggleBtn(ModalType.places, formNum);
         toggleBtn.classList.remove('border-interactive');
 
-        this.#displayDeleteButton(formNum);
+        this.#displayDeleteButton(formNum, placeId);
     }
 
     /**

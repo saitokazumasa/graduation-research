@@ -52,9 +52,10 @@ class ModalForm {
      */
     async #createFormSubmit(e, modalType, formNum=null) {
         e.preventDefault();
-        if (modalType === ModalType.places) {
-            formNum = Number(e.target.id.replace('placeForm',''));
-        }
+
+        // formNumの設定
+        if (modalType === ModalType.places) formNum = Number(e.target.id.replace('placeForm',''));
+        if (modalType === ModalType.recommend) formNum = Number(e.target.id.replace('recommendForm',''));
 
         // 値の検証（nullがあるか）
         if (!formValidate.validate(modalType,formNum)) {
@@ -66,8 +67,11 @@ class ModalForm {
 
         // api/create-planに送信
         const formData = new FormData(e.target);
-        if (modalType === ModalType.places) {
-            this.#setEndTime(formNum, formData, modalType);
+        // 目的地、おすすめ目的地の終了時間を（startTime + 滞在時間）に
+        if (formNum !== null) this.#setEndTime(formNum, formData, modalType);
+        if (modalType === ModalType.recommend) {
+            const nameInput = document.getElementById(`recommend${formNum}`);
+            formData.append(nameInput.name, nameInput.value);
         }
         await this.postCreatePlaceAPI(formData, modalType, formNum);
     }
@@ -166,8 +170,19 @@ class ModalForm {
      */
     #setEndTime(formNum, formData, modalType) {
         const startTime = formData.get('startTime');
-        const stayTime = modalType === ModalType.places ?
-            formData.get(`staytTime${formNum}`) : formData.get(`updateStayTime${formNum}`);
+        // modalTypeによって取得するstayTimeKeyを変更
+        let stayTimeKey;
+        switch (modalType) {
+        case ModalType.places:
+            stayTimeKey = `stayTime${formNum}`;
+            break;
+        case ModalType.updatePlaces:
+            stayTimeKey = `updateStayTime${formNum}`;
+            break;
+        case ModalType.recommend:
+            stayTimeKey = `recommendStayTime${formNum}`;
+        }
+        const stayTime = formData.get(stayTimeKey);
         // startTimeをパースしてDate型に変換
         const [startHours, startMinutes] = startTime.split(':').map(Number);
         const startDate = new Date();
@@ -181,8 +196,7 @@ class ModalForm {
         // FormDataにendTimeをセット
         formData.set('endTime', endTime);
         // FormDataからstayTimeを削除
-        modalType === ModalType.places ?
-            formData.delete(`stayTime${formNum}`) : formData.delete(`updateStayTime${formNum}`);
+        formData.delete(stayTimeKey);
     }
 
     /**

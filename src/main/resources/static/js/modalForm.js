@@ -85,7 +85,7 @@ class ModalForm {
     async #createPlaceSuccess(placeId, modalType, formNum=null) {
         // modalの動作
         modal.closeModal(modalType, formNum);
-        modal.changeToggleDisplay(modalType, formNum);
+        modal.changeToggleDisplay(modalType, formNum, placeId);
 
         // 更新formフラグメントを追加
         const fragment = new Fragment();
@@ -100,25 +100,23 @@ class ModalForm {
             fragment.addEndUpdateForm();
             modal.setEndUpdateModal();
             break;
+        case ModalType.recommend:
         case ModalType.places:
-            await fragment.initPlacesUpdateForm(placeId, formNum);
+            await fragment.initPlacesUpdateForm(placeId, placeNum.value());
             fragment.addPlacesUpdateForm();
-            modal.setPlacesUpdateModal(formNum);
-            this.#setStayTimeValue(formNum);
-            break;
+            modal.setPlacesUpdateModal(placeId, placeNum.value());
+            this.#setStayTimeValue(placeNum.value());
         }
 
         // modalを切り替えるターゲット変更
-        modal.changeToggleTarget(modalType, formNum);
-        // ターゲット切り替え後のmodalイベントのアタッチ
-        initFlowbite();
-
-        // 目的地追加フラグメントを呼び出し
-        if (modalType === ModalType.places) {
-            await this.newAddPlaceFragment();
+        modalType === ModalType.recommend ? modal.changeToggleTarget(ModalType.places, placeNum.value()) : modal.changeToggleTarget(modalType, formNum);
         // おすすめ目的地フラグメントを呼び出し
         await this.newAddRecommendFragment();
         this.#attachRecommendFormEvent();
+        // 目的地追加とおすすめ目的地追加時
+        if (modalType === ModalType.places || modalType === ModalType.recommend) {
+            // 目的地追加フラグメントを呼び出し
+            await this.#newAddPlaceFragment();
         }
 
         // updateFormのsubmitイベントをアタッチ
@@ -135,13 +133,16 @@ class ModalForm {
             this.#placesUpdateFormElement.push(document.getElementById(`updatePlaceForm${formNum}`));
             this.#placesUpdateFormElement[formNum].addEventListener('submit', (e) => this.#updateFormSubmit(e, ModalType.updatePlaces, formNum));
         }
+
+        // modalイベントの再アタッチ
+        initFlowbite();
     }
 
     /**
      * 追加フラグメントを挿入
      * @returns {Promise<void>}
      */
-    async newAddPlaceFragment() {
+    async #newAddPlaceFragment() {
         // 目的地追加フラグメント呼び出し
         const newFragment = new Fragment();
         await newFragment.initialize();
@@ -150,8 +151,7 @@ class ModalForm {
         // form項番を増やす
         placeNum.increment();
         modal.addPlacesElement();
-        // 新しいModalにイベント追加
-        initFlowbite();
+        // 追加した目的地フラグメントを変数に入れる
         this.#addPlaceFormElement(placeNum.value());
     }
 

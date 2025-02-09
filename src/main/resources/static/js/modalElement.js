@@ -158,7 +158,9 @@ class ModalElement {
      * @param num modalListのnumber(form項番-1)
      */
     closeModal(modalType, num=null) {
-        const modal = this.getModal(modalType, num);
+        const modal = modalType === ModalType.recommend
+            ? new Modal(document.getElementById(`recommendModal${num}`))
+            : this.getModal(modalType, num);
         modal.hide();
     }
 
@@ -273,10 +275,8 @@ class ModalElement {
      */
     changeToggleTarget(modalType, num=null) {
         const toggleBtn = this.getToggleBtn(modalType, num);
-
         // '○○UpdateModal' にターゲットを変える
         const newTarget = num!==null ? `${modalType}UpdateModal${num}` : `${modalType}UpdateModal`;
-
         // data-modal-target data-modal-toggleを変更
         toggleBtn.setAttribute('data-modal-target', newTarget);
         toggleBtn.setAttribute('data-modal-toggle', newTarget);

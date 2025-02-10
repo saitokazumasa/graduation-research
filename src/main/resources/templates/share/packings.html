@@ -6,7 +6,6 @@
 <main class="flex flex-col items-center flex-grow">
     <h2 class="text-center sm:text-3xl text-2xl font-medium mt-10">持ち物リスト</h2>
     <form id="item-form" th:action="@{/share/packings}" method="POST" class="w-full sm:max-w-lg max-w-xs m-24">
-        <input type="hidden"/>
         <div id="item-list" class="space-y-4">
             <!-- 持ち物がない場合、空のinputを表示 -->
             <div class="item-set flex items-center space-x-4">

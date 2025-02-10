@@ -7,6 +7,7 @@ import com.tabisketch.mapper.IPlansMapper;
 import com.tabisketch.mapper.IUsersMapper;
 import com.tabisketch.service.IListPlanService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -24,6 +25,7 @@ public class ListPlanService implements IListPlanService {
     }
 
     @Override
+    @Transactional
     public List<Plan> execute(final String email) {
         // ユーザー取得
         final User user = this.usersMapper.selectByEmail(email);

@@ -13,6 +13,7 @@ import com.tabisketch.service.ISendResetPasswordMailService;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -37,6 +38,7 @@ public class SendResetPasswordMailService implements ISendResetPasswordMailServi
     }
 
     @Override
+    @Transactional
     public void execute(final SendResetPasswordMailForm form) throws MessagingException {
         // ユーザー取得
         final User user = this.usersMapper.selectByEmail(form.getEmail());

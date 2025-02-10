@@ -1,9 +1,9 @@
 package com.tabisketch.controller;
 
 import com.tabisketch.bean.entity.ExampleEmailVerificationToken;
+import com.tabisketch.bean.form.ExampleRegisterForm;
 import com.tabisketch.bean.form.ExampleSendResetPasswordMailForm;
 import com.tabisketch.bean.form.RegisterForm;
-import com.tabisketch.bean.form.ExampleRegisterForm;
 import com.tabisketch.service.IRegisterService;
 import com.tabisketch.service.IVerifyEmailService;
 import org.junit.jupiter.api.Test;

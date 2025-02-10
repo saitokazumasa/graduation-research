@@ -179,15 +179,15 @@
                 </div>
                 <!-- Modal body -->
                 <form class="p-4 sm:p-5" th:object="${updatePlaceForm}" th:id="'updatePlaceForm'+${num}">
-                    <span th:id="'placeUpdateError'+${num}" class="text-danger text-sm mb-2 flex justify-center"></span>
+                    <span th:id="'updatePlaceError'+${num}" class="text-danger text-sm mb-2 flex justify-center"></span>
                     <div class="space-y-4 w-full">
                         <input th:field="*{googlePlaceId}" th:id="'placeUpdatePlaceId'+${num}" class="hidden" type="text"/>
                         <input th:field="*{latitude}" th:id="'placeUpdateLat'+${num}" class="hidden" type="text"/>
                         <input th:field="*{longitude}" th:id="'placeUpdateLng'+${num}" class="hidden" type="text"/>
-                        <input th:field="*{id}" class="hidden" type="number">
+                        <input th:value="*{id}" th:id="'id'+${num}" class="hidden" type="number">
                         <input th:field="*{dayId}" class="hidden" type="number"/>
                         <input th:field="*{startTime}" th:id="'placeUpdateStartTime'+${num}" class="hidden" type="time"/>
-                        <input th:field="*{endTime}" th:if="'placeUpdateEndTime'+${num}" class="hidden" type="time"/>
+                        <input th:field="*{endTime}" th:id="'placeUpdateEndTime'+${num}" class="hidden" type="time"/>
                         <input th:field="*{toPolyLine}" class="hidden" type="text"/>
                         <input th:field="*{toTravelTime}" class="hidden" type="number"/>
                         <input th:field="*{toTransportation}" class="hidden" type="text"/>
@@ -206,7 +206,7 @@
                             <div class="w-1/2 pl-3">
                                 <label class="block mb-2" th:for="'updateStayTime' + ${num}">滞在時間</label>
                                 <div class="flex items-end">
-                                    <input class="w-full input focus:ring-0" th:id="'updateStayTime' + ${num}" th:name="'updateStayTime' + ${num}" type="time"/>
+                                    <input class="w-full input focus:ring-0" th:id="'updateStayTime' + ${num}" th:name="'updateStayTime' + ${num}" type="number" min="1"/>
                                     <span>分</span>
                                 </div>
                             </div>

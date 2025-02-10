@@ -95,7 +95,7 @@
                 </div>
                 <div class="flex justify-center mb-20">
                     <button type="button" class="sm:mx-10 mx-5 block items-center justify-center button-secondary" onclick="window.location.href='/plan/list'">戻る</button>
-                    <button type="submit" class="sm:mx-10 mx-5 block items-center justify-center button-primary">経路生成</button>
+                    <button type="submit" class="sm:mx-10 mx-5 block items-center justify-center button-primary" id="createPlanButton">経路生成</button>
                 </div>
             </section>
             <section class="sm:w-1/2 hidden sm:inline-block">
@@ -106,6 +106,7 @@
     <form class="invisible" th:object="${updatePlanForm}" id="updatePlan">
         <!-- todo: updatePlanFormのinputフィールド追加 -->
         <input type="number" th:field="*{id}" hidden>
+        <input type="text" th:field="*{uuid}" hidden>
     </form>
     <form class="invisible" th:object="${updateDayForm}" id="updateDay">
         <!-- todo: updateDayFormのinputフィールド追加 -->
@@ -124,6 +125,7 @@
     <div id="recommendFormDiv"></div>
 </main>
 <th:block th:replace="~{fragment/footer :: footer}"/>
+<th:block th:replace="~{fragment/script :: createPlanSubmit}"/>
 <th:block th:replace="~{fragment/script :: previewImage}"/>
 <th:block th:replace="~{fragment/script :: flowbite}"/>
 <th:block th:replace="~{fragment/script :: map}"/>

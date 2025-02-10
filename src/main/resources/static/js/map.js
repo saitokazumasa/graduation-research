@@ -88,15 +88,13 @@ class MapDisplayController {
         return (distanceKm / walkingSpeed) * 60;
     }
 
-    openPopup() {
+    openPopup(placeIds, travelModes, options) {
         const popup = document.getElementById('popup');
         if (popup) {
             popup.style.display = 'flex';
-            this.displayMap('sp-map');
+            this.displayMap('sp-map', options);
 
             // ポップアップが開かれた際に経路を表示する
-            // 引数からplaceIds, travelModes, optionsを取得する
-            const options = { useHighway: true, useFerry: false, maxWalkingTime: 30 }; // 適切なオプションを設定
             this.displayDirectionsByPlaceIds(placeIds, travelModes, options);
         }
     }
@@ -117,7 +115,14 @@ class MapDisplayController {
         if (popupButton) {
             popupButton.addEventListener('click', (e) => {
                 e.preventDefault();
-                this.openPopup();
+                const placeIds = ["ChIJ89TugkeMGGARDmSeJIiyWFA", "ChIJCewJkL2LGGAR3Qmk0vCTGkg", "ChIJ89TugkeMGGARDmSeJIiyWFA"];
+                const travelModes = ['DRIVING', 'DRIVING'];
+                const options = {
+                    useHighway: true,
+                    useFerry: true,
+                    maxWalkingTime: 15
+                };
+                this.openPopup(placeIds, travelModes, options);
             });
         }
 
@@ -136,10 +141,13 @@ function initializeMaps(placeIds = [], travelModes = [], options = {}) {
 }
 
 window.initializeMaps = initializeMaps;
-window.openPopup = function() {
+
+function openPopupMap(placeIds, travelModes, options) {
+    console.log('placeIds', placeIds);
     const initializeMap = new MapDisplayController();
-    if (typeof google !== 'undefined') initializeMap.openPopup();
-};
+    if (typeof google !== 'undefined') initializeMap.openPopup(placeIds, travelModes, options);
+}
+
 window.closePopup = function() {
     const initializeMap = new MapDisplayController();
     if (typeof google !== 'undefined') initializeMap.closePopup();

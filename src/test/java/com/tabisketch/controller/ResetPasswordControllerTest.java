@@ -1,7 +1,11 @@
 package com.tabisketch.controller;
 
+import com.tabisketch.bean.entity.ExampleResetPasswordToken;
+import com.tabisketch.bean.form.ExampleResetPasswordForm;
 import com.tabisketch.bean.form.ExampleSendResetPasswordMailForm;
+import com.tabisketch.bean.form.ResetPasswordForm;
 import com.tabisketch.bean.form.SendResetPasswordMailForm;
+import com.tabisketch.service.IResetPasswordService;
 import com.tabisketch.service.ISendResetPasswordMailService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -25,6 +29,8 @@ public class ResetPasswordControllerTest {
     private MockMvc mockMvc;
     @MockitoBean
     private ISendResetPasswordMailService sendResetPasswordMailService;
+    @MockitoBean
+    private IResetPasswordService resetPasswordService;
 
     @Test
     @WithMockUser
@@ -48,8 +54,8 @@ public class ResetPasswordControllerTest {
 
     @ParameterizedTest
     @WithMockUser
-    @MethodSource("validationTestData")
-    public void testValidation(final SendResetPasswordMailForm form) throws Exception {
+    @MethodSource("SRPMFormValidationTestData")
+    public void testSRPMFormValidation(final SendResetPasswordMailForm form) throws Exception {
         this.mockMvc.perform(post("/reset-password")
                         .flashAttr("sendResetPasswordMailForm", form)
                         .with(csrf()))
@@ -60,7 +66,7 @@ public class ResetPasswordControllerTest {
                 .andExpect(view().name("reset-password/index"));
     }
 
-    private static Stream<Object> validationTestData() {
+    private static Stream<Object> SRPMFormValidationTestData() {
         final var stream = Stream.builder();
         stream.add(new SendResetPasswordMailForm(""));
         return stream.build();
@@ -77,5 +83,59 @@ public class ResetPasswordControllerTest {
                 .andExpect(model().attributeExists("email"))
                 .andExpect(model().attribute("email", email))
                 .andExpect(view().name("reset-password/send"));
+    }
+
+    @Test
+    @WithMockUser
+    public void testGetReset() throws Exception {
+        final var uuid = ExampleResetPasswordToken.gen().getUuid().toString();
+        this.mockMvc.perform(get("/reset-password/r/" + uuid))
+                .andExpect(status().isOk())
+                .andExpect(view().name("reset-password/{uuid}"));
+    }
+
+    @Test
+    @WithMockUser
+    public void testPostReset() throws Exception {
+        final var uuid = ExampleResetPasswordToken.gen().getUuid().toString();
+        final var form = ExampleResetPasswordForm.gen();
+        this.mockMvc.perform(post("/reset-password/r/" + uuid)
+                        .flashAttr("resetPasswordForm", form)
+                        .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(model().hasNoErrors())
+                .andExpect(redirectedUrl("/reset-password/complate"));
+    }
+
+    @ParameterizedTest
+    @WithMockUser
+    @MethodSource("RPFormValidationTestData")
+    public void testRPFormValidation(final ResetPasswordForm form) throws Exception {
+        final var uuid = ExampleResetPasswordToken.gen().getUuid().toString();
+        this.mockMvc.perform(post("/reset-password/r/" + uuid)
+                        .flashAttr("resetPasswordForm", form)
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(model().hasErrors())
+                .andExpect(model().attributeExists("resetPasswordForm"))
+                .andExpect(model().attribute("resetPasswordForm", form))
+                .andExpect(view().name("reset-password/{uuid}"));
+    }
+
+    private static Stream<Object> RPFormValidationTestData() {
+        final var stream = Stream.builder();
+        stream.add(new ResetPasswordForm("", ""));
+        stream.add(new ResetPasswordForm("password", ""));
+        stream.add(new ResetPasswordForm("", "password"));
+        stream.add(new ResetPasswordForm("password", "pass"));
+        return stream.build();
+    }
+
+    @Test
+    @WithMockUser
+    public void testComplate() throws Exception {
+        this.mockMvc.perform(get("/reset-password/complate"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("reset-password/complate"));
     }
 }

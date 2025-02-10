@@ -5,8 +5,7 @@
 <th:block th:replace="~{fragment/header :: header}"/>
 <main class="flex flex-col items-center mt-10 flex-grow">
     <h2 class="text-center sm:text-3xl text-2xl font-medium text-default">パスワードリセット</h2>
-    <form th:action="@{/templates/reset-password/{token}(token=${resetPasswordForm.token})}" th:object="${resetPasswordForm}" method="post" class="w-full sm:max-w-lg max-w-xs">
-        <input th:field="*{token}" required hidden aria-label />
+    <form th:action="@{/reset-password/reset/{uuid}(uuid=${uuid})}" th:object="${resetPasswordForm}" method="post" class="w-full sm:max-w-lg max-w-xs">
         <div class="mb-10 mt-10">
             <label for="password" class="block sm:text-base text-sp-default text-default sm:my-1 my-0.5 text-sm">パスワード</label>
             <input th:field="*{password}" id="password" name="password" type="password" required class="w-full input"/>

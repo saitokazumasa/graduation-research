@@ -59,7 +59,7 @@ public class RegisterController {
         return "register/send";
     }
 
-    @GetMapping("/verify/{uuid}")
+    @GetMapping("/v/{uuid}")
     public String verify(final @PathVariable String uuid) {
         try {
             this.verifyEmailService.execute(uuid);
@@ -67,6 +67,11 @@ public class RegisterController {
             System.err.println(e.getMessage());
             return "register/index";
         }
-        return "register/verified";
+        return "redirect:/register/complate";
+    }
+
+    @GetMapping("/complate")
+    public String complate() {
+        return "register/complate";
     }
 }

@@ -10,7 +10,7 @@ public class ExampleResetPasswordToken {
         return new ResetPasswordToken(
                 UUID.fromString("bd725533-53a3-4a2d-9289-7fcbc7250d82"),
                 1,
-                LocalDateTime.now().minusMinutes(5)
+                LocalDateTime.now()
         );
     }
 }

@@ -37,6 +37,13 @@ public class UsersMapperTest {
 
     @Test
     @Sql({"classpath:/sql/InsertExampleUser.sql"})
+    public void testUpdatePassword() {
+        final var entity = ExampleUser.gen();
+        assert this.mapper.updatePassword(entity.getId(), "$2a$10$FFbAunp0hfeWTCune.XqwO/P/61fqWlbruV/8wqzrhM3Pw0VuXxpa") == 1;
+    }
+
+    @Test
+    @Sql({"classpath:/sql/InsertExampleUser.sql"})
     public void testUpdateEmailVerified() {
         final var entity = ExampleUser.gen();
         assert this.mapper.updateEmailVerified(entity.getId(), !entity.isEmailVerified()) == 1;

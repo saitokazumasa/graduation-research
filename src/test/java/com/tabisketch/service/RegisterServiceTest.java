@@ -7,9 +7,11 @@ import jakarta.mail.MessagingException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -17,6 +19,8 @@ import static org.mockito.Mockito.when;
 public class RegisterServiceTest {
     @Autowired
     private IRegisterService service;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     @MockitoBean
     private IUsersMapper usersMapper;
     @MockitoBean
@@ -32,6 +36,7 @@ public class RegisterServiceTest {
         final var form = ExampleRegisterForm.gen();
         this.service.execute(form);
 
+        verify(this.passwordEncoder).encode(anyString());
         verify(this.usersMapper).insert(any());
         verify(this.emailVerificationTokensMapper).insert(any());
         verify(this.sendMailService).execute(any());

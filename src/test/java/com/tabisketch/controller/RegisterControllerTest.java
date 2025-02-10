@@ -1,7 +1,6 @@
 package com.tabisketch.controller;
 
 import com.tabisketch.bean.entity.ExampleEmailVerificationToken;
-import com.tabisketch.bean.entity.ExampleUser;
 import com.tabisketch.bean.form.ExampleSendResetPasswordMailForm;
 import com.tabisketch.bean.form.RegisterForm;
 import com.tabisketch.bean.form.ExampleRegisterForm;
@@ -92,8 +91,16 @@ public class RegisterControllerTest {
     @WithMockUser
     public void testVerify() throws Exception {
         final var uuid = ExampleEmailVerificationToken.gen().getUuid().toString();
-        this.mockMvc.perform(get("/register/verify/" + uuid))
+        this.mockMvc.perform(get("/register/v/" + uuid))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/register/complate"));
+    }
+
+    @Test
+    @WithMockUser
+    public void testComplate() throws Exception {
+        this.mockMvc.perform(get("/register/complate"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("register/verified"));
+                .andExpect(view().name("register/complate"));
     }
 }

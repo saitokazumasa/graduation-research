@@ -27,19 +27,19 @@ public class VerifyEmailService implements IVerifyEmailService {
     @Override
     @Transactional
     public void execute(final String uuid) {
-        // 取得
+        // トークン取得
         final var _uuid = UUID.fromString(uuid);
         final EmailVerificationToken evToken = this.emailVerificationTokensMapper.selectByUUID(_uuid);
         if (evToken == null) throw new FailedSelectException("failed to find email verification token");
 
-        // トークンの有効期限を検証
+        // 有効期限を検証
         final var now = LocalDateTime.now();
         if (!evToken.getCreatedAt().equals(now) && evToken.getCreatedAt().isAfter(now))
             throw new InvalidEmailVerificationTokenException("email verification token is disabled");
         if (evToken.getCreatedAt().plusMinutes(30).isBefore(now))
             throw new InvalidEmailVerificationTokenException("email verification token is disabled");
 
-        // 認証
+        // メールアドレス認証
         final boolean wasUpdatedUser = this.usersMapper.updateEmailVerified(evToken.getUserId(), true) == 1;
         if (!wasUpdatedUser) throw new FailedUpdateException("failed to update user");
 

@@ -48,4 +48,29 @@ public class SendMailForm {
         );
         return new SendMailForm(from, to, subject, content);
     }
+
+    public static SendMailForm genResetPasswordMail(final String from, final String to, final String uuid) {
+        final String subject = "【【たびすけっち】パスワードの再設定をお願いします";
+        final String content = String.format("""
+                        たびすけっちをご利用いただき、ありがとうございます。
+                        パスワードリセットを受け付けました。
+                        
+                        **以下URLをクリックして、パスワードの再設定をしてください。**
+                        %s
+                        
+                        身に覚えのない場合は、このメールを破棄してください。
+                        
+                        ※このメールはシステムにより自動送信されました。
+                        
+                        たびすけっち
+                        %s
+                        お問い合わせ
+                        %s
+                        """,
+                URL.TabisketchDotCom + "/reset-password/reset/" + uuid,
+                URL.TabisketchDotCom,
+                from
+        );
+        return new SendMailForm(from, to, subject, content);
+    }
 }

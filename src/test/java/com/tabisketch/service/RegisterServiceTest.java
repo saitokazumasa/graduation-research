@@ -1,6 +1,5 @@
 package com.tabisketch.service;
 
-import com.tabisketch.bean.entity.ExampleUser;
 import com.tabisketch.bean.form.ExampleRegisterForm;
 import com.tabisketch.mapper.IEmailVerificationTokensMapper;
 import com.tabisketch.mapper.IUsersMapper;
@@ -27,7 +26,6 @@ public class RegisterServiceTest {
 
     @Test
     public void testExecute() throws MessagingException {
-        final var user = ExampleUser.gen();
         when(this.usersMapper.insert(any())).thenReturn(1);
         when(this.emailVerificationTokensMapper.insert(any())).thenReturn(1);
 

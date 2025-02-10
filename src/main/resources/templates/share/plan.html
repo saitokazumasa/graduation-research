@@ -48,19 +48,19 @@
                     </div>
                 </div>
                 <div class="flex flex-col mt-6 mb-10">
-                    <div class="mb-6">
-                        <p class="mb-2 sm:text-lg text-base">出発地点</p>
-                        <th:block th:replace="~{fragment/detail-place :: start(${startPlace})}" />
-                    </div>
-                    <div class="mb-6">
-                        <p class="mb-2 sm:text-lg text-base">目的地</p>
-                        <div th:each="place : ${placeList}">
-                            <th:block th:replace="~{fragment/detail-place :: places(${place})}" />
+                    <div th:each="place, placeStatus : ${placeList}" class="mb-6">
+                        <div th:if="${placeStatus.first}">
+                            <p class="mb-2 sm:text-lg text-base">出発地点</p>
+                            <th:block th:replace="~{fragment/detail-place :: start(${place})}"/>
                         </div>
-                    </div>
-                    <div class="mb-6">
-                        <p class="mb-2 sm:text-lg text-base">終了地点</p>
-                        <th:block th:replace="~{fragment/detail-place :: end(${endPlace})}" />
+                        <div th:if="${!placeStatus.first && !placeStatus.last}">
+                            <p class="mb-2 sm:text-lg text-base">目的地</p>
+                            <th:block th:replace="~{fragment/detail-place :: places(${place})}"/>
+                        </div>
+                        <div th:if="${placeStatus.last}">
+                            <p class="mb-2 sm:text-lg text-base">終了地点</p>
+                            <th:block th:replace="~{fragment/detail-place :: end(${place})}"/>
+                        </div>
                     </div>
                 </div>
                 <div class="flex justify-center mb-20">

@@ -24,7 +24,7 @@ class ErrorMessage {
     }
 
     displayFormError(modalType, formNum = null, message = null) {
-        const elementKey = formNum!==null
+        const elementKey = formNum !== null
             ? `${this.#elementKeys[modalType]}${formNum}`
             : this.#elementKeys[modalType];
         if (message === null) message = this.#errorMessages[modalType];

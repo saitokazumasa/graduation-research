@@ -61,7 +61,7 @@ class ModalElement {
      * @returns {Modal}
      */
     getModal(modalType, num=null) {
-        return num!==null ? new Modal(this.#modals[modalType][num]) : new Modal(this.#modals[modalType]);
+        return num !== null ? new Modal(this.#modals[modalType][num]) : new Modal(this.#modals[modalType]);
     }
 
     /**
@@ -74,7 +74,7 @@ class ModalElement {
         if (modalType.startsWith('update')) {
             modalType = modalType.replace('update', '').toLowerCase();
         }
-        return num!==null ? this.#toggleButtons[modalType][num] : this.#toggleButtons[modalType];
+        return num !== null ? this.#toggleButtons[modalType][num] : this.#toggleButtons[modalType];
     }
 
     /**
@@ -284,7 +284,7 @@ class ModalElement {
     changeToggleTarget(modalType, num=null) {
         const toggleBtn = this.getToggleBtn(modalType, num);
         // '○○UpdateModal' にターゲットを変える
-        const newTarget = num!==null ? `${modalType}UpdateModal${num}` : `${modalType}UpdateModal`;
+        const newTarget = num !== null ? `${modalType}UpdateModal${num}` : `${modalType}UpdateModal`;
         // data-modal-target data-modal-toggleを変更
         toggleBtn.setAttribute('data-modal-target', newTarget);
         toggleBtn.setAttribute('data-modal-toggle', newTarget);

@@ -40,7 +40,7 @@
                         <p class="mb-2 sm:text-lg text-base">出発地点<span class="sm:ml-2 ml-1 text-sm text-danger">必須</span></p>
                         <th:block th:replace="~{fragment/modal :: startToggle}"/>
                     </div>
-                    <div class="mb-6">
+                    <div class="mb-6" id="destination">
                         <p class="mb-2 sm:text-lg text-base">目的地</p>
                         <th:block th:replace="~{fragment/modal :: placesToggle(0)}"/>
                     </div>
@@ -62,6 +62,7 @@
                                 <span class="mx-2 text-lg">おすすめ目的地を検索中</span>
                                 <th:block th:replace="~{fragment/svg :: loading}"/>
                             </div>
+                            <div id="recommendToggleDiv"></div>
                         </details>
                     </section>
                     <section class="pt-10">
@@ -107,12 +108,17 @@
             </section>
         </div>
     </form>
-    <div id="formDiv">
-        <th:block th:replace="~{fragment/modal :: startForm(startPlaceForm)}"/>
-        <th:block th:replace="~{fragment/modal :: endForm(endPlaceForm)}"/>
-        <th:block th:replace="~{fragment/modal :: placesForm(0, placeForm)}"/>
-        <th:block th:replace="~{fragment/recommend :: recommendForm(${recommendList})}"/>
+    <div id="startFormDiv">
+        <th:block th:replace="~{fragment/modal :: startForm(${startPlaceForm})}"></th:block>
     </div>
+    <div id="placeFormDiv">
+        <th:block th:replace="~{fragment/modal :: placesForm(0, ${placeForm})}"></th:block>
+    </div>
+    <div id="endFormDiv">
+        <th:block th:replace="~{fragment/modal :: endForm(${endPlaceForm})}"></th:block>
+    </div>
+    <div id="updatePlaceFormDiv"></div>
+    <div id="recommendFormDiv"></div>
 </main>
 <th:block th:replace="~{fragment/footer :: footer}"/>
 <th:block th:replace="~{fragment/script :: previewImage}"/>

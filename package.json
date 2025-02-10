@@ -11,6 +11,7 @@
     "docker:test": "sh docker/bin/docker_compose_test.sh ./docker",
     "docker:down": "sh docker/bin/docker_compose_down.sh ./docker",
     "docker:e2e:build": "docker compose -f ./docker/01-docker-compose.yml -f ./docker/docker-compose.e2e.yml build",
+    "docker:e2e:up": "docker compose -f ./docker/01-docker-compose.yml -f ./docker/docker-compose.e2e.yml up postgresql app",
     "docker:e2e:run": "docker compose -f ./docker/01-docker-compose.yml -f ./docker/docker-compose.e2e.yml run --rm playwright",
     "docker:e2e:down": "docker compose -f ./docker/01-docker-compose.yml -f ./docker/docker-compose.e2e.yml down -v"
   },

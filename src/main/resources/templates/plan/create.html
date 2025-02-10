@@ -55,10 +55,9 @@
                                 おすすめ目的地を追加
                             </summary>
                             <hr class="my-2 scale-x-150"/>
-                            <p class="sm:text-lg text-base text-danger my-4">先に出発地点、終了地点、目的のどれかを入力してください。</p>
-                            <!-- todo: おすすめ目的地の表示 -->
-                            <th:block th:replace="~{fragment/recommend :: recommendToggle(${recommendList})}"/>
-                            <div class="hidden items-center" id="recommendLoading">
+                            <p th:if="${#lists.isEmpty(recommendList)}" id="recommendListDiv"
+                               class="sm:text-lg text-base text-danger my-4">先に出発地点、終了地点、目的のどれかを入力してください。</p>
+                            <div class="hidden items-center" id="loadingDiv">
                                 <span class="mx-2 text-lg">おすすめ目的地を検索中</span>
                                 <th:block th:replace="~{fragment/svg :: loading}"/>
                             </div>

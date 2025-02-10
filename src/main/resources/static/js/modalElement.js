@@ -60,7 +60,7 @@ class ModalElement {
      * @param num formNum
      * @returns {Modal}
      */
-    getModal(modalType, num=null) {
+    getModal(modalType, num = null) {
         return num !== null ? new Modal(this.#modals[modalType][num]) : new Modal(this.#modals[modalType]);
     }
 
@@ -70,7 +70,7 @@ class ModalElement {
      * @param num formNum
      * @returns {*}
      */
-    getToggleBtn(modalType, num=null) {
+    getToggleBtn(modalType, num = null) {
         if (modalType.startsWith('update')) modalType = modalType.replace('update', '').toLowerCase();
         return num !== null ? this.#toggleButtons[modalType][num] : this.#toggleButtons[modalType];
     }
@@ -155,7 +155,7 @@ class ModalElement {
      * @param modalType {String} モーダルの種別
      * @param num modalListのnumber(form項番-1)
      */
-    closeModal(modalType, num=null) {
+    closeModal(modalType, num = null) {
         const modal = modalType === ModalType.recommend
             ? new Modal(document.getElementById(`recommendModal${num}`))
             : this.getModal(modalType, num);
@@ -206,7 +206,7 @@ class ModalElement {
         placeSpan.textContent = endPlace.value; // spanの文字を場所名に
     }
 
-    #changePlaceDisplay(modalType, formNum, placeId, recommendNum=null) {
+    #changePlaceDisplay(modalType, formNum, placeId, recommendNum = null) {
         // buttonの子要素のspanタグ取得
         const timeSpan = document.getElementById(`placeTimeSpan${formNum}`);
         const placeSpan = document.getElementById(`placeNameSpan${formNum}`);
@@ -251,7 +251,7 @@ class ModalElement {
         else timeSpan.textContent = desiredStartTimeInput.value + '~' + desiredEndTimeInput.value;
         timeSpan.classList.remove('absolute');
         // 予算
-        if (budgetInput.value !== null) budgetSpan.textContent = '予算：---- ' + '円';
+        if (budgetInput.value !== null) budgetSpan.textContent = '予算：---- 円';
         else budgetSpan.textContent = '予算：' + budgetInput.value + '円';
         // 滞在時間
         if (!stayTimeInput.value) stayTimeSpan.textContent = '滞在時間：30分';
@@ -269,7 +269,7 @@ class ModalElement {
      * @param modalType {String}
      * @param num
      */
-    changeToggleTarget(modalType, num=null) {
+    changeToggleTarget(modalType, num = null) {
         const toggleBtn = this.getToggleBtn(modalType, num);
         // '○○UpdateModal' にターゲットを変える
         const newTarget = num !== null ? `${modalType}UpdateModal${num}` : `${modalType}UpdateModal`;

@@ -45,7 +45,7 @@ class Fragment {
     async initialize() {
         // toggle取得 /fragment/modal/placesToggle
         try {
-            const response = await fetch(`/fragment/modal/placesToggle?num=${(placeNum.value()+1)}`);
+            const response = await fetch(`/fragment/modal/placesToggle?num=${(placeNum.value() + 1)}`);
             if (!response.ok) throw new Error('フラグメントの取得に失敗しました');
             this.#toggle = await response.text();
         } catch (error) {
@@ -53,7 +53,7 @@ class Fragment {
         }
         // form取得 /fragment/modal/placesForm
         try {
-            const response = await fetch(`/fragment/modal/placesForm?num=${(placeNum.value()+1)}`);
+            const response = await fetch(`/fragment/modal/placesForm?num=${(placeNum.value() + 1)}`);
             if (!response.ok) throw new Error('フラグメントの取得に失敗しました');
             this.#form = await response.text();
         } catch (error) {
@@ -180,7 +180,7 @@ class Fragment {
     /**
      * id=formDivの子要素に UpdateForm を追加
      */
-    #addFragment(form, formDivKey, replace=true) {
+    #addFragment(form, formDivKey, replace = true) {
         const formDiv = document.getElementById(formDivKey);
         const newForm = document.createElement('div');
         newForm.innerHTML = form;

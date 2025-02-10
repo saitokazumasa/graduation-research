@@ -31,7 +31,7 @@ class ErrorMessage {
         this.#setErrorMessage(elementKey, message);
     }
 
-    hiddenFormError(modalType, formNum=null) {
+    hiddenFormError(modalType, formNum = null) {
         formNum !== null
             ? this.#setErrorMessage(`${this.#elementKeys[modalType]}${formNum}`, '')
             : this.#setErrorMessage(this.#elementKeys[modalType], '');

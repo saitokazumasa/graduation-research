@@ -17,16 +17,16 @@ class FormValidator {
         return fields.every(id => document.getElementById(id).value);
     }
 
-    #getFieldIds(prefix, num=null) {
-        if (num !== null) return [this.#fieldIds[prefix][0]+num,this.#fieldIds[prefix][1]+num,this.#fieldIds[prefix][2]+num, this.#fieldIds[prefix][3]+num];
+    #getFieldIds(prefix, num = null) {
+        if (num !== null) return [this.#fieldIds[prefix][0] + num,this.#fieldIds[prefix][1] + num,this.#fieldIds[prefix][2] + num, this.#fieldIds[prefix][3] + num];
         return this.#fieldIds[prefix];
     }
 
-    #formCheck(prefix, num=null) {
+    #formCheck(prefix, num = null) {
         return this.#isFilled(this.#getFieldIds(prefix, num));
     }
 
-    validate(modalType, num=null) {
+    validate(modalType, num = null) {
         return this.#formCheck(modalType, num);
     }
 }

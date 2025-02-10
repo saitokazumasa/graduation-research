@@ -115,14 +115,12 @@ class MapDisplayController {
         if (popupButton) {
             popupButton.addEventListener('click', (e) => {
                 e.preventDefault();
-                const placeIds = ["ChIJ89TugkeMGGARDmSeJIiyWFA", "ChIJCewJkL2LGGAR3Qmk0vCTGkg", "ChIJ89TugkeMGGARDmSeJIiyWFA"];
-                const travelModes = ['DRIVING', 'DRIVING'];
-                const options = {
-                    useHighway: true,
-                    useFerry: true,
-                    maxWalkingTime: 15
-                };
-                this.openPopup(placeIds, travelModes, options);
+                const popup = document.getElementById('popup');
+                if (popup) {
+                    popup.style.display = 'flex';
+                    this.displayMap('sp-map');
+                    this.displayDirectionsByPlaceIds(this.placeIds, this.travelModes, this.options);
+                }
             });
         }
 
@@ -137,6 +135,9 @@ class MapDisplayController {
 
 function initializeMaps(placeIds = [], travelModes = [], options = {}) {
     const initializeMap = new MapDisplayController();
+    initializeMap.placeIds = placeIds;
+    initializeMap.travelModes = travelModes;
+    initializeMap.options = options;
     initializeMap.initMap(placeIds, travelModes, options);
 }
 
@@ -145,6 +146,9 @@ window.initializeMaps = initializeMaps;
 function openPopupMap(placeIds, travelModes, options) {
     console.log('placeIds', placeIds);
     const initializeMap = new MapDisplayController();
+    initializeMap.placeIds = placeIds;
+    initializeMap.travelModes = travelModes;
+    initializeMap.options = options;
     if (typeof google !== 'undefined') initializeMap.openPopup(placeIds, travelModes, options);
 }
 

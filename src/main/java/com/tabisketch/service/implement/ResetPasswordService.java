@@ -72,7 +72,7 @@ public class ResetPasswordService implements IResetPasswordService {
         if (!wasDeletedRPToken) throw new FailedDeleteException("failed to delete token");
 
         // 編集通知メールを送信
-        final SendMailForm sendMailForm = SendMailForm.genCompleteResetPasswordMail(user.getEmail(), tabisketchEmail);
+        final SendMailForm sendMailForm = SendMailForm.genCompleteResetPasswordMail(tabisketchEmail, user.getEmail());
         this.sendMailService.execute(sendMailForm);
     }
 }

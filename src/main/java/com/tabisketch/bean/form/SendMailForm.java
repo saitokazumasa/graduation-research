@@ -43,7 +43,7 @@ public class SendMailForm {
                         %s
                         """,
                 to,
-                URL.TabisketchDotCom + "/register/" + uuid,
+                URL.TabisketchDotCom + "/register/v/" + uuid,
                 URL.TabisketchDotCom,
                 from
         );
@@ -69,7 +69,7 @@ public class SendMailForm {
                         お問い合わせ
                         %s
                         """,
-                URL.TabisketchDotCom + "/reset-password/reset/" + uuid,
+                URL.TabisketchDotCom + "/reset-password/r/" + uuid,
                 URL.TabisketchDotCom,
                 from
         );

@@ -51,7 +51,7 @@ public class SendResetPasswordMailService implements ISendResetPasswordMailServi
 
         // パスワードリセットメールを送信
         final String uuid = rpToken.getUuid().toString();
-        final SendMailForm sendMailForm = SendMailForm.genResetPasswordMail(user.getEmail(), tabisketchEmail, uuid);
+        final SendMailForm sendMailForm = SendMailForm.genResetPasswordMail(tabisketchEmail, user.getEmail(), uuid);
         this.sendMailService.execute(sendMailForm);
     }
 }

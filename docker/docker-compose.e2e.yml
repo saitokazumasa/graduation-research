@@ -1,5 +1,10 @@
 services:
+  postgresql:
+    container_name: postgresql-e2e
+    volumes:
+      - ../e2e/seeds/99-seeds.sql:/docker-entrypoint-initdb.d/99-seeds.sql
   app:
+    container_name: app-e2e
     networks:
       default:
         aliases:

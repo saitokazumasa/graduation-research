@@ -53,5 +53,10 @@ npm run docker:down
 
 ### Docker E2E テスト実行
 ```shell
+# downすることでDBを初期化する
+npm run docker:e2e:down
+# app と postgresql を起動
+npm run docker:e2e:up
+# playwright でテスト実行
 npm run docker:e2e:run
 ```

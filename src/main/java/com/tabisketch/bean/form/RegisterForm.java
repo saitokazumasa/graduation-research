@@ -1,6 +1,5 @@
 package com.tabisketch.bean.form;
 
-import com.tabisketch.bean.entity.User;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -11,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class CreateUserForm {
+public class RegisterForm {
     @Email
     @NotBlank
     private String email;
@@ -28,14 +27,5 @@ public class CreateUserForm {
         if (this.rePassword.isBlank()) return false;
 
         return password.equals(rePassword);
-    }
-
-    public User toUser() {
-        return new User(
-                -1,
-                this.email,
-                this.password,
-                false
-        );
     }
 }

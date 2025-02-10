@@ -20,7 +20,7 @@ public class SendMailForm {
     @NotBlank
     private String content;
 
-    public static SendMailForm genCreateUserMail(final String from, final String to, final String token) {
+    public static SendMailForm genCreateUserMail(final String from, final String to, final String uuid) {
         final String subject = "【たびすけっち】メールアドレスの認証をお願いします";
         final String content = String.format("""
                         たびすけっちをご利用いただき、ありがとうございます。
@@ -42,7 +42,7 @@ public class SendMailForm {
                         %s
                         """,
                 to,
-                URL.TabisketchDotCom + "/mail/confirm/" + token,
+                URL.TabisketchDotCom + "/register/" + uuid,
                 URL.TabisketchDotCom,
                 from
         );

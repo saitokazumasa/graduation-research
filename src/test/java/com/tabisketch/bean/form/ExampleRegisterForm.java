@@ -1,11 +1,11 @@
 package com.tabisketch.bean.form;
 
-public class ExampleCreateUserForm {
-    private ExampleCreateUserForm() {
+public class ExampleRegisterForm {
+    private ExampleRegisterForm() {
     }
 
-    public static CreateUserForm gen() {
-        return new CreateUserForm(
+    public static RegisterForm gen() {
+        return new RegisterForm(
                 "example@example.com",
                 "password",
                 "password"

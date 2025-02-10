@@ -34,4 +34,11 @@ public class UsersMapperTest {
         final var entity = ExampleUser.gen();
         assert this.mapper.selectByEmail(entity.getEmail()) != null;
     }
+
+    @Test
+    @Sql({"classpath:/sql/InsertExampleUser.sql"})
+    public void testUpdateEmailVerified() {
+        final var entity = ExampleUser.gen();
+        assert this.mapper.updateEmailVerified(entity.getId(), !entity.isEmailVerified()) == 1;
+    }
 }

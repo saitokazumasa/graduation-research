@@ -11,7 +11,7 @@ import org.springframework.test.context.jdbc.Sql;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class EmailVerificationTokenMapperTest {
     @Autowired
-    private IEmailVerificationTokenMapper mapper;
+    private IEmailVerificationTokensMapper mapper;
 
     @Test
     @Sql({"classpath:/sql/InsertExampleUser.sql"})
@@ -25,5 +25,12 @@ public class EmailVerificationTokenMapperTest {
     public void testSelectByUUID() {
         final var entity = ExampleEmailVerificationToken.gen();
         assert this.mapper.selectByUUID(entity.getUuid()) != null;
+    }
+
+    @Test
+    @Sql({"classpath:/sql/InsertExampleUser.sql", "classpath:/sql/InsertExampleEmailVerificationToken.sql"})
+    public void testDelete() {
+        final var entity = ExampleEmailVerificationToken.gen();
+        assert this.mapper.delete(entity.getUuid()) == 1;
     }
 }

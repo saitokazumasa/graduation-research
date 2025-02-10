@@ -1,10 +1,7 @@
 package com.tabisketch.mapper;
 
 import com.tabisketch.bean.entity.User;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Options;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 @Mapper
 public interface IUsersMapper {
@@ -17,4 +14,7 @@ public interface IUsersMapper {
 
     @Select("SELECT * FROM users WHERE email = #{email}")
     User selectByEmail(final String email);
+
+    @Update("UPDATE users SET email_verified = #{value} WHERE id = #{id}")
+    int updateEmailVerified(final int id, final boolean value);
 }

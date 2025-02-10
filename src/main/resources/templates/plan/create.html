@@ -4,8 +4,7 @@
 <body class="flex flex-col min-h-screen">
 <th:block th:replace="~{fragment/header :: header}"/>
 <main class="flex flex-col items-center flex-grow">
-    <!--  todo:th:objectに CreatePlanFormを割り当てる  -->
-    <form class="w-full">
+        <div class="w-full">
         <div id="popup"
              class="hidden sm:hidden fixed inset-0 z-50 items-center justify-center bg-black bg-opacity-50"
              onclick="closePopup()">
@@ -106,6 +105,14 @@
                 <div id="map" class="w-full h-full"></div>
             </section>
         </div>
+    </div>
+    <form class="invisible" th:object="${updatePlanForm}" id="updatePlan">
+        <!-- todo: updatePlanFormのinputフィールド追加 -->
+        <input type="number" th:field="*{id}" hidden>
+    </form>
+    <form class="invisible" th:object="${updateDayForm}" id="updateDay">
+        <!-- todo: updateDayFormのinputフィールド追加 -->
+        <input type="number" th:field="*{id}" hidden>
     </form>
     <div id="startFormDiv">
         <th:block th:replace="~{fragment/modal :: startForm(${startPlaceForm})}"></th:block>

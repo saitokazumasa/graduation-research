@@ -20,14 +20,14 @@ import static org.mockito.Mockito.when;
 public class ResetPasswordServiceTest {
     @Autowired
     private IResetPasswordService resetPasswordService;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
     @MockitoBean
     private IResetPasswordTokensMapper resetPasswordTokensMapper;
     @MockitoBean
     private IUsersMapper usersMapper;
     @MockitoBean
     private ISendMailService sendMailService;
+    @MockitoBean
+    private PasswordEncoder passwordEncoder;
 
     @Test
     public void testExecute() throws MessagingException {
@@ -36,6 +36,7 @@ public class ResetPasswordServiceTest {
 
         when(this.resetPasswordTokensMapper.selectByUuid(any())).thenReturn(rpToken);
         when(this.usersMapper.selectById(anyInt())).thenReturn(user);
+        when(this.passwordEncoder.encode(anyString())).thenReturn("encrypted");
         when(this.usersMapper.updatePassword(anyInt(), anyString())).thenReturn(1);
         when(this.resetPasswordTokensMapper.delete(any())).thenReturn(1);
 

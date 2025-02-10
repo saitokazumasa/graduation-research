@@ -19,17 +19,18 @@ import static org.mockito.Mockito.when;
 public class RegisterServiceTest {
     @Autowired
     private IRegisterService service;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
     @MockitoBean
     private IUsersMapper usersMapper;
     @MockitoBean
     private IEmailVerificationTokensMapper emailVerificationTokensMapper;
     @MockitoBean
     private ISendMailService sendMailService;
+    @MockitoBean
+    private PasswordEncoder passwordEncoder;
 
     @Test
     public void testExecute() throws MessagingException {
+        when(this.passwordEncoder.encode(anyString())).thenReturn("encrypted");
         when(this.usersMapper.insert(any())).thenReturn(1);
         when(this.emailVerificationTokensMapper.insert(any())).thenReturn(1);
 

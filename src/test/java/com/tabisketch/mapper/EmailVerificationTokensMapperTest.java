@@ -9,7 +9,7 @@ import org.springframework.test.context.jdbc.Sql;
 
 @MybatisTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class EmailVerificationTokenMapperTest {
+public class EmailVerificationTokensMapperTest {
     @Autowired
     private IEmailVerificationTokensMapper mapper;
 

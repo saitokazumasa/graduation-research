@@ -25,6 +25,18 @@ class ModalForm {
             element.addEventListener('submit', async(e) => await this.#createFormSubmit(e, ModalType.places)));
     }
 
+    /**
+     * おすすめ目的地のformイベントを割り当て
+     */
+    #attachRecommendFormEvent() {
+        // 各form要素に recommend という独自クラスを付与し取得する
+        document.querySelectorAll('.recommend').forEach(element => {
+            element.addEventListener('submit', async(e) => {
+                await this.#createFormSubmit(e, ModalType.recommend);
+            });
+        });
+    }
+
     #addPlaceFormElement(num) {
         this.placeFormElement.push(document.getElementById(`placeForm${num}`));
         this.placeFormElement[num].addEventListener('submit', async(e) =>
@@ -40,9 +52,10 @@ class ModalForm {
      */
     async #createFormSubmit(e, modalType, formNum=null) {
         e.preventDefault();
-        if (modalType === ModalType.places) {
-            formNum = Number(e.target.id.replace('placeForm',''));
-        }
+
+        // formNumの設定
+        if (modalType === ModalType.places) formNum = Number(e.target.id.replace('placeForm',''));
+        if (modalType === ModalType.recommend) formNum = Number(e.target.id.replace('recommendForm',''));
 
         // 値の検証（nullがあるか）
         if (!formValidate.validate(modalType,formNum)) {
@@ -54,8 +67,11 @@ class ModalForm {
 
         // api/create-planに送信
         const formData = new FormData(e.target);
-        if (modalType === ModalType.places) {
-            this.#setEndTime(formNum, formData, modalType);
+        // 目的地、おすすめ目的地の終了時間を（startTime + 滞在時間）に
+        if (formNum !== null) this.#setEndTime(formNum, formData, modalType);
+        if (modalType === ModalType.recommend) {
+            const nameInput = document.getElementById(`recommend${formNum}`);
+            formData.append(nameInput.name, nameInput.value);
         }
         await this.postCreatePlaceAPI(formData, modalType, formNum);
     }
@@ -67,9 +83,10 @@ class ModalForm {
      * @param formNum {number} formの項番(placesの時だけ)
      */
     async #createPlaceSuccess(placeId, modalType, formNum=null) {
-        // modalの動作
         modal.closeModal(modalType, formNum);
-        modal.changeToggleDisplay(modalType, formNum);
+        if (modalType === ModalType.recommend) modal.deleteModal();
+        // modalの動作
+        modal.changeToggleDisplay(modalType, formNum, placeId);
 
         // 更新formフラグメントを追加
         const fragment = new Fragment();
@@ -84,23 +101,21 @@ class ModalForm {
             fragment.addEndUpdateForm();
             modal.setEndUpdateModal();
             break;
+        case ModalType.recommend:
         case ModalType.places:
-            await fragment.initPlacesUpdateForm(placeId, formNum);
+            await fragment.initPlacesUpdateForm(placeId, placeNum.value());
             fragment.addPlacesUpdateForm();
-            modal.setPlacesUpdateModal(formNum);
-            this.#setStayTimeValue(formNum);
-            break;
+            modal.setPlacesUpdateModal(placeNum.value());
+            this.#setStayTimeValue(placeNum.value());
         }
 
         // modalを切り替えるターゲット変更
-        modal.changeToggleTarget(modalType, formNum);
-        // ターゲット切り替え後のmodalイベントのアタッチ
-        initFlowbite();
-
-        // 目的地追加フラグメントを呼び出し
-        if (modalType === ModalType.places) {
-            await this.newAddPlaceFragment();
-        }
+        modalType === ModalType.recommend ? modal.changeToggleTarget(ModalType.places, placeNum.value()) : modal.changeToggleTarget(modalType, formNum);
+        // おすすめ目的地フラグメントを呼び出し
+        await this.newAddRecommendFragment();
+        this.#attachRecommendFormEvent();
+        // 目的地追加とおすすめ目的地追加時
+        if (modalType === ModalType.places || modalType === ModalType.recommend) await this.#newAddPlaceFragment();
 
         // updateFormのsubmitイベントをアタッチ
         switch (modalType) {
@@ -115,15 +130,17 @@ class ModalForm {
         case ModalType.places:
             this.#placesUpdateFormElement.push(document.getElementById(`updatePlaceForm${formNum}`));
             this.#placesUpdateFormElement[formNum].addEventListener('submit', (e) => this.#updateFormSubmit(e, ModalType.updatePlaces, formNum));
-            break;
         }
+
+        // modalイベントの再アタッチ
+        initFlowbite();
     }
 
     /**
      * 追加フラグメントを挿入
      * @returns {Promise<void>}
      */
-    async newAddPlaceFragment() {
+    async #newAddPlaceFragment() {
         // 目的地追加フラグメント呼び出し
         const newFragment = new Fragment();
         await newFragment.initialize();
@@ -132,9 +149,24 @@ class ModalForm {
         // form項番を増やす
         placeNum.increment();
         modal.addPlacesElement();
-        // 新しいModalにイベント追加
-        initFlowbite();
+        // 追加した目的地フラグメントを変数に入れる
         this.#addPlaceFormElement(placeNum.value());
+    }
+
+    /**
+     * おすすめ目的地フラグメントを挿入
+     */
+    async newAddRecommendFragment() {
+        // おすすめ目的地フラグメント呼び出し
+        const newFragment = new Fragment();
+        // ローディング表示を出す
+        const loading = document.getElementById('loadingDiv');
+        loading.classList.remove('hidden');
+        // オススメ目的地を取得する
+        await newFragment.initRecommendFragment();
+        newFragment.addRecommendFragment();
+        // ローディング表示を消す
+        loading.classList.add('hidden');
     }
 
     /**
@@ -142,8 +174,19 @@ class ModalForm {
      */
     #setEndTime(formNum, formData, modalType) {
         const startTime = formData.get('startTime');
-        const stayTime = modalType === ModalType.places ?
-            formData.get(`staytTime${formNum}`) : formData.get(`updateStayTime${formNum}`);
+        // modalTypeによって取得するstayTimeKeyを変更
+        let stayTimeKey;
+        switch (modalType) {
+        case ModalType.places:
+            stayTimeKey = `stayTime${formNum}`;
+            break;
+        case ModalType.updatePlaces:
+            stayTimeKey = `updateStayTime${formNum}`;
+            break;
+        case ModalType.recommend:
+            stayTimeKey = `recommendStayTime${formNum}`;
+        }
+        const stayTime = formData.get(stayTimeKey);
         // startTimeをパースしてDate型に変換
         const [startHours, startMinutes] = startTime.split(':').map(Number);
         const startDate = new Date();
@@ -157,8 +200,7 @@ class ModalForm {
         // FormDataにendTimeをセット
         formData.set('endTime', endTime);
         // FormDataからstayTimeを削除
-        modalType === ModalType.places ?
-            formData.delete(`stayTime${formNum}`) : formData.delete(`updateStayTime${formNum}`);
+        formData.delete(stayTimeKey);
     }
 
     /**
@@ -191,9 +233,7 @@ class ModalForm {
     async #updateFormSubmit(e, modalType, formNum = null) {
         e.preventDefault();
 
-        if (modalType === ModalType.updatePlaces) {
-            formNum = Number(e.target.id.replace('updatePlaceForm',''));
-        }
+        if (modalType === ModalType.updatePlaces) formNum = Number(e.target.id.replace('updatePlaceForm',''));
 
         // 値の検証
         if (!formValidate.validate(modalType, formNum)) {
@@ -225,7 +265,14 @@ class ModalForm {
     async #updatePlaceSuccess(placeId, modalType, formNum=null) {
         // modalの動作
         modal.closeModal(modalType, formNum);
-        modal.changeToggleDisplay(modalType, formNum);
+        modal.changeToggleDisplay(modalType, formNum, placeId);
+
+        // おすすめ目的地フラグメントを呼び出し
+        await this.newAddRecommendFragment();
+        this.#attachRecommendFormEvent();
+
+        // modalイベントの再アタッチ
+        initFlowbite();
     }
 
     /**
@@ -249,9 +296,7 @@ class ModalForm {
             });
 
             // 通信が成功しないとき
-            if (!response.ok) {
-                throw new Error(`送信エラー: ${response.status}`);
-            }
+            if (!response.ok) throw new Error(`送信エラー: ${response.status}`);
 
             // /api/create-placeでFailedが返される
             const data = await response.json();
@@ -275,7 +320,6 @@ class ModalForm {
      * @param formNum {number | null} 送信formの項番
      */
     async postUpdatePlaceAPI(formData, modalType, formNum=null) {
-        console.log(modalType);
         const csrfToken = document.querySelector('meta[name="_csrf"]').content;
         const csrfHeaderName = document.querySelector('meta[name="_csrf_header"]').content;
         let placeId = null;
@@ -294,9 +338,7 @@ class ModalForm {
 
             // /api/create-placeでFailedが返される
             const data = await response.json();
-            if (data.status === 'Failed') {
-                throw new Error(`APIエラー：${data} が発生しました。`);
-            }
+            if (data.status === 'Failed') throw new Error(`APIエラー：${data} が発生しました。`);
             // 成功時の処理
             placeId = data.placeId;
             await this.#updatePlaceSuccess(placeId, modalType, formNum);

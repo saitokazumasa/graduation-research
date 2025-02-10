@@ -61,7 +61,7 @@ class ModalElement {
      * @returns {Modal}
      */
     getModal(modalType, num=null) {
-        return num!==null ? new Modal(this.#modals[modalType][num]) : new Modal(this.#modals[modalType]);
+        return num !== null ? new Modal(this.#modals[modalType][num]) : new Modal(this.#modals[modalType]);
     }
 
     /**
@@ -71,10 +71,8 @@ class ModalElement {
      * @returns {*}
      */
     getToggleBtn(modalType, num=null) {
-        if (modalType.startsWith('update')) {
-            modalType = modalType.replace('update', '').toLowerCase();
-        }
-        return num!==null ? this.#toggleButtons[modalType][num] : this.#toggleButtons[modalType];
+        if (modalType.startsWith('update')) modalType = modalType.replace('update', '').toLowerCase();
+        return num !== null ? this.#toggleButtons[modalType][num] : this.#toggleButtons[modalType];
     }
 
     /**
@@ -158,8 +156,18 @@ class ModalElement {
      * @param num modalListのnumber(form項番-1)
      */
     closeModal(modalType, num=null) {
-        const modal = this.getModal(modalType, num);
+        const modal = modalType === ModalType.recommend
+            ? new Modal(document.getElementById(`recommendModal${num}`))
+            : this.getModal(modalType, num);
         modal.hide();
+    }
+
+    /**
+     * modalを消す
+     */
+    deleteModal() {
+        const modal = this.getModal(ModalType.places, placeNum.value());
+        modal.destroyAndRemoveInstance();
     }
 
     /**
@@ -169,17 +177,10 @@ class ModalElement {
      * @param placeId {number | null} 目的地のid
      */
     changeToggleDisplay(modalType, formNum = null, placeId = null) {
-        if (modalType === ModalType.start || modalType === ModalType.updateStart) {
-            this.#changeStartDisplay(modalType);
-            return;
-        }
-        if (modalType === ModalType.end || modalType === ModalType.updateEnd) {
-            this.#changeEndDisplay(modalType);
-            return;
-        }
-        if (modalType === ModalType.places || modalType === ModalType.updatePlaces) {
-            this.#changePlaceDisplay(modalType, formNum, placeId);
-        }
+        if (modalType === ModalType.start || modalType === ModalType.updateStart) this.#changeStartDisplay(modalType);
+        else if (modalType === ModalType.end || modalType === ModalType.updateEnd) this.#changeEndDisplay(modalType);
+        else if (modalType === ModalType.places || modalType === ModalType.updatePlaces) this.#changePlaceDisplay(modalType, formNum, placeId);
+        else if (modalType === ModalType.recommend) this.#changePlaceDisplay(modalType, placeNum.value(), placeId, formNum);
     }
 
     #changeStartDisplay(modalType) {
@@ -205,44 +206,56 @@ class ModalElement {
         placeSpan.textContent = endPlace.value; // spanの文字を場所名に
     }
 
-    #changePlaceDisplay(modalType, formNum, placeId) {
+    #changePlaceDisplay(modalType, formNum, placeId, recommendNum=null) {
         // buttonの子要素のspanタグ取得
         const timeSpan = document.getElementById(`placeTimeSpan${formNum}`);
         const placeSpan = document.getElementById(`placeNameSpan${formNum}`);
         const budgetSpan = document.getElementById(`budgetSpan${formNum}`);
         const stayTimeSpan = document.getElementById(`stayTimeSpan${formNum}`);
-
-        const placeInput = modalType === ModalType.places
-            ? document.getElementById(`place${formNum}`) : document.getElementById(`updatePlace${formNum}`);
-        const desiredStartTimeInput = modalType === ModalType.places
-            ? document.getElementById(`desiredStartTime${formNum}`) : document.getElementById(`placeUpdateDesiredStart${formNum}`);
-        const desiredEndTimeInput = modalType === ModalType.places
-            ? document.getElementById(`desiredEndTime${formNum}`) : document.getElementById(`placeUpdateDesiredEnd${formNum}`);
-        const budgetInput = modalType === ModalType.places
-            ? document.getElementById(`budget${formNum}`) : document.getElementById(`placeUpdateBudget${formNum}`);
-        const stayTimeInput = modalType === ModalType.places
-            ? document.getElementById(`stayTime${formNum}`) : document.getElementById(`updateStayTime${formNum}`);
+        // input取得
+        let placeInput;
+        let desiredStartTimeInput;
+        let desiredEndTimeInput;
+        let budgetInput;
+        let stayTimeInput;
+        switch (modalType) {
+        case ModalType.places:
+            placeInput = document.getElementById(`place${formNum}`);
+            desiredStartTimeInput = document.getElementById(`desiredStartTime${formNum}`);
+            desiredEndTimeInput = document.getElementById(`desiredEndTime${formNum}`);
+            budgetInput = document.getElementById(`budget${formNum}`);
+            stayTimeInput = document.getElementById(`stayTime${formNum}`);
+            break;
+        case ModalType.updatePlaces:
+            placeInput = document.getElementById(`updatePlace${formNum}`);
+            desiredStartTimeInput = document.getElementById(`placeUpdateDesiredStart${formNum}`);
+            desiredEndTimeInput = document.getElementById(`placeUpdateDesiredEnd${formNum}`);
+            budgetInput = document.getElementById(`placeUpdateBudget${formNum}`);
+            stayTimeInput = document.getElementById(`updateStayTime${formNum}`);
+            break;
+        case ModalType.recommend:
+            placeInput = document.getElementById(`recommend${recommendNum}`);
+            desiredStartTimeInput = document.getElementById(`recommendDesiredStartTime${recommendNum}`);
+            desiredEndTimeInput = document.getElementById(`recommendDesiredEndTime${recommendNum}`);
+            budgetInput = document.getElementById(`recommendBudget${recommendNum}`);
+            stayTimeInput = document.getElementById(`recommendStayTime${recommendNum}`);
+        }
 
         /* ---- 表示を変更 ---- */
         placeInput.disabled = true; // 目的地部分をdisabledに
         placeInput.classList.add('bg-gray-100');
-
         // 場所名
         placeSpan.textContent = placeInput.value;
-
         // 希望時間
         if (!desiredStartTimeInput.value) timeSpan.textContent = '';
         else timeSpan.textContent = desiredStartTimeInput.value + '~' + desiredEndTimeInput.value;
         timeSpan.classList.remove('absolute');
-
         // 予算
         if (budgetInput.value !== null) budgetSpan.textContent = '予算：---- ' + '円';
         else budgetSpan.textContent = '予算：' + budgetInput.value + '円';
-
         // 滞在時間
         if (!stayTimeInput.value) stayTimeSpan.textContent = '滞在時間：30分';
         else stayTimeSpan.textContent = '滞在時間：' + stayTimeInput.value + '分';
-
         // 緑色の枠線をけす
         const toggleBtn = this.getToggleBtn(ModalType.places, formNum);
         toggleBtn.classList.remove('border-interactive');
@@ -258,10 +271,8 @@ class ModalElement {
      */
     changeToggleTarget(modalType, num=null) {
         const toggleBtn = this.getToggleBtn(modalType, num);
-
         // '○○UpdateModal' にターゲットを変える
-        const newTarget = num!==null ? `${modalType}UpdateModal${num}` : `${modalType}UpdateModal`;
-
+        const newTarget = num !== null ? `${modalType}UpdateModal${num}` : `${modalType}UpdateModal`;
         // data-modal-target data-modal-toggleを変更
         toggleBtn.setAttribute('data-modal-target', newTarget);
         toggleBtn.setAttribute('data-modal-toggle', newTarget);

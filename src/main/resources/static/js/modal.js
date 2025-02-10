@@ -5,7 +5,8 @@ const ModalType = Object.freeze({
     places: 'places',
     updateStart: 'updateStart',
     updateEnd: 'updateEnd',
-    updatePlaces: 'updatePlaces'
+    updatePlaces: 'updatePlaces',
+    recommend: 'recommend',
 });
 
 class PlaceNum {
@@ -26,6 +27,8 @@ class Fragment {
     #startUpdateForm;
     #endUpdateForm;
     #placesUpdateForm;
+    #recommendToggle;
+    #recommendForm;
 
     constructor() {
         this.#toggle = null;
@@ -43,7 +46,7 @@ class Fragment {
         // toggle取得 /fragment/modal/placesToggle
         try {
             const response = await fetch(`/fragment/modal/placesToggle?num=${(placeNum.value()+1)}`);
-            if (!response.ok) { throw new Error('フラグメントの取得に失敗しました'); }
+            if (!response.ok) throw new Error('フラグメントの取得に失敗しました');
             this.#toggle = await response.text();
         } catch (error) {
             throw new Error('initialize Error : ' + error);
@@ -51,7 +54,7 @@ class Fragment {
         // form取得 /fragment/modal/placesForm
         try {
             const response = await fetch(`/fragment/modal/placesForm?num=${(placeNum.value()+1)}`);
-            if (!response.ok) { throw new Error('フラグメントの取得に失敗しました'); }
+            if (!response.ok) throw new Error('フラグメントの取得に失敗しました');
             this.#form = await response.text();
         } catch (error) {
             throw new Error('initialize Error : ' + error);
@@ -67,7 +70,7 @@ class Fragment {
         // 出発地点更新form取得 /fragment/modal/startUpdateForm
         try {
             const response = await fetch(`/fragment/update-modal/startUpdateForm?placeId=${placeId}`);
-            if (!response.ok) { throw new Error('フラグメントの取得に失敗しました'); }
+            if (!response.ok) throw new Error('フラグメントの取得に失敗しました');
             this.#startUpdateForm = await response.text();
         } catch (error) {
             throw new Error('initialize Error : ' + error);
@@ -83,7 +86,7 @@ class Fragment {
         // 終了地点更新form取得 /fragment/modal/endUpdateForm
         try {
             const response = await fetch(`/fragment/update-modal/endUpdateForm?placeId=${placeId}`);
-            if (!response.ok) { throw new Error('フラグメントの取得に失敗しました'); }
+            if (!response.ok) throw new Error('フラグメントの取得に失敗しました');
             this.#endUpdateForm = await response.text();
         } catch (error) {
             throw new Error('initialize Error : ' + error);
@@ -100,9 +103,33 @@ class Fragment {
         // 目的地更新form取得 /fragment/modal/placesUpdateForm?num=
         try {
             const response = await fetch(`/fragment/update-modal/placesUpdateForm?placeId=${placeId}&num=${formNum}`);
-            if (!response.ok) { throw new Error('フラグメントの取得に失敗しました'); }
+            if (!response.ok) throw new Error('フラグメントの取得に失敗しました');
             this.#placesUpdateForm = await response.text();
         } catch (error) {
+            throw new Error('initialize Error : ' + error);
+        }
+    }
+
+    /**
+     * おすすめ目的地フラグメントの初期化
+     */
+    async initRecommendFragment() {
+        // おすすめ目的地toggle取得 /fragment/recommend/recommendToggle
+        try {
+            const response = await fetch('/fragment/recommend/recommendToggle');
+            if (!response.ok) throw new Error('フラグメントの取得に失敗しました');
+            this.#recommendToggle = await response.text();
+        } catch (error) {
+            console.error(error);
+            throw new Error('initialize Error : ' + error);
+        }
+        // おすすめ目的地form取得 /fragment/recommend/recommendForm
+        try {
+            const response = await fetch('/fragment/recommend/recommendForm');
+            if (!response.ok) throw new Error('フラグメントの取得に失敗しました');
+            this.#recommendForm = await response.text();
+        } catch (error) {
+            console.error(error);
             throw new Error('initialize Error : ' + error);
         }
     }
@@ -114,16 +141,10 @@ class Fragment {
         if (!this.#toggle || !this.#form) throw new Error('このインスタンスは初期化されていません。initialize()を実行してください。');
 
         // id=destination の子要素にToggleを追加
-        const destination = document.getElementById('destination');
-        const newToggle = document.createElement('div');
-        newToggle.innerHTML = this.#toggle;
-        destination.appendChild(newToggle);
+        this.#addFragment(this.#toggle, 'destination', false);
 
-        // id=formDiv の子要素に Form を追加
-        const formDiv = document.getElementById('formDiv');
-        const newForm = document.createElement('div');
-        newForm.innerHTML = this.#form;
-        formDiv.appendChild(newForm);
+        // id=placeFormDivの子要素に #form を追加
+        this.#addFragment(this.#form, 'placeFormDiv');
     }
 
     /**
@@ -132,8 +153,8 @@ class Fragment {
     addStartUpdateForm() {
         if (!this.#startUpdateForm) return;
 
-        // id=formDivの子要素に #startUpdateForm を追加
-        this.#addUpdateFragment(this.#startUpdateForm);
+        // id=startFormDivの子要素に #startUpdateForm を追加
+        this.#addFragment(this.#startUpdateForm, 'startFormDiv');
     }
 
     /**
@@ -143,7 +164,7 @@ class Fragment {
         if (!this.#endUpdateForm) return;
 
         // id=formDivの子要素に #endUpdateForm を追加
-        this.#addUpdateFragment(this.#endUpdateForm);
+        this.#addFragment(this.#endUpdateForm, 'endFormDiv');
     }
 
     /**
@@ -153,17 +174,32 @@ class Fragment {
         if (!this.#placesUpdateForm) return;
 
         // id=formDivの子要素に placesUpdateForm を追加
-        this.#addUpdateFragment(this.#placesUpdateForm);
+        this.#addFragment(this.#placesUpdateForm, 'updatePlaceFormDiv', false);
     }
 
     /**
      * id=formDivの子要素に UpdateForm を追加
      */
-    #addUpdateFragment(updateForm) {
-        const formDiv = document.getElementById('formDiv');
+    #addFragment(form, formDivKey, replace=true) {
+        const formDiv = document.getElementById(formDivKey);
         const newForm = document.createElement('div');
-        newForm.innerHTML = updateForm;
+        newForm.innerHTML = form;
+        if (replace) formDiv.innerHTML = '';
         formDiv.appendChild(newForm);
+    }
+
+    /**
+     * HTMLにrecommendToggleとrecommendFormフラグメント追加
+     */
+    addRecommendFragment() {
+        if (!this.#recommendToggle || !this.#recommendForm) return;
+        // recommendToggle追加
+        this.#addFragment(this.#recommendToggle, 'recommendToggleDiv', recommendReplace);
+
+        // recommendForm追加
+        this.#addFragment(this.#recommendForm, 'recommendFormDiv', recommendReplace);
+
+        recommendReplace = true;
     }
 }
 
@@ -171,6 +207,11 @@ const placeNum = new PlaceNum();
 const modal = new ModalElement();
 const errorMessage = new ErrorMessage();
 const formValidate = new FormValidator();
+/**
+ * おすすめ目的地フラグメントを置き換えるか
+ * @type {boolean}
+ */
+let recommendReplace = false;
 
 document.addEventListener('DOMContentLoaded', () => {
     new ModalForm();

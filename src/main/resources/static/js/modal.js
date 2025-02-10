@@ -46,7 +46,7 @@ class Fragment {
         // toggle取得 /fragment/modal/placesToggle
         try {
             const response = await fetch(`/fragment/modal/placesToggle?num=${(placeNum.value()+1)}`);
-            if (!response.ok) { throw new Error('フラグメントの取得に失敗しました'); }
+            if (!response.ok) throw new Error('フラグメントの取得に失敗しました');
             this.#toggle = await response.text();
         } catch (error) {
             throw new Error('initialize Error : ' + error);
@@ -54,7 +54,7 @@ class Fragment {
         // form取得 /fragment/modal/placesForm
         try {
             const response = await fetch(`/fragment/modal/placesForm?num=${(placeNum.value()+1)}`);
-            if (!response.ok) { throw new Error('フラグメントの取得に失敗しました'); }
+            if (!response.ok) throw new Error('フラグメントの取得に失敗しました');
             this.#form = await response.text();
         } catch (error) {
             throw new Error('initialize Error : ' + error);
@@ -70,7 +70,7 @@ class Fragment {
         // 出発地点更新form取得 /fragment/modal/startUpdateForm
         try {
             const response = await fetch(`/fragment/update-modal/startUpdateForm?placeId=${placeId}`);
-            if (!response.ok) { throw new Error('フラグメントの取得に失敗しました'); }
+            if (!response.ok) throw new Error('フラグメントの取得に失敗しました');
             this.#startUpdateForm = await response.text();
         } catch (error) {
             throw new Error('initialize Error : ' + error);
@@ -86,7 +86,7 @@ class Fragment {
         // 終了地点更新form取得 /fragment/modal/endUpdateForm
         try {
             const response = await fetch(`/fragment/update-modal/endUpdateForm?placeId=${placeId}`);
-            if (!response.ok) { throw new Error('フラグメントの取得に失敗しました'); }
+            if (!response.ok) throw new Error('フラグメントの取得に失敗しました');
             this.#endUpdateForm = await response.text();
         } catch (error) {
             throw new Error('initialize Error : ' + error);
@@ -103,7 +103,7 @@ class Fragment {
         // 目的地更新form取得 /fragment/modal/placesUpdateForm?num=
         try {
             const response = await fetch(`/fragment/update-modal/placesUpdateForm?placeId=${placeId}&num=${formNum}`);
-            if (!response.ok) { throw new Error('フラグメントの取得に失敗しました'); }
+            if (!response.ok) throw new Error('フラグメントの取得に失敗しました');
             this.#placesUpdateForm = await response.text();
         } catch (error) {
             throw new Error('initialize Error : ' + error);
@@ -117,7 +117,7 @@ class Fragment {
         // おすすめ目的地toggle取得 /fragment/recommend/recommendToggle
         try {
             const response = await fetch('/fragment/recommend/recommendToggle');
-            if (!response.ok) { throw new Error('フラグメントの取得に失敗しました'); }
+            if (!response.ok) throw new Error('フラグメントの取得に失敗しました');
             this.#recommendToggle = await response.text();
         } catch (error) {
             console.error(error);
@@ -126,7 +126,7 @@ class Fragment {
         // おすすめ目的地form取得 /fragment/recommend/recommendForm
         try {
             const response = await fetch('/fragment/recommend/recommendForm');
-            if (!response.ok) { throw new Error('フラグメントの取得に失敗しました'); }
+            if (!response.ok) throw new Error('フラグメントの取得に失敗しました');
             this.#recommendForm = await response.text();
         } catch (error) {
             console.error(error);

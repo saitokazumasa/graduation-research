@@ -84,9 +84,7 @@ class ModalForm {
      */
     async #createPlaceSuccess(placeId, modalType, formNum=null) {
         modal.closeModal(modalType, formNum);
-        if (modalType === ModalType.recommend) {
-            modal.deleteModal();
-        }
+        if (modalType === ModalType.recommend) modal.deleteModal();
         // modalの動作
         modal.changeToggleDisplay(modalType, formNum, placeId);
 
@@ -117,10 +115,7 @@ class ModalForm {
         await this.newAddRecommendFragment();
         this.#attachRecommendFormEvent();
         // 目的地追加とおすすめ目的地追加時
-        if (modalType === ModalType.places || modalType === ModalType.recommend) {
-            // 目的地追加フラグメントを呼び出し
-            await this.#newAddPlaceFragment();
-        }
+        if (modalType === ModalType.places || modalType === ModalType.recommend) await this.#newAddPlaceFragment();
 
         // updateFormのsubmitイベントをアタッチ
         switch (modalType) {
@@ -238,9 +233,7 @@ class ModalForm {
     async #updateFormSubmit(e, modalType, formNum = null) {
         e.preventDefault();
 
-        if (modalType === ModalType.updatePlaces) {
-            formNum = Number(e.target.id.replace('updatePlaceForm',''));
-        }
+        if (modalType === ModalType.updatePlaces) formNum = Number(e.target.id.replace('updatePlaceForm',''));
 
         // 値の検証
         if (!formValidate.validate(modalType, formNum)) {
@@ -303,9 +296,7 @@ class ModalForm {
             });
 
             // 通信が成功しないとき
-            if (!response.ok) {
-                throw new Error(`送信エラー: ${response.status}`);
-            }
+            if (!response.ok) throw new Error(`送信エラー: ${response.status}`);
 
             // /api/create-placeでFailedが返される
             const data = await response.json();
@@ -347,9 +338,7 @@ class ModalForm {
 
             // /api/create-placeでFailedが返される
             const data = await response.json();
-            if (data.status === 'Failed') {
-                throw new Error(`APIエラー：${data} が発生しました。`);
-            }
+            if (data.status === 'Failed') throw new Error(`APIエラー：${data} が発生しました。`);
             // 成功時の処理
             placeId = data.placeId;
             await this.#updatePlaceSuccess(placeId, modalType, formNum);

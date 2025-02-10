@@ -71,9 +71,7 @@ class ModalElement {
      * @returns {*}
      */
     getToggleBtn(modalType, num=null) {
-        if (modalType.startsWith('update')) {
-            modalType = modalType.replace('update', '').toLowerCase();
-        }
+        if (modalType.startsWith('update')) modalType = modalType.replace('update', '').toLowerCase();
         return num !== null ? this.#toggleButtons[modalType][num] : this.#toggleButtons[modalType];
     }
 
@@ -179,20 +177,10 @@ class ModalElement {
      * @param placeId {number | null} 目的地のid
      */
     changeToggleDisplay(modalType, formNum = null, placeId = null) {
-        if (modalType === ModalType.start || modalType === ModalType.updateStart) {
-            this.#changeStartDisplay(modalType);
-            return;
-        }
-        if (modalType === ModalType.end || modalType === ModalType.updateEnd) {
-            this.#changeEndDisplay(modalType);
-            return;
-        }
-        if (modalType === ModalType.places || modalType === ModalType.updatePlaces) {
-            this.#changePlaceDisplay(modalType, formNum, placeId);
-        }
-        if (modalType === ModalType.recommend) {
-            this.#changePlaceDisplay(modalType, placeNum.value(), placeId, formNum);
-        }
+        if (modalType === ModalType.start || modalType === ModalType.updateStart) this.#changeStartDisplay(modalType);
+        else if (modalType === ModalType.end || modalType === ModalType.updateEnd) this.#changeEndDisplay(modalType);
+        else if (modalType === ModalType.places || modalType === ModalType.updatePlaces) this.#changePlaceDisplay(modalType, formNum, placeId);
+        else if (modalType === ModalType.recommend) this.#changePlaceDisplay(modalType, placeNum.value(), placeId, formNum);
     }
 
     #changeStartDisplay(modalType) {

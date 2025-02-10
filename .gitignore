@@ -38,7 +38,3 @@ build/
 
 ### Tailwind CSS ###
 **/src/main/**/css/tailwind.css
-
-### Google Application Credentials ###
-.credentials/*
-!.credentials/.gitkeep

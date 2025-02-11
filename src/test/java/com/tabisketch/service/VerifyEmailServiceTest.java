@@ -44,29 +44,37 @@ public class VerifyEmailServiceTest {
     }
 
     @ParameterizedTest
-    @MethodSource("expirationTestData")
-    public void testExpiration(final EmailVerificationToken evToken) {
-        when(this.emailVerificationTokensMapper.selectByUUID(any())).thenReturn(evToken);
+    @MethodSource("lifeTimeTestData")
+    public void testExpiration(final LifeTimeTestData testData) {
+        when(this.emailVerificationTokensMapper.selectByUUID(any())).thenReturn(testData.emailVerificationToken);
         when(this.usersMapper.updateEmailVerified(anyInt(), anyBoolean())).thenReturn(1);
         when(this.emailVerificationTokensMapper.delete(any())).thenReturn(1);
 
-        final var uuid = evToken.getUuid().toString();
+        final var uuid = testData.emailVerificationToken.getUuid().toString();
 
         try {
             this.verifyEmailService.execute(uuid);
         } catch (final Exception e) {
             System.out.println(e.getMessage());
-            assert true;
+            assert !testData.isSuccess;
             return;
         }
-        assert false;
+        assert testData.isSuccess;
     }
 
-    private static Stream<Object> expirationTestData() {
+    public record LifeTimeTestData(EmailVerificationToken emailVerificationToken, boolean isSuccess) {
+    }
+
+    private static Stream<Object> lifeTimeTestData() {
         final var stream = Stream.builder();
-//        stream.add(new EmailVerificationToken(UUID.fromString("bd725533-53a3-4a2d-9289-7fcbc7250d82"), 1, LocalDateTime.now().minusMinutes(29))); // 通らない
-        stream.add(new EmailVerificationToken(UUID.fromString("bd725533-53a3-4a2d-9289-7fcbc7250d82"), 1, LocalDateTime.now().minusMinutes(30)));
-        stream.add(new EmailVerificationToken(UUID.fromString("bd725533-53a3-4a2d-9289-7fcbc7250d82"), 1, LocalDateTime.now().minusMinutes(31)));
+        final var uuid = UUID.fromString("bd725533-53a3-4a2d-9289-7fcbc7250d82");
+        final var createdAt = LocalDateTime.now().minusMinutes(EmailVerificationToken.LIFETIME_MINUTES);
+
+        stream.add(new LifeTimeTestData(
+                new EmailVerificationToken(uuid, 1, createdAt.minusMinutes(1)), false));
+        stream.add(new LifeTimeTestData(
+                new EmailVerificationToken(uuid, 1, createdAt.plusMinutes(1)), true));
+
         return stream.build();
     }
 }

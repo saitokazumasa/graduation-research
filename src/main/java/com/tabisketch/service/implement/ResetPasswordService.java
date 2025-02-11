@@ -4,7 +4,10 @@ import com.tabisketch.bean.entity.ResetPasswordToken;
 import com.tabisketch.bean.entity.User;
 import com.tabisketch.bean.form.ResetPasswordForm;
 import com.tabisketch.bean.form.SendMailForm;
-import com.tabisketch.exception.*;
+import com.tabisketch.exception.FailedDeleteException;
+import com.tabisketch.exception.FailedSelectException;
+import com.tabisketch.exception.FailedUpdateException;
+import com.tabisketch.exception.InvalidResetPasswordTokenException;
 import com.tabisketch.mapper.IResetPasswordTokensMapper;
 import com.tabisketch.mapper.IUsersMapper;
 import com.tabisketch.service.IResetPasswordService;
@@ -46,7 +49,7 @@ public class ResetPasswordService implements IResetPasswordService {
         // トークン取得
         final var _uuid = UUID.fromString(uuid);
         final ResetPasswordToken rpToken = this.resetPasswordTokensMapper.selectByUuid(_uuid);
-        if (rpToken == null) throw new FailedSelectException("failed to find token");
+        if (rpToken == null) throw new FailedSelectException("failed to find reset password token");
 
         // ユーザー取得
         final User user = this.usersMapper.selectById(rpToken.getUserId());
@@ -54,9 +57,7 @@ public class ResetPasswordService implements IResetPasswordService {
 
         // 有効期限を検証
         final var now = LocalDateTime.now();
-        if (!rpToken.getCreatedAt().equals(now) && rpToken.getCreatedAt().isAfter(now))
-            throw new InvalidResetPasswordTokenException("password reset token is disabled");
-        if (rpToken.getCreatedAt().plusMinutes(30).isBefore(now))
+        if (!rpToken.getLifeTime().equals(now) && rpToken.getLifeTime().isBefore(now))
             throw new InvalidResetPasswordTokenException("password reset token is disabled");
 
         // パスワード更新

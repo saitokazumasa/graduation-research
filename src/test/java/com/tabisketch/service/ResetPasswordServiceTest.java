@@ -60,34 +60,42 @@ public class ResetPasswordServiceTest {
     }
 
     @ParameterizedTest
-    @MethodSource("expirationTestData")
-    public void testExpiration(final ResetPasswordToken rpToken) {
+    @MethodSource("lifeTimeTestData")
+    public void testLifeTime(final LifeTimeTestData testData) {
         final var user = ExampleUser.gen();
 
-        when(this.resetPasswordTokensMapper.selectByUuid(any())).thenReturn(rpToken);
+        when(this.resetPasswordTokensMapper.selectByUuid(any())).thenReturn(testData.resetPasswordToken);
         when(this.usersMapper.selectById(anyInt())).thenReturn(user);
         when(this.passwordEncoder.encode(anyString())).thenReturn("encrypted");
         when(this.usersMapper.updatePassword(anyInt(), anyString())).thenReturn(1);
         when(this.resetPasswordTokensMapper.delete(any())).thenReturn(1);
 
-        final var uuid = rpToken.getUuid().toString();
+        final var uuid = testData.resetPasswordToken.getUuid().toString();
         final var form = ExampleResetPasswordForm.gen();
 
         try {
             this.resetPasswordService.execute(uuid, form);
         } catch (final Exception e) {
             System.out.println(e.getMessage());
-            assert true;
+            assert !testData.isSuccess;
             return;
         }
-        assert false;
+        assert testData.isSuccess;
     }
 
-    private static Stream<Object> expirationTestData() {
+    public record LifeTimeTestData(ResetPasswordToken resetPasswordToken, boolean isSuccess) {
+    }
+
+    private static Stream<Object> lifeTimeTestData() {
         final var stream = Stream.builder();
-//        stream.add(new ResetPasswordToken(UUID.fromString("bd725533-53a3-4a2d-9289-7fcbc7250d82"), 1, LocalDateTime.now().minusMinutes(29))); // 通らない
-        stream.add(new ResetPasswordToken(UUID.fromString("bd725533-53a3-4a2d-9289-7fcbc7250d82"), 1, LocalDateTime.now().minusMinutes(30)));
-        stream.add(new ResetPasswordToken(UUID.fromString("bd725533-53a3-4a2d-9289-7fcbc7250d82"), 1, LocalDateTime.now().minusMinutes(31)));
+        final var uuid = UUID.fromString("bd725533-53a3-4a2d-9289-7fcbc7250d82");
+        final var createdAt = LocalDateTime.now().minusMinutes(ResetPasswordToken.LIFETIME_MINUTES);
+
+        stream.add(new LifeTimeTestData(
+                new ResetPasswordToken(uuid, 1, createdAt.minusMinutes(1)), false));
+        stream.add(new LifeTimeTestData(
+                new ResetPasswordToken(uuid, 1, createdAt.plusMinutes(1)), true));
+
         return stream.build();
     }
 }

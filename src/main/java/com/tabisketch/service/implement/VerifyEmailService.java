@@ -34,9 +34,7 @@ public class VerifyEmailService implements IVerifyEmailService {
 
         // 有効期限を検証
         final var now = LocalDateTime.now();
-        if (!evToken.getCreatedAt().equals(now) && evToken.getCreatedAt().isAfter(now))
-            throw new InvalidEmailVerificationTokenException("email verification token is disabled");
-        if (evToken.getCreatedAt().plusMinutes(30).isBefore(now))
+        if (!evToken.getLifeTime().equals(now) && evToken.getLifeTime().isBefore(now))
             throw new InvalidEmailVerificationTokenException("email verification token is disabled");
 
         // メールアドレス認証

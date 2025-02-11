@@ -14,12 +14,13 @@
         </div>
         <div class="flex flex-col">
             <label class="text-center bg-red-50 flex justify-center items-center w-full" style="aspect-ratio: 5/1">
+                <img th:src="${plan.thumbnail}" alt="サムネイル画像">
             </label>
             <div class="flex">
                 <div class="flex w-full mx-4">
                     <div class="lg:w-80 sm:w-52 w-32"></div>
                     <div class="w-auto text-center mx-auto my-10">
-                        <span class="font-bold w-full sm:text-3xl text-xl text-center" th:text="${title}"></span>
+                        <span class="font-bold w-full sm:text-3xl text-xl text-center" th:text="${plan.title}"></span>
                     </div>
                     <div class="flex items-center justify-center lg:w-80 sm:w-40 w-32 mr-10">
                         <button type="button" class="sm:mx-4 mx-2 block item s-center justify-center button-secondary lg:w-24 w-24 lg:text-base sm:text-sm" onclick="window.location.href='/share/packing'">持ち物</button>
@@ -48,7 +49,7 @@
                     </div>
                 </div>
                 <div class="flex flex-col mt-6 mb-10">
-                    <div th:each="place, placeStatus : ${placeList}" class="mb-6">
+                    <div th:each="place, placeStatus : ${plan.placeList}" class="mb-6">
                         <div th:if="${placeStatus.first}">
                             <p class="mb-2 sm:text-lg text-base">出発地点</p>
                             <th:block th:replace="~{fragment/detail-place :: start(${place})}"/>

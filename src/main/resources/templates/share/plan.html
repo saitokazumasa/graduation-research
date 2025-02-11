@@ -24,12 +24,12 @@
                     </div>
                     <div class="flex items-center justify-center lg:w-80 sm:w-40 w-32 mr-10">
                         <a th:href="@{/share/__${plan.uuid}__/packings}" class="sm:mx-4 mx-2 block item s-center justify-center button-secondary lg:w-24 w-24 lg:text-base sm:text-sm text-center">持ち物</a>
-                        <button type="button" class="mx-2">
+                        <div class="mx-2">
                             <th:block th:replace="~{fragment/popup :: link-share}"/>
-                        </button>
-                        <button type="button" class="mx-2">
+                        </div>
+                        <div class="mx-2">
                             <th:block th:replace="~{fragment/popup :: delete-plan}"/>
-                        </button>
+                        </div>
                         <button onclick="openPopup()" class="sm:hidden inline-block h-12 w-12 my-auto mr-8 cursor-pointer">
                             <th:block th:replace="~{fragment/svg :: map}"/>
                         </button>

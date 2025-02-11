@@ -18,6 +18,13 @@ public interface IPlansMapper {
     @Select("SELECT * FROM plans WHERE user_id = #{userId}")
     List<Plan> selectByUserId(final int userId);
 
+    @Update("UPDATE plans SET " +
+            "   title = #{title}, " +
+            "   editable = #{editable}, " +
+            "   publicly_viewable = #{publiclyViewable} " +
+            "WHERE id = #{id}")
+    int update(final Plan plan);
+
     @Delete("DELETE FROM plans WHERE uuid = #{uuid}")
     int delete(final UUID uuid);
 }

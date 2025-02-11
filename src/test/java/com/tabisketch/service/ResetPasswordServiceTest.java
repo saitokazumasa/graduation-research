@@ -41,7 +41,7 @@ public class ResetPasswordServiceTest {
         final var rpToken = ExampleResetPasswordToken.gen();
         final var user = ExampleUser.gen();
 
-        when(this.resetPasswordTokensMapper.selectByUuid(any())).thenReturn(rpToken);
+        when(this.resetPasswordTokensMapper.selectByUUID(any())).thenReturn(rpToken);
         when(this.usersMapper.selectById(anyInt())).thenReturn(user);
         when(this.passwordEncoder.encode(anyString())).thenReturn("encrypted");
         when(this.usersMapper.updatePassword(anyInt(), anyString())).thenReturn(1);
@@ -51,7 +51,7 @@ public class ResetPasswordServiceTest {
         final var form = ExampleResetPasswordForm.gen();
         this.resetPasswordService.execute(uuid, form);
 
-        verify(this.resetPasswordTokensMapper).selectByUuid(any());
+        verify(this.resetPasswordTokensMapper).selectByUUID(any());
         verify(this.usersMapper).selectById(anyInt());
         verify(this.passwordEncoder).encode(anyString());
         verify(this.usersMapper).updatePassword(anyInt(), anyString());
@@ -64,7 +64,7 @@ public class ResetPasswordServiceTest {
     public void testLifeTime(final LifeTimeTestData testData) {
         final var user = ExampleUser.gen();
 
-        when(this.resetPasswordTokensMapper.selectByUuid(any())).thenReturn(testData.resetPasswordToken);
+        when(this.resetPasswordTokensMapper.selectByUUID(any())).thenReturn(testData.resetPasswordToken);
         when(this.usersMapper.selectById(anyInt())).thenReturn(user);
         when(this.passwordEncoder.encode(anyString())).thenReturn("encrypted");
         when(this.usersMapper.updatePassword(anyInt(), anyString())).thenReturn(1);

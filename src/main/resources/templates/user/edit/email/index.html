@@ -10,11 +10,10 @@
     <div th:if="${param.error}" class="error-message">
         パスワードに誤りがあります
     </div>
-    <form th:action="@{/user/edit/mail}" th:object="${editMailAddressForm}" method="post" class="w-full sm:max-w-lg max-w-xs">
-        <input th:field="*{currentMailAddress}" required hidden aria-label>
+    <form th:action="@{/user/edit/email}" th:object="${editEmailForm}" method="post" class="w-full sm:max-w-lg max-w-xs">
         <div class="my-10">
             <label for="mail" class="block sm:text-base text-sp-default sm:my-1 my-0.5 text-sm">新しいメールアドレス</label>
-            <input th:field="*{newMailAddress}" id="mail" type="email" required class="w-full input"/>
+            <input th:field="*{newEmail}" id="mail" type="email" required class="w-full input"/>
         </div>
         <div class="my-10">
             <label for="currentPassword" class="block sm:text-base text-sp-default sm:my-1 my-0.5 text-sm">現在のパスワード</label>

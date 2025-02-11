@@ -48,7 +48,7 @@ public class ResetPasswordService implements IResetPasswordService {
     public void execute(final String uuid, final ResetPasswordForm form) throws MessagingException {
         // トークン取得
         final var _uuid = UUID.fromString(uuid);
-        final ResetPasswordToken rpToken = this.resetPasswordTokensMapper.selectByUuid(_uuid);
+        final ResetPasswordToken rpToken = this.resetPasswordTokensMapper.selectByUUID(_uuid);
         if (rpToken == null) throw new FailedSelectException("failed to find reset password token");
 
         // ユーザー取得
@@ -67,7 +67,7 @@ public class ResetPasswordService implements IResetPasswordService {
 
         // トークン削除
         final boolean wasDeletedRPToken = this.resetPasswordTokensMapper.delete(_uuid) == 1;
-        if (!wasDeletedRPToken) throw new FailedDeleteException("failed to delete token");
+        if (!wasDeletedRPToken) throw new FailedDeleteException("failed to delete password reset toke");
 
         // 編集通知メールを送信
         final SendMailForm sendMailForm = SendMailForm.genCompleteResetPasswordMail(tabisketchEmail, user.getEmail());

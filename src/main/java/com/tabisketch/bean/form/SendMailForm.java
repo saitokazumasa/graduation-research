@@ -20,7 +20,7 @@ public class SendMailForm {
     @NotBlank
     private String content;
 
-    public static SendMailForm genCreateUserMail(final String from, final String to, final String uuid) {
+    public static SendMailForm genRegisterMail(final String from, final String to, final String uuid) {
         final String subject = "【たびすけっち】メールアドレスの認証をお願いします";
         final String content = String.format("""
                         たびすけっちをご利用いただき、ありがとうございます。
@@ -51,7 +51,7 @@ public class SendMailForm {
     }
 
     public static SendMailForm genResetPasswordMail(final String from, final String to, final String uuid) {
-        final String subject = "【【たびすけっち】パスワードの再設定をお願いします";
+        final String subject = "【たびすけっち】パスワードの再設定をお願いします";
         final String content = String.format("""
                         たびすけっちをご利用いただき、ありがとうございます。
                         パスワードリセットを受け付けました。
@@ -77,7 +77,7 @@ public class SendMailForm {
     }
 
     public static SendMailForm genCompleteResetPasswordMail(final String from, final String to) {
-        final String subject = "【【たびすけっち】パスワードが変更されました";
+        final String subject = "【たびすけっち】パスワードが変更されました";
         final String content = String.format("""
                         たびすけっちをご利用いただき、ありがとうございます。
                         以下内容で変更を受け付けました。
@@ -94,6 +94,60 @@ public class SendMailForm {
                         お問い合わせ
                         %s
                         """,
+                URL.TABISKETCH_DOT_COM,
+                from
+        );
+        return new SendMailForm(from, to, subject, content);
+    }
+
+    public static SendMailForm genEditEmailMail(final String from, final String to, final String uuid) {
+        final String subject = "【たびすけっち】メールアドレスの認証をお願いします";
+        final String content = String.format("""
+                        たびすけっちをご利用いただき、ありがとうございます。
+                        以下内容で変更を受け付けました。
+                        
+                        ◆ 新しいメールアドレス: %s
+                        
+                        **以下URLをクリックして、メールアドレスを認証してください。**
+                        %s
+                        
+                        このリンクの有効期限は30分です。
+                        身に覚えのない場合は、このメールを破棄してください。
+                        
+                        ※このメールはシステムにより自動送信されました。
+                        
+                        たびすけっち
+                        %s
+                        お問い合わせ
+                        %s
+                        """,
+                to,
+                URL.TABISKETCH_DOT_COM + "/user/edit/email/v/" + uuid,
+                URL.TABISKETCH_DOT_COM,
+                from
+        );
+        return new SendMailForm(from, to, subject, content);
+    }
+
+    public static SendMailForm genComplateEditEmailMail(final String from, final String to) {
+        final String subject = "【たびすけっち】メールアドレスが変更されました";
+        final String content = String.format("""
+                        たびすけっちをご利用いただき、ありがとうございます。
+                        以下内容で変更を受け付けました。
+                        
+                        ◆ 新しいメールアドレス: %s
+                        
+                        身に覚えのない場合は、お手数をおかけしますが
+                        以下お問い合わせよりご連絡ください。
+                        
+                        ※このメールはシステムにより自動送信されました。
+                        
+                        たびすけっち
+                        %s
+                        お問い合わせ
+                        %s
+                        """,
+                to,
                 URL.TABISKETCH_DOT_COM,
                 from
         );

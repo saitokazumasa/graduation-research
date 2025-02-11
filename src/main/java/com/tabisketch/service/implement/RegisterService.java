@@ -57,7 +57,7 @@ public class RegisterService implements IRegisterService {
 
         // 認証メールを送信
         final String uuid = evToken.getUuid().toString();
-        final SendMailForm sendMailForm = SendMailForm.genCreateUserMail(tabisketchEmail, user.getEmail(), uuid);
+        final SendMailForm sendMailForm = SendMailForm.genRegisterMail(tabisketchEmail, user.getEmail(), uuid);
         this.sendMailService.execute(sendMailForm);
     }
 }

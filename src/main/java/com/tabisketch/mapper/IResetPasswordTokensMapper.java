@@ -12,7 +12,7 @@ public interface IResetPasswordTokensMapper {
     int insert(final ResetPasswordToken resetPasswordToken);
 
     @Select("SELECT * FROM reset_password_tokens WHERE uuid = #{uuid}")
-    ResetPasswordToken selectByUuid(final UUID uuid);
+    ResetPasswordToken selectByUUID(final UUID uuid);
 
     @Delete("DELETE FROM reset_password_tokens WHERE uuid = #{uuid}")
     int delete(final UUID uuid);

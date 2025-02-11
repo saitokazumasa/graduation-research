@@ -15,6 +15,9 @@ public interface IUsersMapper {
     @Select("SELECT * FROM users WHERE email = #{email}")
     User selectByEmail(final String email);
 
+    @Update("UPDATE users SET email = #{value} WHERE id = #{id}")
+    int updateEmail(final int id, final String value);
+
     @Update("UPDATE users SET password = #{value} WHERE id = #{id}")
     int updatePassword(final int id, final String value);
 

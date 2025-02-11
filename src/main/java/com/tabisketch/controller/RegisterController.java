@@ -3,7 +3,6 @@ package com.tabisketch.controller;
 import com.tabisketch.bean.form.RegisterForm;
 import com.tabisketch.service.IRegisterService;
 import com.tabisketch.service.IVerifyEmailService;
-import jakarta.mail.MessagingException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -44,7 +43,7 @@ public class RegisterController {
 
         try {
             this.registerService.execute(registerForm);
-        } catch (final MessagingException e) {
+        } catch (final Exception e) {
             System.err.println(e.getMessage());
             return "register/index";
         }

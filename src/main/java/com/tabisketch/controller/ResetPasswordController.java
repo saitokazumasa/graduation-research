@@ -4,7 +4,6 @@ import com.tabisketch.bean.form.ResetPasswordForm;
 import com.tabisketch.bean.form.SendResetPasswordMailForm;
 import com.tabisketch.service.IResetPasswordService;
 import com.tabisketch.service.ISendResetPasswordMailService;
-import jakarta.mail.MessagingException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -45,7 +44,7 @@ public class ResetPasswordController {
 
         try {
             this.sendResetPasswordMailService.execute(sendResetPasswordMailForm);
-        } catch (final MessagingException e) {
+        } catch (final Exception e) {
             System.err.println(e.getMessage());
             return "reset-password/index";
         }

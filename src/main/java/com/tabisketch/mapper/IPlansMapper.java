@@ -20,6 +20,7 @@ public interface IPlansMapper {
 
     @Update("UPDATE plans SET " +
             "   title = #{title}, " +
+            "   thumbnail_path = #{thumbnailPath}, " +
             "   editable = #{editable}, " +
             "   publicly_viewable = #{publiclyViewable} " +
             "WHERE id = #{id}")

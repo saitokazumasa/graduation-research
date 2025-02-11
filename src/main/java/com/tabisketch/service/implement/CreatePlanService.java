@@ -38,7 +38,7 @@ public class CreatePlanService implements ICreatePlanService {
         if (user == null) throw new FailedSelectException("failed to find user");
 
         // 追加
-        final var plan = new Plan(-1, UUID.randomUUID(), "", true, false, user.getId());
+        final var plan = new Plan(-1, UUID.randomUUID(), "", "", true, false, user.getId());
         final boolean wasInsertUser = this.plansMapper.insert(plan) == 1;
         if (!wasInsertUser) throw new FailedInsertException("failed to insert plan");
 

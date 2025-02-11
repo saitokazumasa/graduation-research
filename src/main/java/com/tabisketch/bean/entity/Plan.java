@@ -17,6 +17,8 @@ public class Plan {
     private UUID uuid;
     /// タイトル
     private String title;
+    /// サムネイル画像のパス
+    private String thumbnailPath;
     /// 編集可否フラグ
     private boolean editable;
     /// 公開閲覧可否フラグ

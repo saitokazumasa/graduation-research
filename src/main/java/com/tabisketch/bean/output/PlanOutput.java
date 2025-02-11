@@ -12,6 +12,7 @@ import java.util.UUID;
 public class PlanOutput {
     private UUID uuid;
     private String title;
+    private String thumbnailPath;
     private boolean editable;
     private boolean publiclyViewable;
 }

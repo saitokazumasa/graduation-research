@@ -39,7 +39,7 @@ public class ListPlanService implements IListPlanService {
 
         // データ加工
         final var output = new ArrayList<PlanOutput>();
-        planList.forEach(p -> output.add(new PlanOutput(p.getUuid(), p.getTitle(), p.isEditable(), p.isPubliclyViewable())));
+        planList.forEach(p -> output.add(new PlanOutput(p.getUuid(), p.getTitle(), p.getThumbnailPath(), p.isEditable(), p.isPubliclyViewable())));
         return output;
     }
 }

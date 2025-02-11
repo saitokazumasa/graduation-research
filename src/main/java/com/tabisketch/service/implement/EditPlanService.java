@@ -33,6 +33,7 @@ public class EditPlanService implements IEditPlanService {
                 plan.getId(),
                 plan.getUuid(),
                 form.getTitle(),
+                form.getThumbnailPath(),
                 form.isEditable(),
                 form.isPubliclyViewable(),
                 plan.getUserId()
@@ -45,6 +46,12 @@ public class EditPlanService implements IEditPlanService {
         if (updatedPlan == null) throw new FailedSelectException("failed to find plan");
 
         // データ加工
-        return new PlanOutput(updatedPlan.getUuid(), updatedPlan.getTitle(), updatedPlan.isEditable(), updatedPlan.isPubliclyViewable());
+        return new PlanOutput(
+                updatedPlan.getUuid(),
+                updatedPlan.getTitle(),
+                updatedPlan.getThumbnailPath(),
+                updatedPlan.isEditable(),
+                updatedPlan.isPubliclyViewable()
+        );
     }
 }

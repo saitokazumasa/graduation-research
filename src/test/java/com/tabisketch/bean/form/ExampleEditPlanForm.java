@@ -7,6 +7,7 @@ public class ExampleEditPlanForm {
     public static EditPlanForm gen() {
         return new EditPlanForm(
                 "title",
+                "",
                 true,
                 false
         );

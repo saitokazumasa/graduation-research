@@ -5,5 +5,5 @@ public class URL {
     }
 
     /// たびすけっちのURL
-    public static final String TabisketchDotCom = "https://tabisketch.com";
+    public static final String TABISKETCH_DOT_COM = "https://tabisketch.com";
 }

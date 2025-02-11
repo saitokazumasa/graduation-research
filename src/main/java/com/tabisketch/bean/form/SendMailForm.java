@@ -43,8 +43,8 @@ public class SendMailForm {
                         %s
                         """,
                 to,
-                URL.TabisketchDotCom + "/register/v/" + uuid,
-                URL.TabisketchDotCom,
+                URL.TABISKETCH_DOT_COM + "/register/v/" + uuid,
+                URL.TABISKETCH_DOT_COM,
                 from
         );
         return new SendMailForm(from, to, subject, content);
@@ -69,8 +69,8 @@ public class SendMailForm {
                         お問い合わせ
                         %s
                         """,
-                URL.TabisketchDotCom + "/reset-password/r/" + uuid,
-                URL.TabisketchDotCom,
+                URL.TABISKETCH_DOT_COM + "/reset-password/r/" + uuid,
+                URL.TABISKETCH_DOT_COM,
                 from
         );
         return new SendMailForm(from, to, subject, content);
@@ -94,7 +94,7 @@ public class SendMailForm {
                         お問い合わせ
                         %s
                         """,
-                URL.TabisketchDotCom,
+                URL.TABISKETCH_DOT_COM,
                 from
         );
         return new SendMailForm(from, to, subject, content);

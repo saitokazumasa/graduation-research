@@ -23,9 +23,9 @@
                         <span class="font-bold w-full sm:text-3xl text-xl text-center" th:text="${plan.title}"></span>
                     </div>
                     <div class="flex items-center justify-center lg:w-80 sm:w-40 w-32 mr-10">
-                        <button type="button" class="sm:mx-4 mx-2 block item s-center justify-center button-secondary lg:w-24 w-24 lg:text-base sm:text-sm" onclick="window.location.href='/share/packing'">持ち物</button>
-                        <button type="button" onclick="sharePopup()" class="mx-2">
-                            <th:block th:replace="~{fragment/svg :: link}"/>
+                        <a th:href="@{/share/${plan.uuid}/packings}" class="sm:mx-4 mx-2 block item s-center justify-center button-secondary lg:w-24 w-24 lg:text-base sm:text-sm">持ち物</a>
+                        <button type="button" class="mx-2">
+                            <th:block th:replace="~{fragment/popup :: link-share}"/>
                         </button>
                         <button type="button" onclick="deletePopup()" class="mx-2">
                             <th:block th:replace="~{fragment/svg :: trash}"/>

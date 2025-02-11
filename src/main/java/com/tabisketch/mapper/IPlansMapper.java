@@ -1,12 +1,10 @@
 package com.tabisketch.mapper;
 
 import com.tabisketch.bean.entity.Plan;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Options;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @Mapper
 public interface IPlansMapper {
@@ -14,6 +12,12 @@ public interface IPlansMapper {
     @Options(useGeneratedKeys = true, keyProperty = "id,uuid")
     int insert(final Plan plan);
 
+    @Select("SELECT * FROM plans WHERE uuid = #{uuid}")
+    Plan selectByUUID(final UUID uuid);
+
     @Select("SELECT * FROM plans WHERE user_id = #{userId}")
     List<Plan> selectByUserId(final int userId);
+
+    @Delete("DELETE FROM plans WHERE uuid = #{uuid}")
+    int delete(final UUID uuid);
 }

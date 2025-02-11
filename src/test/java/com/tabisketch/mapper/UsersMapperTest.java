@@ -1,7 +1,6 @@
 package com.tabisketch.mapper;
 
 import com.tabisketch.bean.entity.ExampleUser;
-import com.tabisketch.bean.entity.User;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,47 +11,41 @@ import org.springframework.test.context.jdbc.Sql;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class UsersMapperTest {
     @Autowired
-    private IUsersMapper usersMapper;
+    private IUsersMapper mapper;
 
     @Test
     public void testInsert() {
-        final var user = ExampleUser.generate();
-        assert this.usersMapper.insert(user) == 1;
-        assert user.getId() != -1;
+        final var entity = ExampleUser.gen();
+        entity.setId(-1);
+        assert this.mapper.insert(entity) == 1;
+        assert entity.getId() != -1;
     }
 
     @Test
-    @Sql("classpath:/sql/CreateUser.sql")
+    @Sql({"classpath:/sql/InsertExampleUser.sql"})
     public void testSelectById() {
-        final int id = ExampleUser.generate().getId();
-        assert this.usersMapper.selectById(id) != null;
+        final var entity = ExampleUser.gen();
+        assert this.mapper.selectById(entity.getId()) != null;
     }
 
     @Test
-    @Sql("classpath:/sql/CreateUser.sql")
-    public void testSelectByMailAddress() {
-        final String mailAddress = ExampleUser.generate().getMailAddress();
-        assert this.usersMapper.selectByMailAddress(mailAddress) != null;
+    @Sql({"classpath:/sql/InsertExampleUser.sql"})
+    public void testSelectByEmail() {
+        final var entity = ExampleUser.gen();
+        assert this.mapper.selectByEmail(entity.getEmail()) != null;
     }
 
     @Test
-    @Sql("classpath:/sql/CreateUser.sql")
-    public void testUpdateMailAddress() {
-        final var user = ExampleUser.generate();
-        assert this.usersMapper.updateMailAddress(user.getId(), "new_" + user.getMailAddress()) == 1;
-    }
-
-    @Test
-    @Sql("classpath:/sql/CreateUser.sql")
+    @Sql({"classpath:/sql/InsertExampleUser.sql"})
     public void testUpdatePassword() {
-        final var user = ExampleUser.generate();
-        assert this.usersMapper.updatePassword(user.getId(), "new_" + user.getPassword()) == 1;
+        final var entity = ExampleUser.gen();
+        assert this.mapper.updatePassword(entity.getId(), "$2a$10$FFbAunp0hfeWTCune.XqwO/P/61fqWlbruV/8wqzrhM3Pw0VuXxpa") == 1;
     }
 
     @Test
-    @Sql("classpath:/sql/CreateUser.sql")
-    public void testUpdateMailAddressAuthenticated() {
-        final var user = ExampleUser.generate();
-        assert this.usersMapper.updateMailAddressAuthenticated(user.getId(), !user.getMailAddressAuthenticated()) == 1;
+    @Sql({"classpath:/sql/InsertExampleUser.sql"})
+    public void testUpdateEmailVerified() {
+        final var entity = ExampleUser.gen();
+        assert this.mapper.updateEmailVerified(entity.getId(), !entity.isEmailVerified()) == 1;
     }
 }

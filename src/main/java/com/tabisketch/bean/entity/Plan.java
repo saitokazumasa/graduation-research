@@ -6,25 +6,23 @@ import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
-@Data
+/// 旅行プラン
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 public class Plan {
+    /// 識別子
     private int id;
+    /// 識別子文字列
     private UUID uuid;
+    /// タイトル
     private String title;
-    private int userId;
+    /// サムネイル画像のパス
+    private String thumbnailPath;
+    /// 編集可否フラグ
     private boolean editable;
-    private boolean publicAccessible;
-
-    public static Plan generate(final String title, final int userId) {
-        return new Plan(
-                -1,
-                UUID.randomUUID(),
-                title,
-                userId,
-                true,
-                false
-        );
-    }
+    /// 公開閲覧可否フラグ
+    private boolean publiclyViewable;
+    /// 関連する「ユーザー」の識別子
+    private int userId;
 }

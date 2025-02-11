@@ -1,9 +1,6 @@
 package com.tabisketch.service;
 
 import com.tabisketch.bean.entity.ExamplePlan;
-import com.tabisketch.exception.DeleteFailedException;
-import com.tabisketch.mapper.IDaysMapper;
-import com.tabisketch.mapper.IPlacesMapper;
 import com.tabisketch.mapper.IPlansMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,24 +13,21 @@ import static org.mockito.Mockito.when;
 
 @SpringBootTest
 public class DeletePlanServiceTest {
-    @MockitoBean
-    private IPlansMapper plansMapper;
-    @MockitoBean
-    private IDaysMapper daysMapper;
-    @MockitoBean
-    private IPlacesMapper placesMapper;
     @Autowired
     private IDeletePlanService deletePlanService;
+    @MockitoBean
+    private IPlansMapper plansMapper;
 
     @Test
-    public void testExecute() throws DeleteFailedException {
-        when(this.plansMapper.deleteByUUID(any())).thenReturn(1);
+    public void testExecute() {
+        final var plan = ExamplePlan.gen();
+        when(this.plansMapper.selectByUUID(any())).thenReturn(plan);
+        when(this.plansMapper.delete(any())).thenReturn(1);
 
-        final var uuid = ExamplePlan.generate().getUuid().toString();
+        final String uuid = plan.getUuid().toString();
         this.deletePlanService.execute(uuid);
 
-        verify(this.placesMapper).deleteByPlanUUID(any());
-        verify(this.daysMapper).deleteByPlanUUID(any());
-        verify(this.plansMapper).deleteByUUID(any());
+        verify(this.plansMapper).selectByUUID(any());
+        verify(this.plansMapper).delete(any());
     }
 }

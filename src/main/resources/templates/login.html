@@ -11,7 +11,7 @@
     <form th:action="@{/login}" method="post" class="w-full sm:max-w-lg max-w-xs">
         <div class="mb-4 mt-10">
             <label for="mail" class="block sm:text-base text-sp-default sm:my-1 my-0.5 text-sm">メールアドレス</label>
-            <input id="mail" name="mailAddress" type="email" required class="w-full input"/>
+            <input id="mail" name="email" type="email" required class="w-full input"/>
         </div>
         <div class="mb-10 mt-10">
             <label for="password" class="block sm:text-base text-sp-default sm:my-1 my-0.5 text-sm">パスワード</label>
@@ -22,7 +22,7 @@
         </div>
     </form>
     <div class="mt-10">
-        <a th:href="@{/password-reset}" class="text-sm text-link hover:text-link-hover underline">パスワードを忘れた方</a>
+        <a th:href="@{/reset-password}" class="text-sm text-link hover:text-link-hover underline">パスワードを忘れた方</a>
     </div>
 </main>
 

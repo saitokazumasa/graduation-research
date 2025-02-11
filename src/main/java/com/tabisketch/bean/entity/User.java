@@ -4,21 +4,17 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
+/// ユーザー
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 public class User {
+    /// 識別子
     private int id;
-    private String mailAddress;
+    /// メールアドレス
+    private String email;
+    /// パスワード
     private String password;
-    private Boolean mailAddressAuthenticated;
-
-    public static User generate(final String mailAddress, final String password) {
-        return new User(
-                -1,
-                mailAddress,
-                password,
-                false
-        );
-    }
+    /// メールアドレス認証フラグ
+    private boolean emailVerified;
 }

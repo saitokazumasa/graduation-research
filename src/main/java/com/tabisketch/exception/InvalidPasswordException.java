@@ -1,7 +1,7 @@
 package com.tabisketch.exception;
 
-public class InvalidPasswordException extends Exception {
-    public InvalidPasswordException() {
-        super("無効なパスワードです。");
+public class InvalidPasswordException extends RuntimeException {
+    public InvalidPasswordException(final String message) {
+        super(message);
     }
 }

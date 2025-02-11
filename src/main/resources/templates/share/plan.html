@@ -39,10 +39,10 @@
         </div>
         <div class="mx-10 flex">
             <section class="sm:w-1/2 w-full">
-                <div class="flex space-x-0 pb-[0.625rem] border-b-2 mt-6">
+                <div class="flex items-end space-x-0 pb-[0.625rem] border-b-2 mt-6">
                     <div th:each="index : ${#numbers.sequence(1, plan.days)}">
                         <a th:href="@{/share/__${plan.uuid}__/plan(day=__${index}__)}"
-                           th:classappend="${index == selectedDay} ? 'pt-5 pb-3 sm:px-6 lg:px-12 px-8 bg-green-600 text-white h-12' : 'pt-3 pb-3 sm:px-4 lg:px-10 px-6 bg-green-400 text-white'"
+                           th:classappend="${index == selectedDay} ? 'pt-5 pb-3 sm:px-6 lg:px-12 px-8 bg-green-600 text-white text-lg h-12' : 'pt-3 pb-3 sm:px-4 lg:px-10 px-6 bg-green-400 text-white'"
                            class="rounded-t-md text-center items-center cursor-pointer">
                             <span th:text="${index} + '日目'"></span>
                         </a>
@@ -55,7 +55,7 @@
                             <th:block th:replace="~{fragment/detail-place :: start(${place})}"/>
                         </div>
                         <div th:if="${!placeStatus.first && !placeStatus.last}">
-                            <p class="mb-2 sm:text-lg text-base">目的地</p>
+                            <p class="mb-2 sm:text-lg text-base" th:if="${placeStatus.index == 1}">目的地</p>
                             <th:block th:replace="~{fragment/detail-place :: places(${place})}"/>
                         </div>
                         <div th:if="${placeStatus.last}">

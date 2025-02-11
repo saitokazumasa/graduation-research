@@ -7,7 +7,6 @@ deletePlanButton.addEventListener('click', (e) => {
     const path = window.location.pathname;
     // 正規表現で`/share/{uuid}/plan`形式の`uuid`を抽出
     const uuid = path.match(/\/share\/([^\/]+)\/plan/)[1];
-    console.log(uuid[1]);
 
     const csrfToken = document.querySelector('meta[name="_csrf"]').content;
     const csrfHeaderName = document.querySelector('meta[name="_csrf_header"]').content;

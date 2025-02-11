@@ -19,6 +19,6 @@ public class CreatePlanController {
     @GetMapping
     public String get(final @AuthenticationPrincipal(expression = AuthenticationPrincipalExpression.EMAIL) String email) {
         final String uuid = this.createPlanService.execute(email);
-        return String.format("redirect:/plan/%s/edit", uuid);
+        return String.format("redirect:/plan/d/%s/edit", uuid);
     }
 }

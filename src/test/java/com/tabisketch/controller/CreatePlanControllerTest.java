@@ -29,6 +29,6 @@ public class CreatePlanControllerTest {
         when(this.createPlanService.execute(anyString())).thenReturn(uuid);
         mockMvc.perform(get("/plan/create"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/plan/" + uuid + "/edit"));
+                .andExpect(redirectedUrl("/plan/d/" + uuid + "/edit"));
     }
 }

@@ -20,7 +20,7 @@ public class EditPlanControllerTest {
     @WithMockUser
     public void testGet() throws Exception {
         final var uuid = ExamplePlan.gen().getUuid().toString();
-        mockMvc.perform(get("/plan/" + uuid + "/edit"))
+        mockMvc.perform(get("/plan/d/" + uuid + "/edit"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("plan/edit"));
     }

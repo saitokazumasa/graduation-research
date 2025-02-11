@@ -21,10 +21,11 @@ public class WebSecurityConfiguration {
                         .requestMatchers("/", "/top").permitAll()
                         .requestMatchers("/register/**").permitAll()
                         .requestMatchers("/reset-password/**").permitAll()
-                        .requestMatchers("/share/**").permitAll()
-                        .requestMatchers("/user/edit/email/v/*").permitAll()
                         .requestMatchers("/user/**").authenticated()
+                        .requestMatchers("/user/edit/email/v/*").permitAll()
+                        .requestMatchers("/user/edit/email/complate").permitAll()
                         .requestMatchers("/plan/**").authenticated()
+                        .requestMatchers("/share/**").permitAll()
                         .requestMatchers("/api/**").authenticated()
                         .anyRequest().denyAll()
                 ).formLogin(a -> a

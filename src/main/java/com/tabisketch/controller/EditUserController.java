@@ -1,8 +1,10 @@
 package com.tabisketch.controller;
 
 import com.tabisketch.bean.form.EditEmailForm;
+import com.tabisketch.bean.form.EditPasswordForm;
 import com.tabisketch.constant.AuthenticationPrincipalExpression;
 import com.tabisketch.service.IEditEmailService;
+import com.tabisketch.service.IEditPasswordService;
 import com.tabisketch.service.ISendEditEmailMailService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -20,13 +22,16 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class EditUserController {
     private final ISendEditEmailMailService sendEditEmailMailService;
     private final IEditEmailService editEmailService;
+    private final IEditPasswordService editPasswordService;
 
     public EditUserController(
             final ISendEditEmailMailService sendEditEmailMailService,
-            final IEditEmailService editEmailService
+            final IEditEmailService editEmailService,
+            final IEditPasswordService editPasswordService
     ) {
         this.sendEditEmailMailService = sendEditEmailMailService;
         this.editEmailService = editEmailService;
+        this.editPasswordService = editPasswordService;
     }
 
     @GetMapping
@@ -83,5 +88,33 @@ public class EditUserController {
     @GetMapping("/email/complate")
     public String complateEmail() {
         return "user/edit/email/complate";
+    }
+
+    @GetMapping("/password")
+    public String getPassword(final Model model) {
+        model.addAttribute("editPasswordForm", new EditPasswordForm());
+        return "user/edit/password/index";
+    }
+
+    @PostMapping("/password")
+    public String postPassword(
+            final @AuthenticationPrincipal(expression = AuthenticationPrincipalExpression.EMAIL) String email,
+            final @Validated EditPasswordForm editPasswordForm,
+            final BindingResult bindingResult
+    ) {
+        if (bindingResult.hasErrors()) return "user/edit/password/index";
+
+        try {
+            this.editPasswordService.execute(email, editPasswordForm);
+        } catch (final Exception e) {
+            System.err.println(e.getMessage());
+        }
+
+        return "redirect:/user/edit/password/complate";
+    }
+
+    @GetMapping("/password/complate")
+    public String complatePassword() {
+        return "user/edit/password/complate";
     }
 }

@@ -2,8 +2,11 @@ package com.tabisketch.controller;
 
 import com.tabisketch.bean.entity.ExampleNewEmailVerificartionToken;
 import com.tabisketch.bean.form.EditEmailForm;
+import com.tabisketch.bean.form.EditPasswordForm;
 import com.tabisketch.bean.form.ExampleEditEmailForm;
+import com.tabisketch.bean.form.ExampleEditPasswordForm;
 import com.tabisketch.service.IEditEmailService;
+import com.tabisketch.service.IEditPasswordService;
 import com.tabisketch.service.ISendEditEmailMailService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -29,6 +32,8 @@ public class EditUserControllerTest {
     private ISendEditEmailMailService sendEditEmailMailService;
     @MockitoBean
     private IEditEmailService editEmailService;
+    @MockitoBean
+    private IEditPasswordService editPasswordService;
 
     @Test
     @WithMockUser
@@ -60,8 +65,8 @@ public class EditUserControllerTest {
 
     @ParameterizedTest
     @WithMockUser
-    @MethodSource("validationTestData")
-    public void testValidation(final EditEmailForm form) throws Exception {
+    @MethodSource("validationTestDataEmail")
+    public void testValidationEmail(final EditEmailForm form) throws Exception {
         this.mockMvc.perform(post("/user/edit/email")
                         .flashAttr("editEmailForm", form)
                         .with(csrf()))
@@ -72,7 +77,7 @@ public class EditUserControllerTest {
                 .andExpect(view().name("user/edit/email/index"));
     }
 
-    private static Stream<Object> validationTestData() {
+    private static Stream<Object> validationTestDataEmail() {
         final var stream = Stream.builder();
         stream.add(new EditEmailForm("", ""));
         stream.add(new EditEmailForm("", "password"));
@@ -104,9 +109,61 @@ public class EditUserControllerTest {
 
     @Test
     @WithMockUser
-    public void testComplate() throws Exception {
+    public void testComplateEmail() throws Exception {
         this.mockMvc.perform(get("/user/edit/email/complate"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/edit/email/complate"));
+    }
+
+    @Test
+    @WithMockUser
+    public void testGetPassword() throws Exception {
+        mockMvc.perform(get("/user/edit/password"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/edit/password/index"));
+    }
+
+    @Test
+    @WithMockUser
+    public void testPostPassword() throws Exception {
+        final var form = ExampleEditPasswordForm.gen();
+        mockMvc.perform(post("/user/edit/password")
+                        .flashAttr("editPasswordForm", form)
+                        .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(model().hasNoErrors())
+                .andExpect(redirectedUrl("/user/edit/password/complate"));
+    }
+
+    @ParameterizedTest
+    @WithMockUser
+    @MethodSource("validationTestDataPassword")
+    public void testValidationPassword(final EditPasswordForm form) throws Exception {
+        this.mockMvc.perform(post("/user/edit/password")
+                        .flashAttr("editPasswordForm", form)
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(model().hasErrors())
+                .andExpect(model().attributeExists("editPasswordForm"))
+                .andExpect(model().attribute("editPasswordForm", form))
+                .andExpect(view().name("user/edit/password/index"));
+    }
+
+    private static Stream<Object> validationTestDataPassword() {
+        final var stream = Stream.builder();
+        stream.add(new EditPasswordForm("", "", ""));
+        stream.add(new EditPasswordForm("", "newPassword", "newPassword"));
+        stream.add(new EditPasswordForm("password", "", "newPassword"));
+        stream.add(new EditPasswordForm("password", "newPassword", ""));
+        stream.add(new EditPasswordForm("password", "newPassword", "pass"));
+        return stream.build();
+    }
+
+    @Test
+    @WithMockUser
+    public void testComplatePassword() throws Exception {
+        this.mockMvc.perform(get("/user/edit/password/complate"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/edit/password/complate"));
     }
 }

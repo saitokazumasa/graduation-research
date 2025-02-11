@@ -34,4 +34,11 @@ public class PlansMapperTest {
         final var userId = ExampleUser.gen().getId();
         assert this.mapper.selectByUserId(userId) != null;
     }
+
+    @Test
+    @Sql({"classpath:/sql/InsertExampleUser.sql", "classpath:/sql/InsertExamplePlan.sql"})
+    public void testDelete() {
+        final var uuid = ExamplePlan.gen().getUuid();
+        assert this.mapper.delete(uuid) == 1;
+    }
 }

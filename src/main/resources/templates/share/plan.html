@@ -40,11 +40,11 @@
         <div class="mx-10 flex">
             <section class="sm:w-1/2 w-full">
                 <div class="flex space-x-0 pb-[0.625rem] border-b-2 mt-6">
-                    <div th:each="day : ${days}">
-                        <a th:href="@{/share/plan(selectedDay=${day}, maxDays=${maxDays})}"
-                           th:classappend="${day == selectedDay} ? 'pt-5 pb-3 sm:px-6 lg:px-12 px-8 bg-green-600 text-white h-12' : 'pt-3 pb-3 sm:px-4 lg:px-10 px-6 bg-green-400 text-white'"
+                    <div th:each="index : ${#numbers.sequence(1, plan.days)}">
+                        <a th:href="@{/share/__${plan.uuid}__/plan(day=__${index}__)}"
+                           th:classappend="${index == selectedDay} ? 'pt-5 pb-3 sm:px-6 lg:px-12 px-8 bg-green-600 text-white h-12' : 'pt-3 pb-3 sm:px-4 lg:px-10 px-6 bg-green-400 text-white'"
                            class="rounded-t-md text-center items-center cursor-pointer">
-                            <span th:text="${day} + '日目'"></span>
+                            <span th:text="${index} + '日目'"></span>
                         </a>
                     </div>
                 </div>

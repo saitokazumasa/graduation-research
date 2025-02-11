@@ -15,6 +15,7 @@ import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -42,6 +43,7 @@ public class SendEditEmailMailService implements ISendEditEmailMailService {
     }
 
     @Override
+    @Transactional
     public void execute(final String currentEmail, final EditEmailForm form) throws MessagingException {
         // ユーザー取得
         final User user = this.usersMapper.selectByEmail(currentEmail);

@@ -14,6 +14,7 @@ import com.tabisketch.service.ISendMailService;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -38,6 +39,7 @@ public class EditEmailService implements IEditEmailService {
     }
 
     @Override
+    @Transactional
     public void execute(final String uuid) throws MessagingException {
         // トークン取得
         final var _uuid = UUID.fromString(uuid);

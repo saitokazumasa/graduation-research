@@ -13,6 +13,7 @@ import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class EditPasswordService implements IEditPasswordService {
@@ -34,6 +35,7 @@ public class EditPasswordService implements IEditPasswordService {
     }
 
     @Override
+    @Transactional
     public void execute(final String email, final EditPasswordForm form) throws MessagingException {
         // ユーザー取得
         final User user = this.usersMapper.selectByEmail(email);

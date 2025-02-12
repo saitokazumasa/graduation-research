@@ -53,17 +53,17 @@
                             <th:block th:replace="~{fragment/update-modal :: placesUpdateToggle(${placeStatus.index}, ${updatePlaceForm}, ${isCreateRoute})}"/>
                         </div>
                         <!-- 経路生成前に表示 -->
-                        <th:block th:if="${!isCreateRoute}" th:replace="~{fragment/modal :: placesToggle(1)}"/>
+                        <th:block th:if="${!isCreateRoute}" th:replace="~{fragment/modal :: placesToggle(${placeNum})}"/>
                     </div>
                     <div class="mb-6">
                         <p class="mb-2 sm:text-lg text-base">終了地点</p>
                         <!-- 終了地点が入力済みかで表示変更 -->
                         <th:block th:if="${endPlaceForm}" th:replace="~{fragment/modal :: end}"/>
-                        <th:block th:if="${updateEndForm}" th:replace="~{fragment/update-modal :: endUpdateToggle(updateEndForm)}"/>
+                        <th:block th:if="${updateEndForm}" th:replace="~{fragment/update-modal :: endUpdateToggle(${updateEndForm})}"/>
                     </div>
                     <!-- 経路生成後に表示 -->
                     <div th:if="${isCreateRoute}" class="addPlaces">
-                        <th:block th:replace="~{fragment/modal :: placesToggle(1)}"/>
+                        <th:block th:replace="~{fragment/modal :: placesToggle(${placeNum})}"/>
                     </div>
                     <!-- おすすめ目的地のセクション -->
                     <section class="pt-10">
@@ -150,14 +150,16 @@
             <th:block th:if="${updateStartForm}" th:replace="~{fragment/update-modal :: startUpdateForm(${updateStartForm})}"/>
         </div>
         <div id="placeFormDiv">
-            <th:block th:replace="~{fragment/modal :: placesForm(1, ${placeForm})}"/>
+            <th:block th:replace="~{fragment/modal :: placesForm(${placeNum}, ${placeForm})}"/>
         </div>
         <div id="endFormDiv">
             <th:block th:if="${endPlaceForm}" th:replace="~{fragment/modal :: endForm(${endPlaceForm})}"/>
             <th:block th:if="${updatePlaceForm}" th:replace="~{fragment/update-modal :: endUpdateForm(${updateEndForm})}"/>
         </div>
         <div id="updatePlaceFormDiv">
-            <th:block th:if="${updatePlaceForm}" th:replace="~{fragment/update-modal :: placesUpdateForm(1, ${updatePlaceForm})}"/>
+            <div th:each="updatePlaceForm, placeStatus : ${updatePlaceList}">
+                <th:block th:replace="~{fragment/update-modal :: placesUpdateToggle(${placeStatus.index}, ${updatePlaceForm}, ${isCreateRoute})}"/>
+            </div>
         </div>
         <div id="recommendFormDiv"></div>
     </div>

@@ -2,13 +2,13 @@ package com.tabisketch.service.implement;
 
 import com.tabisketch.bean.entity.User;
 import com.tabisketch.bean.form.EditPasswordForm;
+import com.tabisketch.bean.form.SendMailForm;
+import com.tabisketch.exception.FailedSelectException;
+import com.tabisketch.exception.FailedUpdateException;
 import com.tabisketch.exception.InvalidPasswordException;
-import com.tabisketch.exception.SelectFailedException;
-import com.tabisketch.exception.UpdateFailedException;
 import com.tabisketch.mapper.IUsersMapper;
 import com.tabisketch.service.IEditPasswordService;
 import com.tabisketch.service.ISendMailService;
-import com.tabisketch.valueobject.Mail;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,43 +17,40 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class EditPasswordService implements IEditPasswordService {
-    @Value("${SITE_URL}")
-    private String siteURL;
-    @Value("${spring.mail.username}")
-    private String fromMailAddress;
-
     private final IUsersMapper usersMapper;
     private final ISendMailService sendMailService;
     private final PasswordEncoder passwordEncoder;
+    private final String tabisketchEmail;
 
     public EditPasswordService(
             final IUsersMapper usersMapper,
             final ISendMailService sendMailService,
-            final PasswordEncoder passwordEncoder
+            final PasswordEncoder passwordEncoder,
+            final @Value("${spring.mail.username}") String tabisketchEmail
     ) {
         this.usersMapper = usersMapper;
         this.sendMailService = sendMailService;
         this.passwordEncoder = passwordEncoder;
+        this.tabisketchEmail = tabisketchEmail;
     }
 
     @Override
     @Transactional
-    public void execute(final EditPasswordForm editPasswordForm) throws SelectFailedException, InvalidPasswordException, UpdateFailedException, MessagingException {
-        // Userが存在しなければエラー
-        final User user = this.usersMapper.selectByMailAddress(editPasswordForm.getMailAddress());
-        if (user == null) throw new SelectFailedException(User.class.getName());
+    public void execute(final String email, final EditPasswordForm form) throws MessagingException {
+        // ユーザー取得
+        final User user = this.usersMapper.selectByEmail(email);
+        if (user == null) throw new FailedSelectException("failed to find user");
 
-        // パスワードが一致していなければエラー
-        final boolean isNotMatchPassword = !this.passwordEncoder.matches(editPasswordForm.getCurrentPassword(), user.getPassword());
-        if (isNotMatchPassword) throw new InvalidPasswordException();
+        // パスワード一致の確認
+        final boolean isMatchPassword = this.passwordEncoder.matches(form.getCurrentPassword(), user.getPassword());
+        if (!isMatchPassword) throw new InvalidPasswordException("invalid password");
 
-        // UserのPasswordを更新
-        final String encryptedPassword = this.passwordEncoder.encode(editPasswordForm.getNewPassword());
-        final int updateUserResult = this.usersMapper.updatePassword(user.getId(), encryptedPassword);
-        if (updateUserResult != 1) throw new UpdateFailedException(User.class.getName());
+        // パスワード更新
+        final boolean wasUpdatedUser = this.usersMapper.updatePassword(user.getId(), form.getNewPassword()) == 1;
+        if (!wasUpdatedUser) throw new FailedUpdateException("failed to update user");
 
-        // パスワード編集通知メールを送信
-        final var mail = Mail.passwordEditedNoticeMail(this.siteURL, this.fromMailAddress, user.getMailAddress());
-        this.sendMailService.execute(mail);
+        // 編集通知メールを送信
+        final SendMailForm sendMailForm = SendMailForm.genComplateEditEmailMail(tabisketchEmail, user.getEmail());
+        this.sendMailService.execute(sendMailForm);
     }
 }

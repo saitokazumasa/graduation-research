@@ -5,8 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(IndexController.class)
 public class IndexControllerTest {
@@ -16,8 +17,16 @@ public class IndexControllerTest {
     @Test
     @WithMockUser
     public void testGet() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/"))
-                .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
-                .andExpect(MockMvcResultMatchers.redirectedUrl("/top"));
+        mockMvc.perform(get("/"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/top"));
+    }
+
+    @Test
+    @WithMockUser
+    public void testTop() throws Exception {
+        this.mockMvc.perform(get("/top"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("top"));
     }
 }

@@ -3,15 +3,18 @@ package com.tabisketch.bean.entity;
 import java.util.UUID;
 
 public class ExamplePlan {
-    public static Plan generate() {
-        final var uuid = UUID.fromString("611d4008-4c0d-4b45-bd1b-21c97e7df3b2");
+    private ExamplePlan() {
+    }
+
+    public static Plan gen() {
         return new Plan(
                 1,
-                uuid,
+                UUID.fromString("bd725533-53a3-4a2d-9289-7fcbc7250d82"),
                 "title",
-                1,
+                "",
                 true,
-                false
+                false,
+                1
         );
     }
 }

@@ -1,74 +1,76 @@
 package com.tabisketch.service.implement;
 
-import com.tabisketch.bean.entity.PasswordResetToken;
+import com.tabisketch.bean.entity.ResetPasswordToken;
 import com.tabisketch.bean.entity.User;
 import com.tabisketch.bean.form.ResetPasswordForm;
-import com.tabisketch.exception.DeleteFailedException;
-import com.tabisketch.exception.SelectFailedException;
-import com.tabisketch.exception.UpdateFailedException;
-import com.tabisketch.mapper.IPasswordResetTokensMapper;
+import com.tabisketch.bean.form.SendMailForm;
+import com.tabisketch.exception.FailedDeleteException;
+import com.tabisketch.exception.FailedSelectException;
+import com.tabisketch.exception.FailedUpdateException;
+import com.tabisketch.exception.InvalidResetPasswordTokenException;
+import com.tabisketch.mapper.IResetPasswordTokensMapper;
 import com.tabisketch.mapper.IUsersMapper;
 import com.tabisketch.service.IResetPasswordService;
 import com.tabisketch.service.ISendMailService;
-import com.tabisketch.valueobject.Mail;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
-
 
 @Service
 public class ResetPasswordService implements IResetPasswordService {
-    @Value("${SITE_URL}")
-    private String siteURL;
-    @Value("${spring.mail.username}")
-    private String fromMailAddress;
-
-    private final IPasswordResetTokensMapper passwordResetTokensMapper;
+    private final IResetPasswordTokensMapper resetPasswordTokensMapper;
     private final IUsersMapper usersMapper;
     private final ISendMailService sendMailService;
     private final PasswordEncoder passwordEncoder;
+    private final String tabisketchEmail;
 
     public ResetPasswordService(
-            final IPasswordResetTokensMapper passwordResetTokensMapper,
+            final IResetPasswordTokensMapper resetPasswordTokensMapper,
             final IUsersMapper usersMapper,
             final ISendMailService sendMailService,
-            final PasswordEncoder passwordEncoder
+            final PasswordEncoder passwordEncoder,
+            final @Value("${spring.mail.username}") String tabisketchEmail
     ) {
-        this.passwordResetTokensMapper = passwordResetTokensMapper;
+        this.resetPasswordTokensMapper = resetPasswordTokensMapper;
         this.usersMapper = usersMapper;
         this.sendMailService = sendMailService;
         this.passwordEncoder = passwordEncoder;
+        this.tabisketchEmail = tabisketchEmail;
     }
 
     @Override
     @Transactional
-    public void execute(final ResetPasswordForm resetPasswordForm) throws SelectFailedException, UpdateFailedException, DeleteFailedException, MessagingException {
-        // PasswordResetTokenが存在しなければエラー
-        final var token = UUID.fromString(resetPasswordForm.getToken());
-        final PasswordResetToken passwordResetToken = this.passwordResetTokensMapper.selectByToken(token);
-        if (passwordResetToken == null) throw new SelectFailedException(PasswordResetToken.class.getName());
+    public void execute(final String uuid, final ResetPasswordForm form) throws MessagingException {
+        // トークン取得
+        final var _uuid = UUID.fromString(uuid);
+        final ResetPasswordToken rpToken = this.resetPasswordTokensMapper.selectByUUID(_uuid);
+        if (rpToken == null) throw new FailedSelectException("failed to find reset password token");
 
-        // TODO: PasswordResetTokenの有効期限が切れていたらエラー
+        // ユーザー取得
+        final User user = this.usersMapper.selectById(rpToken.getUserId());
+        if (user == null) throw new FailedSelectException("failed to find user");
 
-        // Userが存在しなければエラー
-        final User user = this.usersMapper.selectById(passwordResetToken.getUserId());
-        if (user == null) throw new SelectFailedException(User.class.getName());
+        // 有効期限を検証
+        final var now = LocalDateTime.now();
+        if (!rpToken.getLifeTime().equals(now) && rpToken.getLifeTime().isBefore(now))
+            throw new InvalidResetPasswordTokenException("password reset token is disabled");
 
-        // Userのpasswordを更新
-        final String encryptedPassword = this.passwordEncoder.encode(resetPasswordForm.getPassword());
-        final int updateUserResult = this.usersMapper.updatePassword(user.getId(), encryptedPassword);
-        if (updateUserResult != 1) throw new UpdateFailedException(User.class.getName());
+        // パスワード更新
+        final String encryptedPassword = this.passwordEncoder.encode(form.getPassword());
+        final boolean wasUpdatedUser = this.usersMapper.updatePassword(user.getId(), encryptedPassword) == 1;
+        if (!wasUpdatedUser) throw new FailedUpdateException("failed to update user");
 
-        // PasswordResetTokenを削除
-        final int deletePasswordResetTokenResult = this.passwordResetTokensMapper.deleteById(passwordResetToken.getId());
-        if (deletePasswordResetTokenResult != 1) throw new DeleteFailedException(PasswordResetToken.class.getName());
+        // トークン削除
+        final boolean wasDeletedRPToken = this.resetPasswordTokensMapper.delete(_uuid) == 1;
+        if (!wasDeletedRPToken) throw new FailedDeleteException("failed to delete password reset toke");
 
-        // パスワード編集通知メールを送信
-        final var mail = Mail.passwordEditedNoticeMail(this.siteURL, this.fromMailAddress, user.getMailAddress());
-        this.sendMailService.execute(mail);
+        // 編集通知メールを送信
+        final SendMailForm sendMailForm = SendMailForm.genCompleteResetPasswordMail(tabisketchEmail, user.getEmail());
+        this.sendMailService.execute(sendMailForm);
     }
 }

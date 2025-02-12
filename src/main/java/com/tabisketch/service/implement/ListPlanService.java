@@ -1,22 +1,45 @@
 package com.tabisketch.service.implement;
 
 import com.tabisketch.bean.entity.Plan;
+import com.tabisketch.bean.entity.User;
+import com.tabisketch.bean.output.PlanOutput;
+import com.tabisketch.exception.FailedSelectException;
 import com.tabisketch.mapper.IPlansMapper;
+import com.tabisketch.mapper.IUsersMapper;
 import com.tabisketch.service.IListPlanService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class ListPlanService implements IListPlanService {
+    private final IUsersMapper usersMapper;
     private final IPlansMapper plansMapper;
 
-    public ListPlanService(final IPlansMapper plansMapper) {
+    public ListPlanService(
+            final IUsersMapper usersMapper,
+            final IPlansMapper plansMapper
+    ) {
+        this.usersMapper = usersMapper;
         this.plansMapper = plansMapper;
     }
 
     @Override
-    public List<Plan> execute(final String mailAddress) {
-        return plansMapper.selectByMailAddress(mailAddress);
+    @Transactional
+    public List<PlanOutput> execute(final String email) {
+        // ユーザー取得
+        final User user = this.usersMapper.selectByEmail(email);
+        if (user == null) throw new FailedSelectException("failed to find user");
+
+        // プラン取得
+        final List<Plan> planList = this.plansMapper.selectByUserId(user.getId());
+        if (planList == null) throw new FailedSelectException("failed to find plan");
+
+        // データ加工
+        final var output = new ArrayList<PlanOutput>();
+        planList.forEach(p -> output.add(new PlanOutput(p.getUuid(), p.getTitle(), p.getThumbnailPath(), p.isEditable(), p.isPubliclyViewable())));
+        return output;
     }
 }

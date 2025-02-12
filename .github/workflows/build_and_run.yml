@@ -1,7 +1,6 @@
 name: Build And Run
 
 on:
-  push:
   pull_request:
 
 env:

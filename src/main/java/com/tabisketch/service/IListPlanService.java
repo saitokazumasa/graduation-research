@@ -1,9 +1,9 @@
 package com.tabisketch.service;
 
-import com.tabisketch.bean.entity.Plan;
+import com.tabisketch.bean.output.PlanOutput;
 
 import java.util.List;
 
 public interface IListPlanService {
-    List<Plan> execute(final String mailAddress);
+    List<PlanOutput> execute(final String email);
 }

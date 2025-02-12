@@ -1,83 +1,106 @@
 package com.tabisketch.controller;
 
+import com.tabisketch.bean.entity.ExampleEmailVerificationToken;
 import com.tabisketch.bean.form.ExampleRegisterForm;
+import com.tabisketch.bean.form.ExampleSendResetPasswordMailForm;
 import com.tabisketch.bean.form.RegisterForm;
 import com.tabisketch.service.IRegisterService;
+import com.tabisketch.service.IVerifyEmailService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.stream.Stream;
+
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(RegisterController.class)
 public class RegisterControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @MockitoBean
-    private IRegisterService __; // DIで使用している
+    private IRegisterService registerService;
+    @MockitoBean
+    private IVerifyEmailService verifyEmailService;
 
     @Test
     @WithMockUser
     public void testGet() throws Exception {
-        this.mockMvc.perform(MockMvcRequestBuilders.get("/register"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.view().name("register/index"));
+        this.mockMvc.perform(get("/register"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("register/index"));
     }
 
     @Test
     @WithMockUser
     public void testPost() throws Exception {
-        final var registerForm = ExampleRegisterForm.generate();
-
-        this.mockMvc.perform(MockMvcRequestBuilders
-                        .post("/register")
-                        .flashAttr("registerForm", registerForm)
-                        .with(SecurityMockMvcRequestPostProcessors.csrf())
-                ).andExpect(MockMvcResultMatchers.status().is3xxRedirection())
-                .andExpect(MockMvcResultMatchers.model().hasNoErrors())
-                .andExpect(MockMvcResultMatchers.redirectedUrl("/register/send"));
+        final var form = ExampleRegisterForm.gen();
+        this.mockMvc.perform(post("/register")
+                        .flashAttr("registerForm", form)
+                        .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(model().hasNoErrors())
+                .andExpect(redirectedUrl("/register/send"));
     }
 
     @ParameterizedTest
-    @MethodSource("validationTestData")
     @WithMockUser
-    public void testValidation(final RegisterForm registerForm) throws Exception {
-        this.mockMvc.perform(MockMvcRequestBuilders
-                        .post("/register")
-                        .flashAttr("registerForm", registerForm)
-                        .with(SecurityMockMvcRequestPostProcessors.csrf())
-                ).andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.model().hasErrors())
-                .andExpect(MockMvcResultMatchers.model().attributeExists("registerForm"))
-                .andExpect(MockMvcResultMatchers.model().attribute("registerForm", registerForm))
-                .andExpect(MockMvcResultMatchers.view().name("register/index"));
+    @MethodSource("validationTestData")
+    public void testValidation(final RegisterForm form) throws Exception {
+        this.mockMvc.perform(post("/register")
+                        .flashAttr("registerForm", form)
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(model().hasErrors())
+                .andExpect(model().attributeExists("registerForm"))
+                .andExpect(model().attribute("registerForm", form))
+                .andExpect(view().name("register/index"));
     }
 
-    private static Stream<RegisterForm> validationTestData() {
-        // mailAddressが未入力
-        final var registerForm1 = new RegisterForm("", "password", "password");
-        // passwordが未入力
-        final var registerForm2 = new RegisterForm("sample@example.com", "", "password");
-        // rePasswordが未入力
-        final var registerForm3 = new RegisterForm("sample@example.com", "password", "");
-        // passwordとrePasswordが一致しない
-        final var registerForm4 = new RegisterForm("sample@example.com", "password", "pass");
-        return Stream.of(registerForm1, registerForm2, registerForm3, registerForm4);
+    private static Stream<Object> validationTestData() {
+        final var stream = Stream.builder();
+        stream.add(new RegisterForm("", "password", "password"));
+        stream.add(new RegisterForm("example@example.com", "", "password"));
+        stream.add(new RegisterForm("example@example.com", "password", ""));
+        stream.add(new RegisterForm("example@example.com", "password", "pass"));
+        return stream.build();
     }
 
     @Test
     @WithMockUser
     public void testSend() throws Exception {
-        this.mockMvc.perform(MockMvcRequestBuilders.get("/register/send"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.view().name("register/send"));
+        final var email = ExampleSendResetPasswordMailForm.gen().getEmail();
+        this.mockMvc.perform(get("/register/send")
+                        .flashAttr("email", email)
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("email"))
+                .andExpect(model().attribute("email", email))
+                .andExpect(view().name("register/send"));
+    }
+
+    @Test
+    @WithMockUser
+    public void testVerify() throws Exception {
+        final var uuid = ExampleEmailVerificationToken.gen().getUuid().toString();
+        this.mockMvc.perform(get("/register/v/" + uuid))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/register/complate"));
+    }
+
+    @Test
+    @WithMockUser
+    public void testComplate() throws Exception {
+        this.mockMvc.perform(get("/register/complate"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("register/complate"));
     }
 }

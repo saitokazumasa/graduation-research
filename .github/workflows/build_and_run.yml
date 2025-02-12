@@ -45,7 +45,7 @@ jobs:
           cache: maven
 
       - name: Initialize database
-        run: .github/workflows/bin/init_db.sh
+        run: docker/bin/init_db.sh docker/postgresql/sql/
 
       - name: Build and test
         run: mvn test

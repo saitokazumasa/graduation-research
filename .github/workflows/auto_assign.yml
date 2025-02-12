@@ -7,6 +7,7 @@ jobs:
   assign-author:
     permissions:
       pull-requests: write
+      repository-projects: read
     runs-on: ubuntu-latest
     steps:
-      - uses: technote-space/assign-author@v1
+      - run: gh pr edit ${{ github.event.number }} --add-assignee ${{ github.actor }}

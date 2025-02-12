@@ -35,10 +35,6 @@
     <script src="/js/flowbite.min.js"></script>
 </th:block>
 
-<th:block th:fragment="check">
-    <script src="/js/check.js"></script>
-</th:block>
-
 <th:block th:fragment="map">
     <script src="/js/map.js"></script>
 </th:block>
@@ -82,6 +78,17 @@
 
 <th:block th:fragment="packing">
     <script src="/js/packings.js"></script>
+</th:block>
+
+<th:block th:fragment="walkCheckbox">
+    <script>
+        const walkCheckbox = document.getElementById('walkFlag');
+        const walkThreshold = document.getElementById('walkThreshold');
+
+        walkCheckbox.addEventListener('change', () => {
+            walkThreshold.disabled = !walkCheckbox.checked;
+        });
+    </script>
 </th:block>
 </body>
 </html>

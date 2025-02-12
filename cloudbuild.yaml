@@ -40,8 +40,8 @@ steps:
       '--set-secrets=POSTGRES_USER=projects/499665473392/secrets/POSTGRES_USER/versions/latest',
       '--set-secrets=POSTGRES_PASSWORD=projects/499665473392/secrets/POSTGRES_PASSWORD/versions/latest',
       '--set-secrets=GOOGLE_MAPS_API_KEY=projects/499665473392/secrets/GOOGLE_MAPS_API_KEY/versions/latest',
-      '--set-secrets=MAIL_PASSWORD=projects/499665473392/secrets/MAIL_PASSWORD/versions/latest',
-      '--set-secrets=MAIL_USERNAME=projects/499665473392/secrets/MAIL_USERNAME/versions/latest'
+      '--set-secrets=GMAIL_PASSWORD=projects/499665473392/secrets/GMAIL_PASSWORD/versions/latest',
+      '--set-secrets=GMAIL_USERNAME=projects/499665473392/secrets/GMAIL_USERNAME/versions/latest'
     ]
 
 images:

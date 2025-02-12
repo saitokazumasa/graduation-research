@@ -4,7 +4,7 @@ class ImageUrls {
         '/images/top2.jpg',
         '/images/top3.jpg',
         '/images/top4.jpg',
-        '/images/top5.png',
+        '/images/top5.jpg',
         '/images/top6.png',
     ];
     currentIndex = -1;

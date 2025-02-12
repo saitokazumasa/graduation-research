@@ -2,7 +2,7 @@ package com.tabisketch.service.implement;
 
 import com.tabisketch.bean.entity.Plan;
 import com.tabisketch.bean.entity.User;
-import com.tabisketch.bean.output.PlanOutput;
+import com.tabisketch.bean.view_model.PlanViewModel;
 import com.tabisketch.exception.FailedSelectException;
 import com.tabisketch.mapper.IPlansMapper;
 import com.tabisketch.mapper.IUsersMapper;
@@ -28,7 +28,7 @@ public class ListPlanService implements IListPlanService {
 
     @Override
     @Transactional
-    public List<PlanOutput> execute(final String email) {
+    public List<PlanViewModel> execute(final String email) {
         // ユーザー取得
         final User user = this.usersMapper.selectByEmail(email);
         if (user == null) throw new FailedSelectException("failed to find user");
@@ -38,8 +38,11 @@ public class ListPlanService implements IListPlanService {
         if (planList == null) throw new FailedSelectException("failed to find plan");
 
         // データ加工
-        final var output = new ArrayList<PlanOutput>();
-        planList.forEach(p -> output.add(new PlanOutput(p.getUuid(), p.getTitle(), p.getThumbnailPath(), p.isEditable(), p.isPubliclyViewable())));
-        return output;
+        final var planViewModels = new ArrayList<PlanViewModel>();
+        planList.forEach(plan -> {
+            final var planViewModel = new PlanViewModel(plan);
+            planViewModels.add(planViewModel);
+        });
+        return planViewModels;
     }
 }

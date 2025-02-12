@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tabisketch.bean.entity.ExamplePlan;
 import com.tabisketch.bean.form.EditPlanForm;
 import com.tabisketch.bean.form.ExampleEditPlanForm;
-import com.tabisketch.bean.output.ExamplePlanOutput;
+import com.tabisketch.bean.view_model.ExamplePlanViewModel;
 import com.tabisketch.service.IEditPlanService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -38,7 +38,7 @@ public class EditPlanRestControllerTest {
     public void testPost() throws Exception {
         final var uuid = ExamplePlan.gen().getUuid();
         final var editPlanForm = ExampleEditPlanForm.gen();
-        final var output = ExamplePlanOutput.gen();
+        final var output = ExamplePlanViewModel.gen();
 
         when(this.editPlanService.execute(any(), any())).thenReturn(output);
         this.mockMvc.perform(post("/api/plan/edit/" + uuid)
@@ -53,7 +53,7 @@ public class EditPlanRestControllerTest {
     @MethodSource("validationTestData")
     public void testValidation(final EditPlanForm form) {
         final var uuid = ExamplePlan.gen().getUuid();
-        final var output = ExamplePlanOutput.gen();
+        final var output = ExamplePlanViewModel.gen();
 
         when(this.editPlanService.execute(any(), any())).thenReturn(output);
         try {

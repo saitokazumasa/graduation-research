@@ -1,8 +1,8 @@
 package com.tabisketch.service;
 
 import com.tabisketch.bean.form.EditPlanForm;
-import com.tabisketch.bean.output.PlanOutput;
+import com.tabisketch.bean.view_model.PlanViewModel;
 
 public interface IEditPlanService {
-    PlanOutput execute(final String uuid, final EditPlanForm form);
+    PlanViewModel execute(final String uuid, final EditPlanForm form);
 }

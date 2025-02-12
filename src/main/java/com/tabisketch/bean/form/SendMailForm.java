@@ -43,7 +43,7 @@ public class SendMailForm {
                         %s
                         """,
                 to,
-                URL.TABISKETCH_DOT_COM + "/register/v/" + uuid,
+                URL.TABISKETCH_DOT_COM + "/mail/v/" + uuid,
                 URL.TABISKETCH_DOT_COM,
                 from
         );
@@ -122,14 +122,14 @@ public class SendMailForm {
                         %s
                         """,
                 to,
-                URL.TABISKETCH_DOT_COM + "/user/edit/email/v/" + uuid,
+                URL.TABISKETCH_DOT_COM + "/mail/nv/" + uuid,
                 URL.TABISKETCH_DOT_COM,
                 from
         );
         return new SendMailForm(from, to, subject, content);
     }
 
-    public static SendMailForm genComplateEditEmailMail(final String from, final String to) {
+    public static SendMailForm genComplateEditEmailMail(final String from, final String to, final String newEmail) {
         final String subject = "【たびすけっち】メールアドレスが変更されました";
         final String content = String.format("""
                         たびすけっちをご利用いただき、ありがとうございます。
@@ -147,7 +147,7 @@ public class SendMailForm {
                         お問い合わせ
                         %s
                         """,
-                to,
+                newEmail,
                 URL.TABISKETCH_DOT_COM,
                 from
         );

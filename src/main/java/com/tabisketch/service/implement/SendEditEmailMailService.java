@@ -6,6 +6,7 @@ import com.tabisketch.bean.form.EditEmailForm;
 import com.tabisketch.bean.form.SendMailForm;
 import com.tabisketch.exception.FailedInsertException;
 import com.tabisketch.exception.FailedSelectException;
+import com.tabisketch.exception.InvalidEmailException;
 import com.tabisketch.exception.InvalidPasswordException;
 import com.tabisketch.mapper.INewEmailVerificationTokensMapper;
 import com.tabisketch.mapper.IUsersMapper;
@@ -53,6 +54,10 @@ public class SendEditEmailMailService implements ISendEditEmailMailService {
         final boolean isMatchPassword = this.passwordEncoder.matches(form.getPassword(), user.getPassword());
         if (!isMatchPassword) throw new InvalidPasswordException("invalid password");
 
+        // メールアドレスの存在確認
+        final boolean isExistEmail = this.usersMapper.selectByEmail(form.getNewEmail()) != null;
+        if (isExistEmail) throw new InvalidEmailException("invalid email");
+
         // トークン作成
         final var nevToken = new NewEmailVerificationToken(UUID.randomUUID(), form.getNewEmail(), user.getId(), LocalDateTime.now());
         final boolean wasInsertNEVToken = this.newEmailVerificationTokensMapper.insert(nevToken) == 1;
@@ -60,7 +65,7 @@ public class SendEditEmailMailService implements ISendEditEmailMailService {
 
         // 認証メールを送信
         final String uuid = nevToken.getUuid().toString();
-        final SendMailForm sendMailForm = SendMailForm.genEditEmailMail(tabisketchEmail, user.getEmail(), uuid);
+        final SendMailForm sendMailForm = SendMailForm.genEditEmailMail(tabisketchEmail, form.getNewEmail(), uuid);
         this.sendMailService.execute(sendMailForm);
     }
 }

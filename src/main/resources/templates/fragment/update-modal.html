@@ -14,7 +14,7 @@
         <span class="flex-1 text-base sm:text-xl truncate ... px-2" th:text="${updateStartForm.name}">出発地点を入力する</span>
         <span></span>
     </button>
-    <div class="flex justify-center" th:classappend="${isCreateRoute ? '' : 'hidden'}" id="startTransitionData">
+    <div class="flex justify-center" th:classappend="${isCreateRoute ? '' : 'hidden'}" id="startTransportationData">
         <span class="inline-flex justify-between items-center space-x-4 w-48">
             <th:block th:if="${updateStartForm.toTransportation.name() == 'Driving'}" th:insert="~{fragment/svg :: car}"/>
             <th:block th:if="${updateStartForm.toTransportation.name() == 'Bicycling'}" th:insert="~{fragment/svg :: cycle}"/>
@@ -165,7 +165,7 @@
         </button>
     </div>
     <!-- 経路生成後に表示 -->
-    <div class="flex justify-center" th:classappend="${isCreateRoute ? '' : 'hidden'}" th:id="${'placeTransitionData' + num}">
+    <div class="flex justify-center" th:classappend="${isCreateRoute ? '' : 'hidden'}" th:id="${'placeTransportationData' + num}">
         <span class="inline-flex justify-between items-center space-x-4 w-48">
             <th:block th:if="${updatePlaceForm.toTransportation.name() == 'Driving'}" th:insert="~{fragment/svg :: car}"/>
             <th:block th:if="${updatePlaceForm.toTransportation.name() == 'Bicycling'}" th:insert="~{fragment/svg :: cycle}"/>

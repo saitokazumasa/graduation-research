@@ -20,7 +20,7 @@
             <div class="flex">
                 <span class="inline-block h-12 w-12 my-auto ml-8"></span>
                 <div class="sm:border-b-2 border-b w-1/2 text-center mx-auto my-10">
-                    <input type="text" name="title" form="editPlan" th:value="${editPlanForm.title}" placeholder="タイトルを入力してください" class="w-full sm:text-3xl text-xl text-center border-none">
+                    <input type="text" name="title" form="editPlanForm" th:value="${editPlanForm.title}" placeholder="タイトルを入力してください" class="w-full sm:text-3xl text-xl text-center border-none">
                 </div>
                 <button onclick="openPopup()" class="sm:hidden inline-block h-12 w-12 my-auto mr-8 cursor-pointer">
                     <th:block th:replace="~{fragment/svg :: map}"/>
@@ -112,25 +112,25 @@
                                         <span class="ml-2 text-center">徒歩で移動可能な時間を指定</span>
                                     </label>
                                 </div>
-                                <label class="ml-10"><input type="number" id="walkThreshold" name="walkThreshold" form="editDay" th:field="${editDayForm.walkThreshold}" class="sm:w-56 w-32 sm:h-8 h-6 border border-b-gray-400 rounded-lg text-base text-center disabled:bg-[#e5e5e5] disabled:border-[#888] disabled:text-[#888]" min="0" max=""><span class="mx-4">分</span></label>
+                                <label class="ml-10"><input type="number" id="walkThreshold" name="walkThreshold" form="editDayForm" th:field="${editDayForm.walkThreshold}" class="sm:w-56 w-32 sm:h-8 h-6 border border-b-gray-400 rounded-lg text-base text-center disabled:bg-[#e5e5e5] disabled:border-[#888] disabled:text-[#888]" min="0" max=""><span class="mx-4">分</span></label>
                             </div>
                         </details>
                     </section>
                 </div>
                 <div class="flex justify-center mb-20">
-                    <!-- todo: updateしてからプラン一覧に戻る -->
-                    <button type="button" class="sm:mx-10 mx-5 block items-center justify-center button-secondary">保存して戻る</button>
-                    <!-- todo: titleとオプションのupdateをし、経路生成処理に送信 -->
-                    <button type="button" class="sm:mx-10 mx-5 block items-center justify-center button-primary" id="createPlanButton">経路生成</button>
+                    <!-- ボタンイベント editButtons.js -->
+                    <button type="button" id="backButton" class="sm:mx-10 mx-5 block items-center justify-center button-secondary">保存して戻る</button>
+                    <!-- titleとオプションのupdateをし、経路生成処理に送信 -->
+                    <button type="button" id="crateRouteButton" class="sm:mx-10 mx-5 block items-center justify-center button-primary">経路生成</button>
                 </div>
-                <div class="flex justify-center mb-20" id="editButtons" th:if="${isCreateRoute}">
-                    <!-- todo: 日付追加で画面遷移 -->
-                    <button type="button" class="sm:mx-10 mx-5 flex items-center justify-center button-secondary" id="addDay">
+                <div class="flex justify-center mb-20" id="editButtonsDiv" th:classappend="${isCreateRoute ? '' : 'hidden'}">
+                    <!-- 日付追加で画面遷移 -->
+                    <button type="button" class="sm:mx-10 mx-5 flex items-center justify-center button-secondary" id="addDayButton">
                         <th:block th:replace="~{fragment/svg :: plus}"/>
                         日付の追加
                     </button>
-                    <!-- todo: プラン確定処理に飛ばす -->
-                    <button type="button" class="sm:mx-10 mx-5 block items-center justify-center button-primary" id="planConfirm">プラン確定</button>
+                    <!-- プラン確定処理に飛ばす -->
+                    <button type="button" class="sm:mx-10 mx-5 block items-center justify-center button-primary" id="planConfirmButton">プラン確定</button>
                 </div>
             </section>
             <section class="sm:w-1/2 hidden sm:inline-block">
@@ -177,6 +177,7 @@
 <th:block th:replace="~{fragment/script :: modal}"/>
 <th:block th:replace="~{fragment/script :: previewImage}"/>
 <th:block th:replace="~{fragment/script :: walkCheckbox}"/>
+<th:block th:replace="~{fragment/script :: planEdit}"/>
 <th:block th:replace="~{fragment/script :: googleMapsAPI}"/>
 </body>
 </html>

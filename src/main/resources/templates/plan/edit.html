@@ -155,6 +155,23 @@
             </section>
         </div>
     </div>
+    <div class="invisible">
+        <div id="startFormDiv">
+            <th:block th:if="${startPlaceForm}" th:replace="~{fragment/modal :: startForm(${startPlaceForm})}"/>
+            <th:block th:if="${updateStartForm}" th:replace="~{fragment/update-modal :: startUpdateForm(${updateStartForm})}"/>
+        </div>
+        <div id="placeFormDiv">
+            <th:block th:replace="~{fragment/modal :: placesForm(1, ${placeForm})}"/>
+        </div>
+        <div id="endFormDiv">
+            <th:block th:if="${endPlaceForm}" th:replace="~{fragment/modal :: endForm(${endPlaceForm})}"/>
+            <th:block th:if="${updatePlaceForm}" th:replace="~{fragment/update-modal :: endUpdateForm(${updateEndForm})}"/>
+        </div>
+        <div id="updatePlaceFormDiv">
+            <th:block th:if="${updatePlaceForm}" th:replace="~{fragment/update-modal :: placesUpdateForm(1, ${updatePlaceForm})}"/>
+        </div>
+        <div id="recommendFormDiv"></div>
+    </div>
 </main>
 <th:block th:replace="~{fragment/footer :: footer}"/>
 <script src="/js/draganddrop.js"></script>

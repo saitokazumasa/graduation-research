@@ -199,28 +199,28 @@
                     </button>
                 </div>
                 <!-- Modal body -->
-                <form class="p-4 sm:p-5" th:object="${updatePlaceForm}" th:id="'updatePlaceForm'+${num}">
+                <form class="p-4 sm:p-5" th:id="'updatePlaceForm'+${num}">
                     <span th:id="'updatePlaceError'+${num}" class="text-danger text-sm mb-2 flex justify-center"></span>
                     <div class="space-y-4 w-full">
-                        <input th:field="*{googlePlaceId}" th:id="'placeUpdatePlaceId'+${num}" class="hidden" type="text"/>
-                        <input th:field="*{latitude}" th:id="'placeUpdateLat'+${num}" class="hidden" type="text"/>
-                        <input th:field="*{longitude}" th:id="'placeUpdateLng'+${num}" class="hidden" type="text"/>
-                        <input th:value="*{id}" th:id="'id'+${num}" class="hidden" type="number">
-                        <input th:field="*{dayId}" class="hidden" type="number"/>
-                        <input th:field="*{startTime}" th:id="'placeUpdateStartTime'+${num}" class="hidden" type="time"/>
-                        <input th:field="*{endTime}" th:id="'placeUpdateEndTime'+${num}" class="hidden" type="time"/>
-                        <input th:field="*{toPolyLine}" class="hidden" type="text"/>
-                        <input th:field="*{toTravelTime}" class="hidden" type="number"/>
-                        <input th:field="*{toTransportation}" class="hidden" type="text"/>
+                        <input name="googlePlaceId" th:value="${updatePlaceForm.googlePlaceId}" th:id="'placeUpdatePlaceId'+${num}" class="hidden" type="text"/>
+                        <input name="latitude" th:value="${updatePlaceForm.latitude}" th:id="'placeUpdateLat'+${num}" class="hidden" type="text"/>
+                        <input name="longitude" th:value="${updatePlaceForm.longitude}" th:id="'placeUpdateLng'+${num}" class="hidden" type="text"/>
+                        <input name="id" th:value="${updatePlaceForm.id}" th:id="'id'+${num}" class="hidden" type="number">
+                        <input name="dayId" th:value="${updatePlaceForm.dayId}" class="hidden" type="number"/>
+                        <input name="startTime" th:value="${updatePlaceForm.startTime}" th:id="'placeUpdateStartTime'+${num}" class="hidden" type="time"/>
+                        <input name="endTime" th:value="${updatePlaceForm.endTime}" th:id="'placeUpdateEndTime'+${num}" class="hidden" type="time"/>
+                        <input name="toPolyLine" th:value="${updatePlaceForm.toPolyLine}" class="hidden" type="text"/>
+                        <input name="toTravelTime" th:value="${updatePlaceForm.toTravelTime}" class="hidden" type="number"/>
+                        <input name="toTransportation" th:value="${updatePlaceForm.toTransportation}" class="hidden" type="text"/>
                         <div>
                             <label class="block mb-2" th:for="'updatePlace'+${num}">目的地<span class="ml-2 text-sm text-danger">必須</span></label>
-                            <input th:field="*{name}" class="w-full input focus:ring-0 bg-gray-100" th:id="'updatePlace'+${num}" th:name="'updatePlace'+${num}" type="text" disabled/>
+                            <input th:value="${updatePlaceForm.name}" class="w-full input focus:ring-0 bg-gray-100" th:id="'updatePlace'+${num}" th:name="'updatePlace'+${num}" type="text" disabled/>
                         </div>
                         <div class="flex items-center justify-between">
                             <div class="w-1/2 pr-3">
                                 <label class="block mb-2" th:for="'placeUpdateBudget' + ${num}">予算</label>
                                 <div class="flex items-end">
-                                    <input th:field="*{budget}" th:id="'placeUpdateBudget'+${num}" class="w-full input focus:ring-0" th:name="'placeUpdateBudget' + ${num}" type="number"/>
+                                    <input name="budget" th:value="${updatePlaceForm.budget}" th:id="'placeUpdateBudget'+${num}" class="w-full input focus:ring-0" th:name="'placeUpdateBudget' + ${num}" type="number"/>
                                     <span>円</span>
                                 </div>
                             </div>
@@ -242,7 +242,7 @@
                                             <path clip-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z" fill-rule="evenodd"/>
                                         </svg>
                                     </div>
-                                    <input th:field="*{desiredStartTime}" class="w-full input focus:ring-0" max="23:59" min="00:00" placeholder="--:--" th:id="'placeUpdateDesiredStart' + ${num}" th:name="'placeUpdateDesiredStart' + ${num}" type="time"/>
+                                    <input name="desiredStartTime" th:value="${updatePlaceForm.desiredStartTime}" class="w-full input focus:ring-0" max="23:59" min="00:00" placeholder="--:--" th:id="'placeUpdateDesiredStart' + ${num}" th:name="'placeUpdateDesiredStart' + ${num}" type="time"/>
                                 </div>
                                 <span class="pr-3 pl-3">～</span>
                                 <div class="relative w-1/2">
@@ -251,7 +251,7 @@
                                             <path clip-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z" fill-rule="evenodd"/>
                                         </svg>
                                     </div>
-                                    <input th:field="*{desiredEndTime}" class="w-full input focus:ring-0" max="23:59" min="00:00" placeholder="--:--" th:id="'placeUpdateDesiredEnd' + ${num}" th:name="'placeUpdateDesiredEnd' + ${num}" type="time"/>
+                                    <input name="desiredEndTime" th:value="${updatePlaceForm.desiredEndTime}" class="w-full input focus:ring-0" max="23:59" min="00:00" placeholder="--:--" th:id="'placeUpdateDesiredEnd' + ${num}" th:name="'placeUpdateDesiredEnd' + ${num}" type="time"/>
                                 </div>
                             </div>
                         </div>

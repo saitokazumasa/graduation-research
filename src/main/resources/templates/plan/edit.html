@@ -20,7 +20,7 @@
             <div class="flex">
                 <span class="inline-block h-12 w-12 my-auto ml-8"></span>
                 <div class="sm:border-b-2 border-b w-1/2 text-center mx-auto my-10">
-                    <input type="text" th:field="*{title}" placeholder="タイトルを入力してください" class="w-full sm:text-3xl text-xl text-center" style="border: none" onchange="redirect('/plan/edit')">
+                    <input type="text" name="title" th:value="${editPlanForm.title}" placeholder="タイトルを入力してください" class="w-full sm:text-3xl text-xl text-center border-none">
                 </div>
                 <button onclick="openPopup()" class="sm:hidden inline-block h-12 w-12 my-auto mr-8 cursor-pointer">
                     <th:block th:replace="~{fragment/svg :: map}"/>

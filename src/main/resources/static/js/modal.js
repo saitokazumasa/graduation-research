@@ -140,11 +140,11 @@ class Fragment {
     addFragment() {
         if (!this.#toggle || !this.#form) throw new Error('このインスタンスは初期化されていません。initialize()を実行してください。');
 
-        // id=destination の子要素にToggleを追加
-        this.#addFragment(this.#toggle, 'destination', false);
+        // class=destination の子要素にToggleを追加
+        this.#addFragmentClass(this.#toggle, '.addPlaces', false);
 
         // id=placeFormDivの子要素に #form を追加
-        this.#addFragment(this.#form, 'placeFormDiv');
+        this.#addFragmentKey(this.#form, 'placeFormDiv');
     }
 
     /**
@@ -154,7 +154,7 @@ class Fragment {
         if (!this.#startUpdateForm) return;
 
         // id=startFormDivの子要素に #startUpdateForm を追加
-        this.#addFragment(this.#startUpdateForm, 'startFormDiv');
+        this.#addFragmentKey(this.#startUpdateForm, 'startFormDiv');
     }
 
     /**
@@ -164,7 +164,7 @@ class Fragment {
         if (!this.#endUpdateForm) return;
 
         // id=formDivの子要素に #endUpdateForm を追加
-        this.#addFragment(this.#endUpdateForm, 'endFormDiv');
+        this.#addFragmentKey(this.#endUpdateForm, 'endFormDiv');
     }
 
     /**
@@ -174,14 +174,25 @@ class Fragment {
         if (!this.#placesUpdateForm) return;
 
         // id=formDivの子要素に placesUpdateForm を追加
-        this.#addFragment(this.#placesUpdateForm, 'updatePlaceFormDiv', false);
+        this.#addFragmentKey(this.#placesUpdateForm, 'updatePlaceFormDiv', false);
     }
 
     /**
      * id=formDivの子要素に UpdateForm を追加
      */
-    #addFragment(form, formDivKey, replace = true) {
+    #addFragmentKey(form, formDivKey, replace = true) {
         const formDiv = document.getElementById(formDivKey);
+        const newForm = document.createElement('div');
+        newForm.innerHTML = form;
+        if (replace) formDiv.innerHTML = '';
+        formDiv.appendChild(newForm);
+    }
+
+    /**
+     * class=formDivClassの子要素に form を追加
+     */
+    #addFragmentClass(form, formDivClass, replace = true) {
+        const formDiv = document.querySelector(formDivClass);
         const newForm = document.createElement('div');
         newForm.innerHTML = form;
         if (replace) formDiv.innerHTML = '';
@@ -194,10 +205,10 @@ class Fragment {
     addRecommendFragment() {
         if (!this.#recommendToggle || !this.#recommendForm) return;
         // recommendToggle追加
-        this.#addFragment(this.#recommendToggle, 'recommendToggleDiv', recommendReplace);
+        this.#addFragmentKey(this.#recommendToggle, 'recommendToggleDiv', recommendReplace);
 
         // recommendForm追加
-        this.#addFragment(this.#recommendForm, 'recommendFormDiv', recommendReplace);
+        this.#addFragmentKey(this.#recommendForm, 'recommendFormDiv', recommendReplace);
 
         recommendReplace = true;
     }

@@ -140,9 +140,9 @@
     </div>
     <div class="invisible">
         <form th:object="${editPlanForm}" id="editPlan">
-            <!-- todo: editPlanFormのinputフィールド追加 -->
-            <input type="number" th:field="*{id}" hidden>
-            <input type="text" th:field="*{uuid}" hidden>
+            <input type="text" th:field="*{thumbnailPath}">
+            <input type="checkbox" th:field="*{editable}">
+            <input type="checkbox" th:field="*{publiclyViewable}">
         </form>
         <form th:object="${editDayForm}" id="editDay">
             <!-- todo: editDayFormのinputフィールド追加 -->

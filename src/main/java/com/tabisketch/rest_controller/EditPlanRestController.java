@@ -1,7 +1,7 @@
 package com.tabisketch.rest_controller;
 
 import com.tabisketch.bean.form.EditPlanForm;
-import com.tabisketch.bean.output.PlanOutput;
+import com.tabisketch.bean.view_model.PlanViewModel;
 import com.tabisketch.exception.InvalidFormException;
 import com.tabisketch.service.IEditPlanService;
 import org.springframework.validation.BindingResult;
@@ -21,7 +21,7 @@ public class EditPlanRestController {
     }
 
     @PostMapping
-    public PlanOutput post(
+    public PlanViewModel post(
             final @PathVariable String uuid,
             final @Validated EditPlanForm editPlanForm,
             final BindingResult bindingResult

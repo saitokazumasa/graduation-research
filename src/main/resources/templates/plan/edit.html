@@ -41,18 +41,36 @@
                 <div class="flex flex-col mt-6 mb-10">
                     <div class="mb-6">
                         <p class="mb-2 sm:text-lg text-base">出発地点<span class="sm:ml-2 ml-1 text-sm text-danger">必須</span></p>
-                        <th:block th:replace="~{fragment/modal :: start}"/>
+                        <!-- 出発地点が入力済みかで表示の変更 -->
+                        <th:block th:if="${startPlaceForm}" th:replace="~{fragment/modal :: startToggle}"/>
+                        <th:block th:if="${updateStartForm}" th:replace="~{fragment/update-modal :: startUpdateToggle(updateStartForm)}"/>
+                        <!-- 経路生成済みか -->
+                        <div class="flex justify-center" th:if="${startPolyline}">
+                            <span class="inline-flex justify-between items-center space-x-4 w-48">
+                                <th:block th:if="${updateStartForm.toTransportation.name() == 'Driving'}" th:insert="~{fragment/svg :: car}"/>
+                                <th:block th:if="${updateStartForm.toTransportation.name() == 'Bicycling'}" th:insert="~{fragment/svg :: cycle}"/>
+                                <th:block th:if="${updateStartForm.toTransportation.name() == 'Transit'}" th:insert="~{fragment/svg :: train}"/>
+                                <th:block th:if="${updateStartForm.toTransportation.name() == 'Walking'}" th:insert="~{fragment/svg :: walk}"/>
+                                <span th:text="${updateStartForm.toTravelTime}"></span>
+                            </span>
+                        </div>
                     </div>
                     <div class="mb-6">
                         <p class="mb-2 sm:text-lg text-base">目的地</p>
                         <ul id="destination">
                             <li class="mb-2 hover:cursor-grab w-full">
-                                <th:block th:replace="~{fragment/modal :: places(1)}" class="hover:cursor-grab hover:bg-gray-300"/>
-                                <div class="flex justify-center">
-                                    <span id="car" class="inline-flex justify-between items-center space-x-4 w-48 hidden"><th:block th:replace="~{fragment/svg :: car}"/>2時間40分</span>
-                                    <span id="walk" class="inline-flex justify-between items-center space-x-4 w-48 hidden"><th:block th:replace="~{fragment/svg :: walk}"/>8時間</span>
-                                    <span id="cycle" class="inline-flex justify-between items-center space-x-4 w-48 hidden"><th:block th:replace="~{fragment/svg :: cycle}"/>5時間</span>
-                                    <span id="train" class="inline-flex justify-between items-center space-x-4 w-48 hidden"><th:block th:replace="~{fragment/svg :: train}"/>1時間50分</span>
+                                <!-- 目的地が入力済みかで表示の変更 -->
+                                <th:block th:if="${placeForm}" th:replace="~{fragment/modal :: placesToggle(1)}"/>
+                                <th:block th:if="${updatePlaceForm}" th:replace="~{fragment/update-modal :: placesUpdateToggle(num, updatePlaceForm)}"/>
+                                <!-- todo: 経路生成済みか判断するして移動手段・移動時間の表示 -->
+                                <div class="flex justify-center" th:if="${}">
+                                    <span class="inline-flex justify-between items-center space-x-4 w-48">
+                                        <th:block th:if="${updatePlaceForm.toTransportation.name() == 'Driving'}" th:insert="~{fragment/svg :: car}"/>
+                                        <th:block th:if="${updatePlaceForm.toTransportation.name() == 'Bicycling'}" th:insert="~{fragment/svg :: cycle}"/>
+                                        <th:block th:if="${updatePlaceForm.toTransportation.name() == 'Transit'}" th:insert="~{fragment/svg :: train}"/>
+                                        <th:block th:if="${updatePlaceForm.toTransportation.name() == 'Walking'}" th:insert="~{fragment/svg :: walk}"/>
+                                        <span th:text="${updatePlaceForm.toTravelTime}"></span>
+                                    </span>
                                 </div>
                                 <th:block th:replace="~{fragment/svg :: four-transportation}"/>
                             </li>
@@ -60,7 +78,9 @@
                     </div>
                     <div class="mb-6">
                         <p class="mb-2 sm:text-lg text-base">終了地点</p>
-                        <th:block th:replace="~{fragment/modal :: end}"/>
+                        <!-- 終了地点が入力済みかで表示変更 -->
+                        <th:block th:if="${endPlaceForm}" th:replace="~{fragment/modal :: end}"/>
+                        <th:block th:if="${updateEndForm}" th:replace="~{fragment/update-modal :: endUpdateToggle(updateEndForm)}"/>
                     </div>
                     <!-- おすすめ目的地のセクション -->
                     <section class="pt-10">

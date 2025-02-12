@@ -1,11 +1,11 @@
 class ImageUrls {
     urls = [
-        '/images/top1.png',
-        '/images/top2.png',
-        '/images/top3.png',
-        '/images/top4.png',
-        '/images/top5.png',
-        '/images/top6.png',
+        '/images/top1.avif',
+        '/images/top2.avif',
+        '/images/top3.avif',
+        '/images/top4.avif',
+        '/images/top5.avif',
+        '/images/top6.avif',
     ];
     currentIndex = -1;
 

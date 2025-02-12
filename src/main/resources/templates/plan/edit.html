@@ -44,8 +44,8 @@
                         <!-- 出発地点が入力済みかで表示の変更 -->
                         <th:block th:if="${startPlaceForm}" th:replace="~{fragment/modal :: startToggle}"/>
                         <th:block th:if="${updateStartForm}" th:replace="~{fragment/update-modal :: startUpdateToggle(updateStartForm)}"/>
-                        <!-- 経路生成済みか -->
-                        <div class="flex justify-center" th:if="${startPolyline}">
+                        <!-- todo: 経路生成後か -->
+                        <div class="flex justify-center" th:if="${isCreateRoute}">
                             <span class="inline-flex justify-between items-center space-x-4 w-48">
                                 <th:block th:if="${updateStartForm.toTransportation.name() == 'Driving'}" th:insert="~{fragment/svg :: car}"/>
                                 <th:block th:if="${updateStartForm.toTransportation.name() == 'Bicycling'}" th:insert="~{fragment/svg :: cycle}"/>
@@ -53,6 +53,7 @@
                                 <th:block th:if="${updateStartForm.toTransportation.name() == 'Walking'}" th:insert="~{fragment/svg :: walk}"/>
                                 <span th:text="${updateStartForm.toTravelTime}"></span>
                             </span>
+                            <!-- todo: 移動手段の変更 selectedにしてもいいかも -->
                         </div>
                     </div>
                     <div class="mb-6">
@@ -62,8 +63,8 @@
                                 <!-- 目的地が入力済みかで表示の変更 -->
                                 <th:block th:if="${placeForm}" th:replace="~{fragment/modal :: placesToggle(1)}"/>
                                 <th:block th:if="${updatePlaceForm}" th:replace="~{fragment/update-modal :: placesUpdateToggle(num, updatePlaceForm)}"/>
-                                <!-- todo: 経路生成済みか判断するして移動手段・移動時間の表示 -->
-                                <div class="flex justify-center" th:if="${}">
+                                <!-- todo: 経路生成後か -->
+                                <div class="flex justify-center" th:if="${isCreateRoute}">
                                     <span class="inline-flex justify-between items-center space-x-4 w-48">
                                         <th:block th:if="${updatePlaceForm.toTransportation.name() == 'Driving'}" th:insert="~{fragment/svg :: car}"/>
                                         <th:block th:if="${updatePlaceForm.toTransportation.name() == 'Bicycling'}" th:insert="~{fragment/svg :: cycle}"/>
@@ -71,8 +72,8 @@
                                         <th:block th:if="${updatePlaceForm.toTransportation.name() == 'Walking'}" th:insert="~{fragment/svg :: walk}"/>
                                         <span th:text="${updatePlaceForm.toTravelTime}"></span>
                                     </span>
+                                    <!-- todo: 移動手段の変更 selectedにしてもいいかも -->
                                 </div>
-                                <th:block th:replace="~{fragment/svg :: four-transportation}"/>
                             </li>
                         </ul>
                     </div>
@@ -158,8 +159,6 @@
 <th:block th:replace="~{fragment/script :: flowbite}"/>
 <th:block th:replace="~{fragment/script :: map}"/>
 <th:block th:replace="~{fragment/script :: modal}"/>
-<th:block th:replace="~{fragment/script :: check}"/>
-<th:block th:replace="~{fragment/script :: svgRadioButton}"/>
 <th:block th:replace="~{fragment/script :: previewImage}"/>
 <th:block th:replace="~{fragment/script :: walkCheckbox}"/>
 <th:block th:replace="~{fragment/script :: googleMapsAPI}"/>

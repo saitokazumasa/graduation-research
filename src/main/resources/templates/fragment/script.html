@@ -89,7 +89,14 @@
 </th:block>
 
 <th:block th:fragment="walkCheckbox">
-    <script src="/js/walkCheckbox.js"></script>
+    <script>
+        const walkCheckbox = document.getElementById('walkFlag');
+        const walkThreshold = document.getElementById('walkThreshold');
+
+        walkCheckbox.addEventListener('change', () => {
+            walkThreshold.disabled = !walkCheckbox.checked;
+        });
+    </script>
 </th:block>
 </body>
 </html>

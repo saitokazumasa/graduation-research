@@ -15,7 +15,7 @@
         </div>
         <div class="flex flex-col">
             <label class="text-center bg-red-50 flex justify-center items-center w-full" style="aspect-ratio: 5/1">
-                <th:block th:replace="~{fragment/popup :: cover-image}"/>
+                <th:block th:replace="~{fragment/popup :: cover-image(${editPlanForm.thumbnail})}"/>
             </label>
             <div class="flex">
                 <span class="inline-block h-12 w-12 my-auto ml-8"></span>

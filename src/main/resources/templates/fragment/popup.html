@@ -31,7 +31,7 @@
     </div>
 </th:block>
 
-<th:block th:fragment="cover-image">
+<th:block th:fragment="cover-image(imagePath)">
     <div class="relative w-full bg-gray-500" style="aspect-ratio: 5/1">
         <img id="imagePreview"
              th:src="${imagePath != null ? imagePath : ''}"

@@ -46,8 +46,8 @@
                             <!-- 出発地点が入力済みかで表示の変更 -->
                             <th:block th:if="${startPlaceForm}" th:replace="~{fragment/modal :: startToggle}"/>
                             <th:block th:if="${updateStartForm}" th:replace="~{fragment/update-modal :: startUpdateToggle(updateStartForm)}"/>
-                            <!-- todo: 経路生成後は表示する -->
-                            <div class="hidden justify-center" th:if="${!isCreateRoute}">
+                            <!-- todo: 経路生成後は表示 -->
+                            <div class="hidden justify-center" th:if="${isCreateRoute}">
                                 <span class="inline-flex justify-between items-center space-x-4 w-48">
                                     <th:block th:if="${updateStartForm.toTransportation.name() == 'Driving'}" th:insert="~{fragment/svg :: car}"/>
                                     <th:block th:if="${updateStartForm.toTransportation.name() == 'Bicycling'}" th:insert="~{fragment/svg :: cycle}"/>
@@ -61,9 +61,8 @@
                         <div class="mb-6" th:classappend="${isCreateRoute ? '' : 'addPlaces'}">
                             <p class="mb-2 sm:text-lg text-base">目的地</p>
                             <!-- 目的地が入力済みかで表示の変更 -->
-                            <th:block th:if="${placeForm}" th:replace="~{fragment/modal :: placesToggle(1)}"/>
-                            <th:block th:if="${updatePlaceForm}" th:replace="~{fragment/update-modal :: placesUpdateToggle(num, updatePlaceForm)}"/>
-                            <!-- todo: 経路生成後に表示切替 -->
+                            <th:block th:if="${updatePlaceForm}" th:replace="~{fragment/update-modal :: placesUpdateToggle(1, updatePlaceForm)}"/>
+                            <!-- todo: 経路生成後に表示 -->
                             <div class="flex justify-center" th:if="${isCreateRoute}">
                                 <span class="inline-flex justify-between items-center space-x-4 w-48">
                                     <th:block th:if="${updatePlaceForm.toTransportation.name() == 'Driving'}" th:insert="~{fragment/svg :: car}"/>
@@ -74,6 +73,8 @@
                                 </span>
                                 <!-- todo: 移動手段の変更 selectedにしてもいいかも -->
                             </div>
+                            <!-- 経路生成前に表示 -->
+                            <th:block th:if="${!isCreateRoute}" th:replace="~{fragment/modal :: placesToggle(1)}"/>
                         </div>
                         <div class="mb-6">
                             <p class="mb-2 sm:text-lg text-base">終了地点</p>
@@ -81,7 +82,8 @@
                             <th:block th:if="${endPlaceForm}" th:replace="~{fragment/modal :: end}"/>
                             <th:block th:if="${updateEndForm}" th:replace="~{fragment/update-modal :: endUpdateToggle(updateEndForm)}"/>
                         </div>
-                        <div th:if="${placeForm}" class="addPlaces">
+                        <!-- 経路生成後に表示 -->
+                        <div th:if="${isCreateRoute}" class="addPlaces">
                             <th:block th:replace="~{fragment/modal :: placesToggle(1)}"/>
                         </div>
                     </th:block>
@@ -135,7 +137,8 @@
                     </section>
                 </div>
                 <div class="flex justify-center mb-20">
-                    <button type="button" class="sm:mx-10 mx-5 block items-center justify-center button-secondary" onclick="location.replace('/plan/list')">保存して戻る</button>
+                    <!-- todo: updateしてからプラン一覧に戻る -->
+                    <button type="button" class="sm:mx-10 mx-5 block items-center justify-center button-secondary">保存して戻る</button>
                     <!-- todo: titleとオプションのupdateをし、経路生成処理に送信 -->
                     <button type="button" class="sm:mx-10 mx-5 block items-center justify-center button-primary" id="createPlanButton">経路生成</button>
                 </div>
@@ -154,7 +157,6 @@
                 <div id="map" class="w-full h-full"></div>
             </section>
         </div>
-    </form>
 </main>
 <th:block th:replace="~{fragment/footer :: footer}"/>
 <script src="/js/draganddrop.js"></script>

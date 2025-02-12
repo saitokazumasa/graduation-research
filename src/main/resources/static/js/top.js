@@ -3,7 +3,7 @@ class ImageUrls {
         '/images/top1.jpg',
         '/images/top2.jpg',
         '/images/top3.jpg',
-        '/images/top4.png',
+        '/images/top4.jpg',
         '/images/top5.png',
         '/images/top6.png',
     ];

@@ -4,10 +4,12 @@ on:
   pull_request:
 
 jobs:
-  assign-author:
+  assign:
+    runs-on: ubuntu-latest
+
     permissions:
       pull-requests: write
       repository-projects: read
-    runs-on: ubuntu-latest
+
     steps:
       - run: gh pr edit ${{ github.event.number }} --add-assignee ${{ github.actor }}

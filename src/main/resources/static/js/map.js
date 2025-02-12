@@ -144,7 +144,6 @@ function initializeMaps(placeIds = [], travelModes = [], options = {}) {
 window.initializeMaps = initializeMaps;
 
 function openPopupMap(placeIds, travelModes, options) {
-    console.log('placeIds', placeIds);
     const initializeMap = new MapDisplayController();
     initializeMap.placeIds = placeIds;
     initializeMap.travelModes = travelModes;

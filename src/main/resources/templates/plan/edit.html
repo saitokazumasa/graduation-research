@@ -139,12 +139,19 @@
                     </section>
                 </div>
                 <div class="flex justify-center mb-20">
-                    <button type="button" class="sm:mx-10 mx-5 flex items-center justify-center button-secondary" onclick="redirect('/plan/create')">
+                    <button type="button" class="sm:mx-10 mx-5 block items-center justify-center button-secondary" onclick="location.replace('/plan/list')">保存して戻る</button>
+                    <!-- todo: titleとオプションのupdateをし、経路生成処理に送信 -->
+                    <button type="button" class="sm:mx-10 mx-5 block items-center justify-center button-primary" id="createPlanButton">経路生成</button>
+                </div>
+                <!-- todo: 経路生成後かどうか -->
+                <div class="flex justify-center mb-20" id="editButtons" th:if="${isCreateRoute}">
+                    <!-- todo: 日付追加で画面遷移 -->
+                    <button type="button" class="sm:mx-10 mx-5 flex items-center justify-center button-secondary" id="addDay">
                         <th:block th:replace="~{fragment/svg :: plus}"/>
                         日付の追加
                     </button>
-                    <button type="button" class="sm:mx-10 mx-5 block items-center justify-center button-primary" onclick="redirect('/plan/list')">一時保存</button>
-                    <button type="button" class="sm:mx-10 mx-5 block items-center justify-center button-primary" onclick="redirect('/share/plan')">プラン確定</button>
+                    <!-- todo: プラン確定処理に飛ばす -->
+                    <button type="button" class="sm:mx-10 mx-5 block items-center justify-center button-primary" id="planConfirm">プラン確定</button>
                 </div>
             </section>
             <section class="sm:w-1/2 hidden sm:inline-block">

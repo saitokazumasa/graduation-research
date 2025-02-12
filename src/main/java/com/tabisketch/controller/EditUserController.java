@@ -3,16 +3,15 @@ package com.tabisketch.controller;
 import com.tabisketch.bean.form.EditEmailForm;
 import com.tabisketch.bean.form.EditPasswordForm;
 import com.tabisketch.constant.AuthenticationPrincipalExpression;
-import com.tabisketch.service.IEditEmailService;
 import com.tabisketch.service.IEditPasswordService;
 import com.tabisketch.service.ISendEditEmailMailService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -21,16 +20,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping("/user/edit")
 public class EditUserController {
     private final ISendEditEmailMailService sendEditEmailMailService;
-    private final IEditEmailService editEmailService;
     private final IEditPasswordService editPasswordService;
 
     public EditUserController(
             final ISendEditEmailMailService sendEditEmailMailService,
-            final IEditEmailService editEmailService,
             final IEditPasswordService editPasswordService
     ) {
         this.sendEditEmailMailService = sendEditEmailMailService;
-        this.editEmailService = editEmailService;
         this.editPasswordService = editPasswordService;
     }
 
@@ -70,24 +66,10 @@ public class EditUserController {
     }
 
     @GetMapping("/email/send")
-    public String sendEmail(final Model model) {
+    public String sendEmail(final HttpSession httpSession, final Model model) {
         if (!model.containsAttribute("email")) return "user/edit/email/index";
+        httpSession.invalidate();
         return "user/edit/email/send";
-    }
-
-    @GetMapping("/email/v/{uuid}")
-    public String verifyEmail(final @PathVariable String uuid) {
-        try {
-            this.editEmailService.execute(uuid);
-        } catch (final Exception e) {
-            System.err.println(e.getMessage());
-        }
-        return "redirect:/user/edit/email/complate";
-    }
-
-    @GetMapping("/email/complate")
-    public String complateEmail() {
-        return "user/edit/email/complate";
     }
 
     @GetMapping("/password")
@@ -114,7 +96,8 @@ public class EditUserController {
     }
 
     @GetMapping("/password/complate")
-    public String complatePassword() {
+    public String complatePassword(final HttpSession httpSession) {
+        httpSession.invalidate();
         return "user/edit/password/complate";
     }
 }

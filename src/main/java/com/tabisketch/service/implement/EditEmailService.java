@@ -52,7 +52,6 @@ public class EditEmailService implements IEditEmailService {
 
         // 有効期限を検証
         final var now = LocalDateTime.now();
-        final var lifeTime = nevToken.getLifeTime();
         if (!nevToken.getLifeTime().equals(now) && nevToken.getLifeTime().isBefore(now))
             throw new InvalidNewEmailVerificationTokenException("new email verification token is disabled");
 
@@ -65,7 +64,7 @@ public class EditEmailService implements IEditEmailService {
         if (!wasDeletedNEVToken) throw new FailedDeleteException("failed to delete new email verification token");
 
         // 編集通知メールを送信
-        final SendMailForm sendMailForm = SendMailForm.genComplateEditEmailMail(tabisketchEmail, nevToken.getNewEmail());
+        final SendMailForm sendMailForm = SendMailForm.genComplateEditEmailMail(tabisketchEmail, user.getEmail(), nevToken.getNewEmail());
         this.sendMailService.execute(sendMailForm);
     }
 }

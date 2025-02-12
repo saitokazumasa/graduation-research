@@ -2,12 +2,20 @@ name: Auto Assign
 
 on:
   pull_request:
-    types: [ opend ]
+    types:
+      - opened
 
 jobs:
-  assign-author:
+  assign:
+    runs-on: ubuntu-latest
+
     permissions:
       pull-requests: write
-    runs-on: ubuntu-latest
+      repository-projects: read
+
     steps:
-      - uses: technote-space/assign-author@v1
+      - name: add assignee
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: gh pr edit ${{ github.event.number }} --add-assignee ${{ github.actor }}

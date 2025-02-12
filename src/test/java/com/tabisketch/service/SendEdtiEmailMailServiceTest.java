@@ -13,8 +13,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 public class SendEdtiEmailMailServiceTest {
@@ -32,14 +31,16 @@ public class SendEdtiEmailMailServiceTest {
     @Test
     public void testExecute() throws MessagingException {
         final var user = ExampleUser.gen();
-        when(this.usersMapper.selectByEmail(anyString())).thenReturn(user);
+        final var form = ExampleEditEmailForm.gen();
+
+        when(this.usersMapper.selectByEmail(user.getEmail())).thenReturn(user);
         when(this.passwordEncoder.matches(anyString(), anyString())).thenReturn(true);
+        when(this.usersMapper.selectByEmail(form.getNewEmail())).thenReturn(null);
         when(this.newEmailVerificationTokensMapper.insert(any())).thenReturn(1);
 
-        final var form = ExampleEditEmailForm.gen();
         this.sendEditEmailMailService.execute(user.getEmail(), form);
 
-        verify(this.usersMapper).selectByEmail(anyString());
+        verify(this.usersMapper, times(2)).selectByEmail(anyString());
         verify(this.passwordEncoder).matches(anyString(), anyString());
         verify(this.newEmailVerificationTokensMapper).insert(any());
         verify(this.sendMailService).execute(any());

@@ -5,6 +5,7 @@ import com.tabisketch.service.ISendMailService;
 import jakarta.mail.MessagingException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,6 +17,7 @@ public class SendMailService implements ISendMailService {
     }
 
     @Override
+    @Async
     public void execute(final SendMailForm form) throws MessagingException {
         // 作成
         final var message = this.mailSender.createMimeMessage();

@@ -2,7 +2,7 @@ class ImageUrls {
     urls = [
         '/images/top1.jpg',
         '/images/top2.jpg',
-        '/images/top3.png',
+        '/images/top3.jpg',
         '/images/top4.png',
         '/images/top5.png',
         '/images/top6.png',

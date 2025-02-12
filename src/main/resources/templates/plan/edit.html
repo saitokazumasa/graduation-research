@@ -20,7 +20,7 @@
             <div class="flex">
                 <span class="inline-block h-12 w-12 my-auto ml-8"></span>
                 <div class="sm:border-b-2 border-b w-1/2 text-center mx-auto my-10">
-                    <input type="text" name="title" th:value="${editPlanForm.title}" placeholder="タイトルを入力してください" class="w-full sm:text-3xl text-xl text-center border-none">
+                    <input type="text" name="title" form="editPlan" th:value="${editPlanForm.title}" placeholder="タイトルを入力してください" class="w-full sm:text-3xl text-xl text-center border-none">
                 </div>
                 <button onclick="openPopup()" class="sm:hidden inline-block h-12 w-12 my-auto mr-8 cursor-pointer">
                     <th:block th:replace="~{fragment/svg :: map}"/>
@@ -112,23 +112,23 @@
                                 <th:block th:replace="~{fragment/svg :: three-transportation}"/>
                                 <div class="my-1 sm:text-base text-sm">
                                     <label for="useTollRoad">
-                                        <input type="checkbox" id="useTollRoad" name="useTollRoad" value="true" th:checked="${editDayForm.useTollRoad}" class="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-5 before:w-5 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-blue-700 checked:bg-blue-700 checked:before:bg-blue-700 hover:before:opacity-10">
+                                        <input type="checkbox" id="useTollRoad" name="useTollRoad" form="editDay" th:checked="${editDayForm.useTollRoad}" class="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-5 before:w-5 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-blue-700 checked:bg-blue-700 checked:before:bg-blue-700 hover:before:opacity-10">
                                         <span class="ml-2 text-center">有料道路の利用</span>
                                     </label>
                                 </div>
                                 <div class="my-1 sm:text-base text-sm">
                                     <label for="useFerry">
-                                        <input type="checkbox" id="useFerry" name="true" value="true" th:checked="${editDayForm.useFerry}" class="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-5 before:w-5 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-blue-700 checked:bg-blue-700 checked:before:bg-blue-700 hover:before:opacity-10">
+                                        <input type="checkbox" id="useFerry" name="true" value="true" form="editDay" th:checked="${editDayForm.useFerry}" class="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-5 before:w-5 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-blue-700 checked:bg-blue-700 checked:before:bg-blue-700 hover:before:opacity-10">
                                         <span class="ml-2 text-center">フェリーの利用</span>
                                     </label>
                                 </div>
                                 <div class="my-1 sm:text-base text-sm">
                                     <label for="walkFlag">
-                                        <input type="checkbox" id="walkFlag" name="walkFlag" value="walkFlag" th:checked="${editDayForm.walkThreshold > 0}" class="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-5 before:w-5 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-blue-700 checked:bg-blue-700 checked:before:bg-blue-700 hover:before:opacity-10">
+                                        <input type="checkbox" id="walkFlag" name="walkFlag" th:checked="${editDayForm.walkThreshold > 0}" class="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-5 before:w-5 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-blue-700 checked:bg-blue-700 checked:before:bg-blue-700 hover:before:opacity-10">
                                         <span class="ml-2 text-center">徒歩で移動可能な時間を指定</span>
                                     </label>
                                 </div>
-                                <label class="ml-10"><input type="number" id="walkThreshold" name="walkThreshold" th:field="${editDayForm.walkThreshold}" class="sm:w-56 w-32 sm:h-8 h-6 border border-b-gray-400 rounded-lg text-base text-center disabled:bg-[#e5e5e5] disabled:border-[#888] disabled:text-[#888]" min="0" max=""><span class="mx-4">分</span></label>
+                                <label class="ml-10"><input type="number" id="walkThreshold" name="walkThreshold" form="editDay" th:field="${editDayForm.walkThreshold}" class="sm:w-56 w-32 sm:h-8 h-6 border border-b-gray-400 rounded-lg text-base text-center disabled:bg-[#e5e5e5] disabled:border-[#888] disabled:text-[#888]" min="0" max=""><span class="mx-4">分</span></label>
                             </div>
                         </details>
                     </section>
@@ -139,7 +139,6 @@
                     <!-- todo: titleとオプションのupdateをし、経路生成処理に送信 -->
                     <button type="button" class="sm:mx-10 mx-5 block items-center justify-center button-primary" id="createPlanButton">経路生成</button>
                 </div>
-                <!-- todo: 経路生成後かどうか -->
                 <div class="flex justify-center mb-20" id="editButtons" th:if="${isCreateRoute}">
                     <!-- todo: 日付追加で画面遷移 -->
                     <button type="button" class="sm:mx-10 mx-5 flex items-center justify-center button-secondary" id="addDay">
@@ -156,6 +155,15 @@
         </div>
     </div>
     <div class="invisible">
+        <form th:object="${editPlanForm}" id="editPlan">
+            <!-- todo: editPlanFormのinputフィールド追加 -->
+            <input type="number" th:field="*{id}" hidden>
+            <input type="text" th:field="*{uuid}" hidden>
+        </form>
+        <form th:object="${editDayForm}" id="editDay">
+            <!-- todo: editDayFormのinputフィールド追加 -->
+            <input type="number" th:field="*{id}" hidden>
+        </form>
         <div id="startFormDiv">
             <th:block th:if="${startPlaceForm}" th:replace="~{fragment/modal :: startForm(${startPlaceForm})}"/>
             <th:block th:if="${updateStartForm}" th:replace="~{fragment/update-modal :: startUpdateForm(${updateStartForm})}"/>

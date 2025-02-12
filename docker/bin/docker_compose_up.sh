@@ -2,7 +2,7 @@
 
 # Get all docker-compose.yml files
 DOCKER_DIRECTORY=$1
-DOCKER_COMPOSE_LIST=$(find "$DOCKER_DIRECTORY" -type f -name "*docker-compose*.yml")
+DOCKER_COMPOSE_LIST=$(find "$DOCKER_DIRECTORY" -type f -name "[0-9][0-9]-docker-compose*.yml" | sort -V)
 
 # Build docker command
 DOCKER_COMMAND="docker compose "

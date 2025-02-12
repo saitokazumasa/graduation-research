@@ -46,11 +46,12 @@ public class EditPasswordService implements IEditPasswordService {
         if (!isMatchPassword) throw new InvalidPasswordException("invalid password");
 
         // パスワード更新
-        final boolean wasUpdatedUser = this.usersMapper.updatePassword(user.getId(), form.getNewPassword()) == 1;
+        final String encryptedPassword = this.passwordEncoder.encode(form.getNewPassword());
+        final boolean wasUpdatedUser = this.usersMapper.updatePassword(user.getId(), encryptedPassword) == 1;
         if (!wasUpdatedUser) throw new FailedUpdateException("failed to update user");
 
         // 編集通知メールを送信
-        final SendMailForm sendMailForm = SendMailForm.genComplateEditEmailMail(tabisketchEmail, user.getEmail());
+        final SendMailForm sendMailForm = SendMailForm.genComplateEditPasswordMail(tabisketchEmail, user.getEmail());
         this.sendMailService.execute(sendMailForm);
     }
 }

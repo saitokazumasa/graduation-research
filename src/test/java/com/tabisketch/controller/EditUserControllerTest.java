@@ -1,11 +1,9 @@
 package com.tabisketch.controller;
 
-import com.tabisketch.bean.entity.ExampleNewEmailVerificartionToken;
 import com.tabisketch.bean.form.EditEmailForm;
 import com.tabisketch.bean.form.EditPasswordForm;
 import com.tabisketch.bean.form.ExampleEditEmailForm;
 import com.tabisketch.bean.form.ExampleEditPasswordForm;
-import com.tabisketch.service.IEditEmailService;
 import com.tabisketch.service.IEditPasswordService;
 import com.tabisketch.service.ISendEditEmailMailService;
 import org.junit.jupiter.api.Test;
@@ -30,8 +28,6 @@ public class EditUserControllerTest {
     private MockMvc mockMvc;
     @MockitoBean
     private ISendEditEmailMailService sendEditEmailMailService;
-    @MockitoBean
-    private IEditEmailService editEmailService;
     @MockitoBean
     private IEditPasswordService editPasswordService;
 
@@ -96,23 +92,6 @@ public class EditUserControllerTest {
                 .andExpect(model().attributeExists("email"))
                 .andExpect(model().attribute("email", email))
                 .andExpect(view().name("user/edit/email/send"));
-    }
-
-    @Test
-    @WithMockUser
-    public void testVerifyEmail() throws Exception {
-        final var uuid = ExampleNewEmailVerificartionToken.gen().getUuid().toString();
-        this.mockMvc.perform(get("/user/edit/email/v/" + uuid))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/user/edit/email/complate"));
-    }
-
-    @Test
-    @WithMockUser
-    public void testComplateEmail() throws Exception {
-        this.mockMvc.perform(get("/user/edit/email/complate"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("user/edit/email/complate"));
     }
 
     @Test

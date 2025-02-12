@@ -90,20 +90,14 @@
                                 おすすめ目的地を追加
                             </summary>
                             <hr class="my-2 scale-x-150"/>
-                            <div class="sm:text-lg text-base -m-4 -mt-2 p-4">
-                                目的地のジャンル別に絞る
-                                <!-- TODO:正規のジャンル一覧はDBから取得する -->
-                                <select class="focus:outline-none ml-6 rounded-xl h-8 text-xs" name="sample">
-                                    <option value="0">全て</option>
-                                    <option value="1">観光</option>
-                                    <option value="2">グルメ</option>
-                                    <option value="3">ショッピング</option>
-                                    <option value="4">アクティビティ</option>
-                                    <option value="5">宿泊</option>
-                                    <option value="6">その他</option>
-                                </select>
+                            <!-- おすすめ目的地のリストがあるか -->
+                            <p th:if="${#lists.isEmpty(recommendList)}" id="recommendListDiv"
+                               class="sm:text-lg text-base text-danger my-4">先に出発地点、終了地点、目的のどれかを入力してください。</p>
+                            <div class="hidden items-center" id="loadingDiv">
+                                <span class="mx-2 text-lg">おすすめ目的地を検索中</span>
+                                <th:block th:replace="~{fragment/svg :: loading}"/>
                             </div>
-                            <p class="sm:text-lg text-base text-danger my-4">先に出発地点、終了地点、目的のどれかを入力してください。</p>
+                            <div id="recommendToggleDiv"></div>
                         </details>
                     </section>
                     <section class="pt-10">

@@ -92,32 +92,30 @@
                             </summary>
                             <hr class="my-2 scale-x-150"/>
                             <div class="sm:text-lg text-base -m-4 -mt-2 p-4 flex flex-col">
+                                利用する交通手段
+                                <th:block th:replace="~{fragment/svg :: three-transportation}"/>
                                 <div class="my-1 sm:text-base text-sm">
-                                    <label for="useHighway">
-                                        <input type="checkbox" id="useHighway" th:field="*{useHighway}" th:value="${useHighway}" class="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-5 before:w-5 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-blue-700 checked:bg-blue-700 checked:before:bg-blue-700 hover:before:opacity-10" onchange="redirect('/plan/edit')">
+                                    <label for="useTollRoad">
+                                        <input type="checkbox" id="useTollRoad" name="useTollRoad" value="true" th:checked="${editDayForm.useTollRoad}" class="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-5 before:w-5 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-blue-700 checked:bg-blue-700 checked:before:bg-blue-700 hover:before:opacity-10">
                                         <span class="ml-2 text-center">有料道路の利用</span>
                                     </label>
                                 </div>
                                 <div class="my-1 sm:text-base text-sm">
                                     <label for="useFerry">
-                                        <input type="checkbox" id="useFerry" th:field="*{useFerry}" th:value="${useFerry}" class="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-5 before:w-5 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-blue-700 checked:bg-blue-700 checked:before:bg-blue-700 hover:before:opacity-10" onchange="redirect('/plan/edit')">
+                                        <input type="checkbox" id="useFerry" name="true" value="true" th:checked="${editDayForm.useFerry}" class="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-5 before:w-5 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-blue-700 checked:bg-blue-700 checked:before:bg-blue-700 hover:before:opacity-10">
                                         <span class="ml-2 text-center">フェリーの利用</span>
                                     </label>
                                 </div>
                                 <div class="my-1 sm:text-base text-sm">
                                     <label for="walkFlag">
-                                        <input type="checkbox" id="walkFlag" th:field="*{walkFlag}" th:value="${walkFlag}" class="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-5 before:w-5 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-blue-700 checked:bg-blue-700 checked:before:bg-blue-700 hover:before:opacity-10" onchange="handleWalkFlagChange()">
+                                        <input type="checkbox" id="walkFlag" name="walkFlag" value="walkFlag" th:checked="${editDayForm.walkThreshold > 0}" class="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-5 before:w-5 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-blue-700 checked:bg-blue-700 checked:before:bg-blue-700 hover:before:opacity-10">
                                         <span class="ml-2 text-center">徒歩で移動可能な時間を指定</span>
                                     </label>
                                 </div>
-                                <label class="ml-10">
-                                    <input type="number" id="walkingTime" name="walkingTime" th:field="*{walkingTime}" th:value="${walkingTime}" class="sm:w-56 w-32 sm:h-8 h-6 border border-b-gray-400 rounded-lg text-base text-center disabled:bg-[#e5e5e5] disabled:border-[#888] disabled:text-[#888]" min="0" max="" disabled onchange="redirect('/plan/edit')">
-                                    <span class="mx-4">分</span>
-                                </label>
+                                <label class="ml-10"><input type="number" id="walkThreshold" name="walkThreshold" th:field="${editDayForm.walkThreshold}" class="sm:w-56 w-32 sm:h-8 h-6 border border-b-gray-400 rounded-lg text-base text-center disabled:bg-[#e5e5e5] disabled:border-[#888] disabled:text-[#888]" min="0" max=""><span class="mx-4">分</span></label>
                             </div>
                         </details>
                     </section>
-
                 </div>
                 <div class="flex justify-center mb-20">
                     <button type="button" class="sm:mx-10 mx-5 flex items-center justify-center button-secondary" onclick="redirect('/plan/create')">
@@ -143,6 +141,7 @@
 <th:block th:replace="~{fragment/script :: check}"/>
 <th:block th:replace="~{fragment/script :: svgRadioButton}"/>
 <th:block th:replace="~{fragment/script :: previewImage}"/>
+<th:block th:replace="~{fragment/script :: walkCheckbox}"/>
 <th:block th:replace="~{fragment/script :: googleMapsAPI}"/>
 </body>
 </html>

@@ -2,7 +2,7 @@ package com.tabisketch.service.implement;
 
 import com.tabisketch.bean.entity.Plan;
 import com.tabisketch.bean.form.EditPlanForm;
-import com.tabisketch.bean.output.PlanOutput;
+import com.tabisketch.bean.view_model.PlanViewModel;
 import com.tabisketch.exception.FailedSelectException;
 import com.tabisketch.exception.FailedUpdateException;
 import com.tabisketch.mapper.IPlansMapper;
@@ -22,7 +22,7 @@ public class EditPlanService implements IEditPlanService {
 
     @Override
     @Transactional
-    public PlanOutput execute(final String uuid, final EditPlanForm form) {
+    public PlanViewModel execute(final String uuid, final EditPlanForm form) {
         // プラン取得
         final var _uuid = UUID.fromString(uuid);
         final Plan plan = this.plansMapper.selectByUUID(_uuid);
@@ -46,12 +46,6 @@ public class EditPlanService implements IEditPlanService {
         if (updatedPlan == null) throw new FailedSelectException("failed to find plan");
 
         // データ加工
-        return new PlanOutput(
-                updatedPlan.getUuid(),
-                updatedPlan.getTitle(),
-                updatedPlan.getThumbnailPath(),
-                updatedPlan.isEditable(),
-                updatedPlan.isPubliclyViewable()
-        );
+        return new PlanViewModel(updatedPlan);
     }
 }

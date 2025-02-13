@@ -92,7 +92,7 @@
                     <!-- 利用する交通手段のセクション -->
                     <section class="pt-10 sm:text-lg text-base -m-4 -mt-2 p-4 flex flex-col">
                         利用する交通手段
-                        <th:block th:replace="~{fragment/svg :: three-transportation}"/>
+                        <th:block th:replace="~{fragment/svg :: three-transportation(editDayForm)}"/>
                     </section>
                 </div>
                 <!-- ボタンのセクション -->
@@ -153,6 +153,7 @@
     </div>
 </main>
 <th:block th:replace="~{fragment/footer :: footer}"/>
+<th:block th:replace="~{fragment/script :: svgCheckbox}"/>
 <script src="/js/draganddrop.js"></script>
 <script src="/js/radioButtonSelect.js"></script>
 <th:block th:replace="~{fragment/script :: flowbite}"/>

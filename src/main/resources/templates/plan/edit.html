@@ -56,7 +56,7 @@
                             <th:block th:replace="~{fragment/update-modal :: placesUpdateToggle(${placeStatus.index}, ${updatePlaceForm}, ${isCreateRoute})}"/>
                         </div>
                         <!-- 目的地追加 経路生成前に表示 -->
-                        <th:block th:if="${!isCreateRoute}" th:insert="~{fragment/modal :: placesToggle(0)}"/>
+                        <th:block th:if="${!isCreateRoute}" th:insert="~{fragment/modal :: placesToggle(placeNum)}"/>
                     </div>
                     <!-- 終了地点 -->
                     <div class="mb-6">
@@ -67,7 +67,7 @@
                     </div>
                     <!-- 目的地追加 経路生成後に表示 -->
                     <div th:if="${isCreateRoute}" class="addPlaces">
-                        <th:block th:replace="~{fragment/modal :: placesToggle(0)}"/>
+                        <th:block th:replace="~{fragment/modal :: placesToggle(placeNum)}"/>
                     </div>
                     <!-- おすすめ目的地のセクション -->
                     <section class="pt-10">

@@ -21,4 +21,15 @@ public class WaypointListsMapperTest {
         assert this.mapper.insert(entity) == 1;
         assert entity.getId() != -1;
     }
+
+    @Test
+    @Sql({
+            "classpath:/sql/InsertExampleUser.sql",
+            "classpath:/sql/InsertExamplePlan.sql",
+            "classpath:/sql/InsertExampleWaypointList.sql"
+    })
+    public void testSelectById() {
+        final var entity = ExampleWaypointList.gen();
+        assert this.mapper.selectById(entity.getId()) != null;
+    }
 }

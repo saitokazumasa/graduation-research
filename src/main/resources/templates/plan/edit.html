@@ -34,13 +34,14 @@
             <section class="sm:w-1/2 w-full">
                 <!-- 日付の表示 -->
                 <div class="flex items-end space-x-0 pb-[0.625rem] border-b-2 mt-6">
-                    <div th:each="index : ${#numbers.sequence(1, days)}">
-                        <a th:href="@{/plan/d/__${uuid}__/edit(day=__${index}__)}"
-                           th:classappend="${index == selectedDay} ? 'pt-5 pb-3 sm:px-6 lg:px-12 px-8 bg-green-600 text-white text-lg h-12' : 'pt-3 pb-3 sm:px-4 lg:px-10 px-6 bg-green-400 text-white'"
-                           class="rounded-t-md text-center items-center cursor-pointer">
-                            <span th:text="${index} + '日目'"></span>
-                        </a>
-                    </div>
+                    <!-- todo: 日付表示する為に planIdが一致する waypoint_listsの行数を 仮:${days}に入れて渡す -->
+<!--                    <div th:each="index : ${#numbers.sequence(1, days)}">-->
+<!--                        <a th:href="@{/plan/d/__${uuid}__/edit(day=__${index}__)}"-->
+<!--                           th:classappend="${index == selectedDay} ? 'pt-5 pb-3 sm:px-6 lg:px-12 px-8 bg-green-600 text-white text-lg h-12' : 'pt-3 pb-3 sm:px-4 lg:px-10 px-6 bg-green-400 text-white'"-->
+<!--                           class="rounded-t-md text-center items-center cursor-pointer">-->
+<!--                            <span th:text="${index} + '日目'"></span>-->
+<!--                        </a>-->
+<!--                    </div>-->
                 </div>
                 <!-- 各種地点の表示 -->
                 <div class="flex flex-col mt-6 mb-10">
@@ -117,15 +118,16 @@
                         <!-- titleとオプションのupdateをし、経路生成処理に送信 -->
                         <button type="button" id="crateRouteButton" class="sm:mx-10 mx-5 block items-center justify-center button-primary">経路生成</button>
                     </div>
-                    <div class="flex justify-center mt-10" id="editButtonsDiv" th:classappend="${isCreateRoute ? '' : 'hidden'}">
-                        <!-- 日付追加で画面遷移 -->
-                        <button type="button" class="sm:mx-10 mx-5 flex items-center justify-center button-secondary" id="addDayButton">
-                            <th:block th:replace="~{fragment/svg :: plus}"/>
-                            日付の追加
-                        </button>
-                        <!-- プラン確定処理に飛ばす -->
-                        <button type="button" class="sm:mx-10 mx-5 block items-center justify-center button-primary" id="planConfirmButton">プラン確定</button>
-                    </div>
+                    <!-- todo: 経路生成済みか 仮:${isCreateRoute} を判別して表示切替-->
+<!--                    <div class="flex justify-center mt-10" id="editButtonsDiv" th:classappend="${isCreateRoute ? '' : 'hidden'}">-->
+<!--                        &lt;!&ndash; 日付追加ボタンで同じ画面にリダイレクト &ndash;&gt;-->
+<!--                        <button type="button" class="sm:mx-10 mx-5 flex items-center justify-center button-secondary" id="addDayButton">-->
+<!--                            <th:block th:replace="~{fragment/svg :: plus}"/>-->
+<!--                            日付の追加-->
+<!--                        </button>-->
+<!--                        &lt;!&ndash; プラン確定処理に飛ばす &ndash;&gt;-->
+<!--                        <button type="button" class="sm:mx-10 mx-5 block items-center justify-center button-primary" id="planConfirmButton">プラン確定</button>-->
+<!--                    </div>-->
                 </section>
             </section>
             <!-- マップ表示のセクション -->

@@ -1,6 +1,8 @@
 package com.tabisketch.rest_controller;
 
+import com.tabisketch.constant.AuthenticationPrincipalExpression;
 import com.tabisketch.service.IDeletePlanService;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,7 +18,10 @@ public class DeletePlanRestController {
     }
 
     @PostMapping
-    public void post(final @PathVariable String uuid) {
-        this.deletePlanService.execute(uuid);
+    public void post(
+            final @PathVariable String uuid,
+            final @AuthenticationPrincipal(expression = AuthenticationPrincipalExpression.EMAIL) String email
+    ) {
+        this.deletePlanService.execute(uuid, email);
     }
 }

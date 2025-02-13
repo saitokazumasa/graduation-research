@@ -1,10 +1,10 @@
 package com.tabisketch.rest_controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tabisketch.bean.form.EditPlanForm;
-import com.tabisketch.bean.form.ExampleEditPlanForm;
-import com.tabisketch.bean.view_model.ExamplePlanViewModel;
-import com.tabisketch.service.IEditPlanService;
+import com.tabisketch.bean.form.EditWaypointListForm;
+import com.tabisketch.bean.form.ExampleEditWaypointListForm;
+import com.tabisketch.bean.view_model.ExampleWaypointListViewModel;
+import com.tabisketch.service.IEditWaypointListService;
 import jakarta.servlet.ServletException;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -26,51 +26,50 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(EditPlanRestController.class)
-public class EditPlanRestControllerTest {
+@WebMvcTest(EditWaypointListRestController.class)
+public class EditWaypointListRestControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
     @MockitoBean
-    private IEditPlanService editPlanService;
+    private IEditWaypointListService editWaypointListService;
 
     @ParameterizedTest
     @WithMockUser
     @MethodSource("provideTestData")
-    public void testPost(final EditPlanForm editPlanForm, final boolean isSuccess) throws Exception {
-        final var planViewModel = ExamplePlanViewModel.gen();
-        when(this.editPlanService.execute(anyString(), any())).thenReturn(planViewModel);
+    public void testPost(final EditWaypointListForm editWaypointListForm, final boolean isSuccess) throws Exception {
+        final var waypointListViewModel = ExampleWaypointListViewModel.gen();
+        when(this.editWaypointListService.execute(anyString(), any())).thenReturn(waypointListViewModel);
 
         if (isSuccess) {
-            this.mockMvc.perform(post("/api/plan/edit")
-                            .flashAttr("editPlanForm", editPlanForm)
+            this.mockMvc.perform(post("/api/waypoint-list/edit")
+                            .flashAttr("editWaypointListForm", editWaypointListForm)
                             .with(csrf()))
                     .andExpect(status().isOk())
-                    .andExpect(content().json(this.objectMapper.writeValueAsString(planViewModel)));
+                    .andExpect(content().json(this.objectMapper.writeValueAsString(waypointListViewModel)));
             return;
         }
 
         assertThrows(
                 ServletException.class,
-                () -> this.mockMvc.perform(post("/api/plan/edit")
-                                .flashAttr("editPlanForm", editPlanForm)
-                                .with(csrf()))
+                () -> this.mockMvc.perform(post("/api/waypoint-list/edit")
+                        .flashAttr("editWaypointListForm", editWaypointListForm)
+                        .with(csrf()))
         );
     }
 
     private static Stream<Arguments> provideTestData() {
-        final var example = ExampleEditPlanForm.gen();
-        final var uuid = example.getUuid();
-        final var title = example.getTitle();
-        final var thumbnailPath = example.getThumbnailPath();
+        final var example = ExampleEditWaypointListForm.gen();
+        final var id = example.getId();
+        final var mainTransporation = example.getMainTransporation();
+        final var planUUID = example.getPlanUUID();
 
         return Stream.of(
                 Arguments.of(example, true),
-                Arguments.of(new EditPlanForm(null, title, thumbnailPath, true, false), false),
-                Arguments.of(new EditPlanForm(uuid, "", thumbnailPath, true, false), false),
-                Arguments.of(new EditPlanForm(uuid, title, null, true, false), false)
-
+                Arguments.of(new EditWaypointListForm(0, null, planUUID), false),
+                Arguments.of(new EditWaypointListForm(id, null, planUUID), false),
+                Arguments.of(new EditWaypointListForm(id, mainTransporation, null), false)
         );
     }
 }

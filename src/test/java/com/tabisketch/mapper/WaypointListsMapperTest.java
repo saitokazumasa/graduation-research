@@ -34,4 +34,16 @@ public class WaypointListsMapperTest {
         final var email = ExampleUser.gen().getEmail();
         assert this.waypointListsMapper.selectByIdAndEmail(waypointList.getId(), email) != null;
     }
+
+    @Test
+    @Sql({
+            "classpath:/sql/InsertExampleUser.sql",
+            "classpath:/sql/InsertExamplePlan.sql",
+            "classpath:/sql/InsertExampleWaypointList.sql"
+    })
+    public void testUpdate() {
+        final var waypointList = ExampleWaypointList.gen();
+        final var email = ExampleUser.gen().getEmail();
+        assert this.waypointListsMapper.update(waypointList, email) == 1;
+    }
 }

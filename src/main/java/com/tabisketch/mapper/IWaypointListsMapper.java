@@ -1,10 +1,7 @@
 package com.tabisketch.mapper;
 
 import com.tabisketch.bean.entity.WaypointList;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Options;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 @Mapper
 public interface IWaypointListsMapper {
@@ -13,8 +10,16 @@ public interface IWaypointListsMapper {
     int insert(final WaypointList waypointList);
 
     @Select("SELECT w.* FROM waypoint_lists w " +
-            "   INNER JOIN plans p ON w.plan_id = p.id " +
-            "   INNER JOIN users u ON p.user_id = u.id " +
-            "   WHERE w.id = #{id} AND u.email = #{email}")
+            "INNER JOIN plans p ON w.plan_id = p.id " +
+            "INNER JOIN users u ON p.user_id = u.id " +
+            "WHERE w.id = #{id} AND u.email = #{email}")
     WaypointList selectByIdAndEmail(final int id, final String email);
+
+    @Update("UPDATE waypoint_lists SET" +
+            "   main_transporation = #{waypointList.mainTransporation} " +
+            "FROM waypoint_lists w " +
+            "INNER JOIN plans p ON w.plan_id = p.id " +
+            "INNER JOIN users u ON p.user_id = u.id " +
+            "WHERE w.id = #{waypointList.id} AND u.email = #{email}")
+    int update(final WaypointList waypointList, final String email);
 }

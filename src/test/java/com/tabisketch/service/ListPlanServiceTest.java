@@ -5,23 +5,25 @@ import com.tabisketch.mapper.IPlansMapper;
 import com.tabisketch.mapper.IUsersMapper;
 import com.tabisketch.service.implement.ListPlanService;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class ListPlanServiceTest {
-    @Autowired
+    @InjectMocks
     private ListPlanService listPlanService;
-    @MockitoBean
+    @Mock
     private IUsersMapper usersMapper;
-    @MockitoBean
+    @Mock
     private IPlansMapper plansMapper;
 
     @Test

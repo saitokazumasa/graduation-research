@@ -3,29 +3,31 @@ package com.tabisketch.service;
 import com.tabisketch.bean.form.ExampleRegisterForm;
 import com.tabisketch.mapper.IEmailVerificationTokensMapper;
 import com.tabisketch.mapper.IUsersMapper;
+import com.tabisketch.service.implement.RegisterService;
 import jakarta.mail.MessagingException;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class RegisterServiceTest {
-    @Autowired
-    private IRegisterService service;
-    @MockitoBean
+    @InjectMocks
+    private RegisterService registerService;
+    @Mock
     private IUsersMapper usersMapper;
-    @MockitoBean
+    @Mock
     private IEmailVerificationTokensMapper emailVerificationTokensMapper;
-    @MockitoBean
+    @Mock
     private ISendMailService sendMailService;
-    @MockitoBean
+    @Mock
     private PasswordEncoder passwordEncoder;
 
     @Test
@@ -35,7 +37,7 @@ public class RegisterServiceTest {
         when(this.emailVerificationTokensMapper.insert(any())).thenReturn(1);
 
         final var form = ExampleRegisterForm.gen();
-        this.service.execute(form);
+        this.registerService.execute(form);
 
         verify(this.passwordEncoder).encode(anyString());
         verify(this.usersMapper).insert(any());

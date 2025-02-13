@@ -23,6 +23,11 @@
             // };
             initAutoComplete();
             initializeMaps(placeIds, travelModes, options);
+
+            window.closePopup = function() {
+                openPopupMap(placeIds,travelModes,options);
+            }
+
         }
     </script>
 </th:block>

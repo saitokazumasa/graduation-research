@@ -11,4 +11,9 @@ public class IndexController {
     public String get() {
         return "redirect:/top";
     }
+
+    @GetMapping("/top")
+    public String top() {
+        return "top";
+    }
 }

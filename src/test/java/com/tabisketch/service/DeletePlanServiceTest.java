@@ -1,39 +1,39 @@
 package com.tabisketch.service;
 
 import com.tabisketch.bean.entity.ExamplePlan;
-import com.tabisketch.exception.DeleteFailedException;
-import com.tabisketch.mapper.IDaysMapper;
-import com.tabisketch.mapper.IPlacesMapper;
+import com.tabisketch.bean.entity.ExampleUser;
 import com.tabisketch.mapper.IPlansMapper;
+import com.tabisketch.mapper.IWaypointListsMapper;
+import com.tabisketch.service.implement.DeletePlanService;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class DeletePlanServiceTest {
-    @MockitoBean
+    @InjectMocks
+    private DeletePlanService deletePlanService;
+    @Mock
     private IPlansMapper plansMapper;
-    @MockitoBean
-    private IDaysMapper daysMapper;
-    @MockitoBean
-    private IPlacesMapper placesMapper;
-    @Autowired
-    private IDeletePlanService deletePlanService;
+    @Mock
+    private IWaypointListsMapper waypointListsMapper;
 
     @Test
-    public void testExecute() throws DeleteFailedException {
-        when(this.plansMapper.deleteByUUID(any())).thenReturn(1);
+    public void testExecute() {
+        final var plan = ExamplePlan.gen();
+        when(this.plansMapper.deleteByUUIDAndEmail(any(), anyString())).thenReturn(1);
 
-        final var uuid = ExamplePlan.generate().getUuid().toString();
-        this.deletePlanService.execute(uuid);
+        final String uuid = plan.getUuid().toString();
+        final String email = ExampleUser.gen().getEmail();
+        this.deletePlanService.execute(uuid, email);
 
-        verify(this.placesMapper).deleteByPlanUUID(any());
-        verify(this.daysMapper).deleteByPlanUUID(any());
-        verify(this.plansMapper).deleteByUUID(any());
+        verify(this.waypointListsMapper).deleteByPlanUUIDAndEmail(any(), anyString());
+        verify(this.plansMapper).deleteByUUIDAndEmail(any(), anyString());
     }
 }

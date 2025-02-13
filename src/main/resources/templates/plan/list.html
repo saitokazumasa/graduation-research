@@ -9,77 +9,73 @@
             <h1 class="text-xl sm:text-title">旅行プラン一覧</h1>
             <p class="text-xs sm:text-base font-light">今まで作成した旅行プランを閲覧できます。</p>
         </div>
-        <div class="absolute right-10 top-6 text-center hidden md:block">
+        <!-- PC表示 -->
+        <div class="absolute right-10 top-6 text-center hidden md:block" th:if="${!planList.isEmpty()}">
             <a th:href="@{/plan/create}" class="button-primary">プラン作成</a>
         </div>
-        <div class="flex justify-center text-center my-10 md:hidden">
+        <!-- スマホ表示 -->
+        <div class="flex justify-center text-center my-10 md:hidden" th:if="${!planList.isEmpty()}">
             <a th:href="@{/plan/create}" class="button-primary">プラン作成</a>
         </div>
     </div>
     <div class="container mx-auto px-4 sm:px-8">
         <div class="grid gap-6 grid-cols-1 xl:grid-cols-2 justify-items-center sm:my-16">
-            <!-- TODO: 詳細画面へのルートが出来たらth:hrefの中身を書き換える -->
-            <a th:each="plan : ${planList}" th:href="@{/}"
+            <a th:each="plan : ${planList}" th:href="${plan.isEditable ? '/plan/edit/' + plan.uuid : '/plan/detail/' + plan.uuid}"
                class="block border overflow-hidden rounded-lg block-list w-[22rem] sm:w-[29.1875rem] h-52 sm:h-64 hover:shadow-lg my-8">
-                <div class="flex justify-center my-3 mx-3 h-36 sm:h-48">
-                    <!-- TODO:カバー画像のパスを入れる -->
-                    <img th:src="@{/images/top1.png}" class="object-cover w-full h-full aspect-video" alt="カバー画像">
+                <div class="flex justify-center my-3 mx-3 h-36 sm:h-48" th:if="${plan.thumbnailPath != '' && plan.thumbnailPath != null}">
+                    <img th:src="${plan.thumbnailPath}" class="object-cover w-full h-full" alt="カバー画像" style="aspect-ratio: 5/1">
+                </div>
+                <div class="flex justify-center my-3 mx-3 h-36 sm:h-48" th:unless="${plan.thumbnailPath != '' && plan.thumbnailPath != null}">
+                    <img th:src="@{/images/top1.png}" class="object-cover w-full h-full" alt="カバー画像" style="aspect-ratio: 5/1">
                 </div>
                 <div class="flex justify-between">
                     <span th:text="${plan.title}" class="mx-4 text-base md:text-xl"></span>
-                    <span th:if="${plan.isEditable}"
-                          class="border border-black flex items-center justify-center mx-4 rounded-full text-center text-xs w-14">下書き</span>
+                    <span th:if="${plan.isEditable}" class="border border-black flex items-center justify-center mx-4 rounded-full text-center text-xs w-14">下書き</span>
                 </div>
             </a>
         </div>
     </div>
+    <div th:if="${planList.isEmpty()}" class="text-center text-base sm:text-2xl my-10">
+        <p>まだ旅行プランが作られていません。</p>
+        <p class="mt-2 mb-10">旅行プランを作成しましょう！！</p>
+        <a th:href="@{/plan/create}" class="button-primary text-sm sm:text-lg">プラン作成</a>
+    </div>
     <!-- TODO:バックエンドの一覧表示の処理ができたら作成する -->
-    <nav class="flex justify-center" aria-label="Page navigation example">
-        <ul class="flex items-center -space-x-px h-10 text-base">
-            <li>
-                <a href="#"
-                   class="flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-interactive hover:text-white">
-                    <span class="sr-only">Previous</span>
-                    <svg class="w-3 h-3 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                         fill="none" viewBox="0 0 6 10">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M5 1 1 5l4 4"/>
-                    </svg>
-                </a>
-            </li>
-            <li>
-                <a href="#"
-                   class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-interactive hover:text-white">1</a>
-            </li>
-            <li>
-                <a href="#"
-                   class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-interactive hover:text-white">2</a>
-            </li>
-            <li>
-                <a href="#"
-                   class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-interactive hover:text-white">3</a>
-            </li>
-            <li>
-                <a href="#"
-                   class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-interactive hover:text-white">4</a>
-            </li>
-            <li>
-                <a href="#"
-                   class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-interactive hover:text-white">5</a>
-            </li>
-            <li>
-                <a href="#"
-                   class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-interactive hover:text-white">
-                    <span class="sr-only">Next</span>
-                    <svg class="w-3 h-3 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                         fill="none" viewBox="0 0 6 10">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="m1 9 4-4-4-4"/>
-                    </svg>
-                </a>
-            </li>
-        </ul>
-    </nav>
+<!--    <nav th:if="${!planList.isEmpty()}" class="flex justify-center" aria-label="Page navigation example">-->
+<!--        <ul class="flex items-center -space-x-px h-10 text-base">-->
+<!--            <li>-->
+<!--                <a href="#" class="flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-interactive hover:text-white">-->
+<!--                    <span class="sr-only">Previous</span>-->
+<!--                    <svg class="w-3 h-3 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">-->
+<!--                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/>-->
+<!--                    </svg>-->
+<!--                </a>-->
+<!--            </li>-->
+<!--            <li>-->
+<!--                <a href="#" class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-interactive hover:text-white">1</a>-->
+<!--            </li>-->
+<!--            <li>-->
+<!--                <a href="#" class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-interactive hover:text-white">2</a>-->
+<!--            </li>-->
+<!--            <li>-->
+<!--                <a href="#" class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-interactive hover:text-white">3</a>-->
+<!--            </li>-->
+<!--            <li>-->
+<!--                <a href="#" class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-interactive hover:text-white">4</a>-->
+<!--            </li>-->
+<!--            <li>-->
+<!--                <a href="#" class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-interactive hover:text-white">5</a>-->
+<!--            </li>-->
+<!--            <li>-->
+<!--                <a href="#" class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-interactive hover:text-white">-->
+<!--                    <span class="sr-only">Next</span>-->
+<!--                    <svg class="w-3 h-3 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">-->
+<!--                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>-->
+<!--                    </svg>-->
+<!--                </a>-->
+<!--            </li>-->
+<!--        </ul>-->
+<!--    </nav>-->
 </main>
 <th:block th:replace="~{fragment/footer :: footer}"/>
 <th:block th:replace="~{fragment/script :: header}"/>

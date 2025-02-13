@@ -1,42 +1,44 @@
 package com.tabisketch.service;
 
 import com.tabisketch.bean.entity.ExampleUser;
-import com.tabisketch.bean.form.ExampleCreatePlanForm;
-import com.tabisketch.exception.InsertFailedException;
-import com.tabisketch.exception.SelectFailedException;
 import com.tabisketch.mapper.IPlansMapper;
 import com.tabisketch.mapper.IUsersMapper;
+import com.tabisketch.mapper.IWaypointListsMapper;
+import com.tabisketch.service.implement.CreatePlanService;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class CreatePlanServiceTest {
-    @Autowired
-    private ICreatePlanService createPlanService;
-    @MockitoBean
+    @InjectMocks
+    private CreatePlanService createPlanService;
+    @Mock
     private IUsersMapper usersMapper;
-    @MockitoBean
+    @Mock
     private IPlansMapper plansMapper;
+    @Mock
+    private IWaypointListsMapper waypointListsMapper;
 
     @Test
-    @WithMockUser
-    public void testExecute() throws InsertFailedException, SelectFailedException {
-        final var user = ExampleUser.generate();
-        when(this.usersMapper.selectByMailAddress(anyString())).thenReturn(user);
+    public void testExecute() {
+        final var user = ExampleUser.gen();
+        when(this.usersMapper.selectByEmail(anyString())).thenReturn(user);
         when(this.plansMapper.insert(any())).thenReturn(1);
+        when(this.waypointListsMapper.insert(any())).thenReturn(1);
 
-        final var createPlanForm = ExampleCreatePlanForm.generate();
-        this.createPlanService.execute(createPlanForm);
+        final String uuid = this.createPlanService.execute(user.getEmail());
+        assert !uuid.isBlank();
 
-        verify(this.usersMapper).selectByMailAddress(anyString());
+        verify(this.usersMapper).selectByEmail(anyString());
         verify(this.plansMapper).insert(any());
+        verify(this.waypointListsMapper).insert(any());
     }
 }

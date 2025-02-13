@@ -28,7 +28,7 @@ public class LoginUserDetails implements UserDetails {
     @Override
     public String getUsername() {
         // NOTE: メールアドレスを "username" として扱う
-        return user.getMailAddress();
+        return user.getEmail();
     }
 
     @Override
@@ -43,6 +43,7 @@ public class LoginUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        // メールアドレスが認証されているかどうかで有効無効を分ける
+        return user.isEmailVerified();
     }
 }

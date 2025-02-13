@@ -1,12 +1,14 @@
 package com.tabisketch.bean.form;
 
 public class ExampleEditPasswordForm {
-    public static EditPasswordForm generate() {
+    private ExampleEditPasswordForm() {
+    }
+
+    public static EditPasswordForm gen() {
         return new EditPasswordForm(
-                "sample@example.com",
                 "password",
-                "password2",
-                "password2"
+                "newPassword",
+                "newPassword"
         );
     }
 }

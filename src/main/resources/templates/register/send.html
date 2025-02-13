@@ -8,7 +8,8 @@
     <div class="my-16 text-center sm:text-xl text-sm w-3/4">
         <p class="my-2">以下のメールアドレスにメールを送信しました</p>
         <p class="my-2">メールに記載されているご案内に従い、本登録を完了させてください</p>
-        <span class="sm:text-2xl text-lg font-medium my-2" th:text="${mailAddress}"></span>
+        <!--/*@thymesVar id="email" type="java.lang.String"*/-->
+        <span class="sm:text-2xl text-lg font-medium my-2" th:text="${email}"></span>
         <p class="my-2">メールが届かない場合は再送信を押してください</p>
     </div>
 <!--    TODO:onclickの処理を記述-->

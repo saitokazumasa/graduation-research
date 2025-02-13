@@ -1,10 +1,8 @@
 package com.tabisketch.service.implement;
 
-import com.tabisketch.bean.entity.Plan;
-import com.tabisketch.exception.DeleteFailedException;
-import com.tabisketch.mapper.IDaysMapper;
-import com.tabisketch.mapper.IPlacesMapper;
+import com.tabisketch.exception.FailedDeleteException;
 import com.tabisketch.mapper.IPlansMapper;
+import com.tabisketch.mapper.IWaypointListsMapper;
 import com.tabisketch.service.IDeletePlanService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,30 +12,27 @@ import java.util.UUID;
 @Service
 public class DeletePlanService implements IDeletePlanService {
     private final IPlansMapper plansMapper;
-    private final IDaysMapper daysMapper;
-    private final IPlacesMapper placesMapper;
+    private final IWaypointListsMapper waypointListsMapper;
 
-    public  DeletePlanService(
+    public DeletePlanService(
             final IPlansMapper plansMapper,
-            final IDaysMapper daysMapper,
-            final IPlacesMapper placesMapper
+            final IWaypointListsMapper waypointListsMapper
     ) {
         this.plansMapper = plansMapper;
-        this.daysMapper = daysMapper;
-        this.placesMapper = placesMapper;
+        this.waypointListsMapper = waypointListsMapper;
     }
 
     @Override
     @Transactional
-    public void execute(final String planUUID) throws DeleteFailedException {
-        // Placeを削除
-        final var uuid = UUID.fromString(planUUID);
-        this.placesMapper.deleteByPlanUUID(uuid);
-        // Placeは0*であるため、結果の検証を行わない
+    public void execute(final String uuid, final String email) {
+        // 削除
+        // TODO: 子要素を削除する
+        final var _uuid = UUID.fromString(uuid);
 
-        // dayを削除
-        this.daysMapper.deleteByPlanUUID(uuid);
-        final int deleteDayResult = this.plansMapper.deleteByUUID(uuid);
-        if (deleteDayResult != 1) throw new DeleteFailedException(Plan.class.getName());
+        // 0以上のため結果の検証を行わない
+        this.waypointListsMapper.deleteByPlanUUIDAndEmail(_uuid, email);
+
+        final boolean wasDeletedPlan = this.plansMapper.deleteByUUIDAndEmail(_uuid, email) == 1;
+        if (!wasDeletedPlan) throw new FailedDeleteException("failed to delete plan");
     }
 }

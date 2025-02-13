@@ -1,35 +1,40 @@
 package com.tabisketch.service;
 
 import com.tabisketch.bean.entity.ExampleUser;
-import com.tabisketch.bean.entity.Plan;
 import com.tabisketch.mapper.IPlansMapper;
+import com.tabisketch.mapper.IUsersMapper;
+import com.tabisketch.service.implement.ListPlanService;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class ListPlanServiceTest {
-    @MockitoBean
+    @InjectMocks
+    private ListPlanService listPlanService;
+    @Mock
+    private IUsersMapper usersMapper;
+    @Mock
     private IPlansMapper plansMapper;
-    @Autowired
-    private IListPlanService listPlanService;
 
     @Test
     public void testExecute() {
-        when(this.plansMapper.selectByMailAddress(anyString())).thenReturn(new ArrayList<>());
+        final var user = ExampleUser.gen();
+        when(this.usersMapper.selectByEmail(anyString())).thenReturn(user);
+        when(this.plansMapper.selectByUserId(anyInt())).thenReturn(new ArrayList<>());
 
-        final String mailAddress = ExampleUser.generate().getMailAddress();
-        final List<Plan> planList = this.listPlanService.execute(mailAddress);
+        this.listPlanService.execute(user.getEmail());
 
-        verify(this.plansMapper).selectByMailAddress(anyString());
-        assert planList != null;
+        verify(this.usersMapper).selectByEmail(anyString());
+        verify(this.plansMapper).selectByUserId(anyInt());
     }
 }

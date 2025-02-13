@@ -1,44 +1,47 @@
 package com.tabisketch.service;
 
 import com.tabisketch.bean.form.ExampleRegisterForm;
-import com.tabisketch.exception.InsertFailedException;
-import com.tabisketch.exception.InvalidMailAddressException;
-import com.tabisketch.mapper.IMAATokensMapper;
+import com.tabisketch.mapper.IEmailVerificationTokensMapper;
 import com.tabisketch.mapper.IUsersMapper;
+import com.tabisketch.service.implement.RegisterService;
 import jakarta.mail.MessagingException;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class RegisterServiceTest {
-    @MockitoBean
+    @InjectMocks
+    private RegisterService registerService;
+    @Mock
     private IUsersMapper usersMapper;
-    @MockitoBean
-    private IMAATokensMapper maaTokensMapper;
-    @MockitoBean
+    @Mock
+    private IEmailVerificationTokensMapper emailVerificationTokensMapper;
+    @Mock
     private ISendMailService sendMailService;
-    @Autowired
-    private IRegisterService registerService;
+    @Mock
+    private PasswordEncoder passwordEncoder;
 
     @Test
-    public void testExecute() throws InvalidMailAddressException, MessagingException, InsertFailedException {
-        when(this.usersMapper.selectByMailAddress(anyString())).thenReturn(null);
+    public void testExecute() throws MessagingException {
+        when(this.passwordEncoder.encode(anyString())).thenReturn("encrypted");
         when(this.usersMapper.insert(any())).thenReturn(1);
-        when(this.maaTokensMapper.insert(any())).thenReturn(1);
+        when(this.emailVerificationTokensMapper.insert(any())).thenReturn(1);
 
-        final var registerForm = ExampleRegisterForm.generate();
-        this.registerService.execute(registerForm);
+        final var form = ExampleRegisterForm.gen();
+        this.registerService.execute(form);
 
-        verify(this.usersMapper).selectByMailAddress(anyString());
+        verify(this.passwordEncoder).encode(anyString());
         verify(this.usersMapper).insert(any());
-        verify(this.maaTokensMapper).insert(any());
+        verify(this.emailVerificationTokensMapper).insert(any());
         verify(this.sendMailService).execute(any());
     }
 }

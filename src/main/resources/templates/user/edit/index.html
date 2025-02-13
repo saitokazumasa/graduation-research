@@ -5,26 +5,28 @@
 <th:block th:replace="~{fragment/header :: header}"/>
 <main class="flex flex-col items-center mt-10 flex-grow">
     <h2 class="text-center sm:text-3xl text-2xl font-medium mb-4">アカウント編集</h2>
-<!--    メールアドレスのフォーム-->
+    <!--    メールアドレスのフォーム-->
     <div class="my-12 max-w-3xl w-3/4 sm:h-36 h-56 rounded-lg border-2 border-frame p-6 sm:flex sm:justify-between">
         <div class="text-center sm:text-left">
             <p class="text-xl mb-6">現在のメールアドレス</p>
-            <span class="text-base" th:text="${mailAddress}"></span>
+            <span class="text-base" th:text="${email}"></span>
         </div>
         <div class="mx-auto sm:mr-0 w-56 flex justify-center sm:justify-end">
-            <button type="button" class="mt-10 button-secondary min-w-fit h-12" onclick="window.location.href='/user/edit/mail'">
+            <button type="button" class="mt-10 button-secondary min-w-fit h-12"
+                    onclick="window.location.href='/user/edit/email'">
                 メールアドレスを変更する
             </button>
         </div>
     </div>
-<!--    パスワードのフォーム-->
+    <!--    パスワードのフォーム-->
     <div class="my-12 max-w-3xl w-3/4 sm:h-36 h-56 rounded-lg border-2 border-frame p-6 sm:flex sm:justify-between">
         <div class="text-center sm:text-left">
             <p class="text-xl mb-6">パスワード</p>
             <span class="text-base">*************</span>
         </div>
         <div class="mx-auto sm:mr-0 w-56 flex justify-center sm:justify-end">
-            <button type="button" class="mt-10 button-secondary min-w-fit h-12" onclick="window.location.href='/user/edit/password'">
+            <button type="button" class="mt-10 button-secondary min-w-fit h-12"
+                    onclick="window.location.href='/user/edit/password'">
                 パスワードを変更する
             </button>
         </div>

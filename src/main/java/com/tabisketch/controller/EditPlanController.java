@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/plan/d/{uuid}/edit")
+@RequestMapping("/plan/edit/{uuid}")
 public class EditPlanController {
     @GetMapping
     public String get(final @PathVariable String uuid) {

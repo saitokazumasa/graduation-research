@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
-<th:block th:replace="~{fragment/head :: head(経路編集)}"/>
+<th:block th:replace="~{fragment/head :: head(プラン作成)}"/>
 <body class="flex flex-col min-h-screen">
 <th:block th:replace="~{fragment/header :: header}"/>
 <main class="flex flex-col items-center flex-grow">
@@ -92,7 +92,7 @@
                     <!-- 利用する交通手段のセクション -->
                     <section class="pt-10 sm:text-lg text-base -m-4 -mt-2 p-4 flex flex-col">
                         利用する交通手段
-                        <th:block th:replace="~{fragment/svg :: three-transportation(editDayForm)}"/>
+                        <th:block th:replace="~{fragment/svg :: three-transportation(editWayPointListForm)}"/>
                     </section>
                 </div>
                 <!-- ボタンのセクション -->
@@ -123,13 +123,17 @@
     <!-- 使用するForm一覧 -->
     <div>
         <form th:object="${editPlanForm}" id="editPlanForm" class="invisible">
+            <input type="text" th:field="*{uuid}">
             <input type="text" th:field="*{thumbnailPath}">
+            <!-- checkboxがtrueでもfalseでも送られる -->
+            <input type="hidden" name="editable" value="false">
             <input type="checkbox" th:field="*{editable}">
+            <input type="hidden" name="publiclyViewable" value="false">
             <input type="checkbox" th:field="*{publiclyViewable}">
         </form>
-        <form th:object="${editDayForm}" id="editDayForm" class="invisible">
-            <!-- todo: editDayFormのinputフィールド追加 -->
-            <input type="number" th:field="*{id}" hidden>
+        <form th:object="${editWayPointListForm}" id="editWayPointListForm" class="invisible">
+            <!-- todo: editWayPointListFormのinputフィールド追加 -->
+            <input type="number" th:field="*{id}">
         </form>
         <div id="startFormDiv">
             <th:block th:if="${startPlaceForm}" th:insert="~{fragment/modal :: startForm(${startPlaceForm})}"/>

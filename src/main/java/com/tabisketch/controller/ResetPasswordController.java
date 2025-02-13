@@ -85,6 +85,6 @@ public class ResetPasswordController {
 
     @GetMapping("/complete")
     public String complete() {
-        return "complete";
+        return "reset-password/complete";
     }
 }

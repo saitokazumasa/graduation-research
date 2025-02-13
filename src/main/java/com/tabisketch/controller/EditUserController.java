@@ -98,6 +98,6 @@ public class EditUserController {
     @GetMapping("/password/complete")
     public String completePassword(final HttpSession httpSession) {
         httpSession.invalidate();
-        return "complete";
+        return "user/edit/password/complete";
     }
 }

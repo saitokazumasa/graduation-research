@@ -36,6 +36,6 @@ public class VerifyEmailController {
 
     @GetMapping("/complete")
     public String complete() {
-        return "complete";
+        return "mail/complete";
     }
 }

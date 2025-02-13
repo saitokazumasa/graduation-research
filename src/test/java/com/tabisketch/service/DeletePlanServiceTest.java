@@ -26,13 +26,13 @@ public class DeletePlanServiceTest {
     public void testExecute() {
         final var plan = ExamplePlan.gen();
         when(this.plansMapper.selectByUUIDAndEmail(any(), anyString())).thenReturn(plan);
-        when(this.plansMapper.delete(any())).thenReturn(1);
+        when(this.plansMapper.deleteByUUIDAndEmail(any(), anyString())).thenReturn(1);
 
         final String uuid = plan.getUuid().toString();
         final String email = ExampleUser.gen().getEmail();
         this.deletePlanService.execute(uuid, email);
 
         verify(this.plansMapper).selectByUUIDAndEmail(any(), anyString());
-        verify(this.plansMapper).delete(any());
+        verify(this.plansMapper).deleteByUUIDAndEmail(any(), anyString());
     }
 }

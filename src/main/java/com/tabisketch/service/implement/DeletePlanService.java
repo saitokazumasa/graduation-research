@@ -28,7 +28,7 @@ public class DeletePlanService implements IDeletePlanService {
 
         // 削除
         // TODO: 子要素を削除する
-        final boolean wasDeletedPlan = this.plansMapper.delete(_uuid) == 1;
+        final boolean wasDeletedPlan = this.plansMapper.deleteByUUIDAndEmail(_uuid, email) == 1;
         if (!wasDeletedPlan) throw new FailedDeleteException("failed to delete plan");
     }
 }

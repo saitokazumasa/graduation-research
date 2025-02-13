@@ -25,9 +25,11 @@ public interface IPlansMapper {
             "   thumbnail_path = #{thumbnailPath}, " +
             "   editable = #{editable}, " +
             "   publicly_viewable = #{publiclyViewable} " +
-            "WHERE id = #{id}")
+            "WHERE id = #{id} AND user_id = #{userId}")
     int update(final Plan plan);
 
-    @Delete("DELETE FROM plans WHERE uuid = #{uuid}")
-    int delete(final UUID uuid);
+    @Delete("DELETE FROM plans p " +
+            "USING users u " +
+            "WHERE p.uuid = #{uuid} AND u.email = #{email} AND p.user_id = u.id")
+    int deleteByUUIDAndEmail(final UUID uuid, final String email);
 }

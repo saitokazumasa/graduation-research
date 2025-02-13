@@ -22,4 +22,9 @@ public interface IWaypointListsMapper {
             "INNER JOIN users u ON p.user_id = u.id " +
             "WHERE w.id = #{waypointList.id} AND u.email = #{email}")
     int update(final WaypointList waypointList, final String email);
+
+    @Delete("DELETE FROM waypoint_lists w " +
+            "USING plans p, users u " +
+            "WHERE w.id = #{id} AND u.email = #{email} AND p.user_id = u.id AND w.plan_id = p.id")
+    int deleteByIdAndEmail(final int id, final String email);
 }

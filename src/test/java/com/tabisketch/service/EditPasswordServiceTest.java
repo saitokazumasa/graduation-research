@@ -3,26 +3,28 @@ package com.tabisketch.service;
 import com.tabisketch.bean.entity.ExampleUser;
 import com.tabisketch.bean.form.ExampleEditPasswordForm;
 import com.tabisketch.mapper.IUsersMapper;
+import com.tabisketch.service.implement.EditPasswordService;
 import jakarta.mail.MessagingException;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class EditPasswordServiceTest {
-    @Autowired
-    private IEditPasswordService editPasswordService;
-    @MockitoBean
+    @InjectMocks
+    private EditPasswordService editPasswordService;
+    @Mock
     private IUsersMapper usersMapper;
-    @MockitoBean
+    @Mock
     private ISendMailService sendMailService;
-    @MockitoBean
+    @Mock
     private PasswordEncoder passwordEncoder;
 
     @Test

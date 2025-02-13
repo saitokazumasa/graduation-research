@@ -3,6 +3,7 @@ package com.tabisketch.service.implement;
 import com.tabisketch.bean.entity.Plan;
 import com.tabisketch.bean.entity.User;
 import com.tabisketch.bean.entity.WaypointList;
+import com.tabisketch.constant.Transporation;
 import com.tabisketch.exception.FailedInsertException;
 import com.tabisketch.exception.FailedSelectException;
 import com.tabisketch.mapper.IPlansMapper;
@@ -42,7 +43,7 @@ public class CreatePlanService implements ICreatePlanService {
         final boolean wasInsertUser = this.plansMapper.insert(plan) == 1;
         if (!wasInsertUser) throw new FailedInsertException("failed to insert plan");
 
-        final var waypointList = new WaypointList(-1, 1, plan.getId());
+        final var waypointList = new WaypointList(-1, 1, Transporation.WALKING, plan.getId());
         final boolean wasInsertWaypointList = this.waypointListsMapper.insert(waypointList) == 1;
         if (!wasInsertWaypointList) throw new FailedInsertException("failed to insert waypoint");
 

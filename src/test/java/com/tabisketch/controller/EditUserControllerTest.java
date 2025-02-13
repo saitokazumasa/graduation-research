@@ -111,7 +111,7 @@ public class EditUserControllerTest {
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(model().hasNoErrors())
-                .andExpect(redirectedUrl("/user/edit/password/complate"));
+                .andExpect(redirectedUrl("/user/edit/password/complete"));
     }
 
     @ParameterizedTest
@@ -140,9 +140,9 @@ public class EditUserControllerTest {
 
     @Test
     @WithMockUser
-    public void testComplatePassword() throws Exception {
-        this.mockMvc.perform(get("/user/edit/password/complate"))
+    public void testCompletePassword() throws Exception {
+        this.mockMvc.perform(get("/user/edit/password/complete"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("user/edit/password/complate"));
+                .andExpect(view().name("user/edit/password/complete"));
     }
 }

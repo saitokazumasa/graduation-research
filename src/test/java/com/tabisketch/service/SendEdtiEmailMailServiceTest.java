@@ -4,28 +4,30 @@ import com.tabisketch.bean.entity.ExampleUser;
 import com.tabisketch.bean.form.ExampleEditEmailForm;
 import com.tabisketch.mapper.INewEmailVerificationTokensMapper;
 import com.tabisketch.mapper.IUsersMapper;
+import com.tabisketch.service.implement.SendEditEmailMailService;
 import jakarta.mail.MessagingException;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class SendEdtiEmailMailServiceTest {
-    @Autowired
-    private ISendEditEmailMailService sendEditEmailMailService;
-    @MockitoBean
+    @InjectMocks
+    private SendEditEmailMailService sendEditEmailMailService;
+    @Mock
     private IUsersMapper usersMapper;
-    @MockitoBean
+    @Mock
     private INewEmailVerificationTokensMapper newEmailVerificationTokensMapper;
-    @MockitoBean
+    @Mock
     private ISendMailService sendMailService;
-    @MockitoBean
+    @Mock
     private PasswordEncoder passwordEncoder;
 
     @Test

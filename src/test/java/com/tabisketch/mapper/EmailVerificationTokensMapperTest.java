@@ -11,26 +11,26 @@ import org.springframework.test.context.jdbc.Sql;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class EmailVerificationTokensMapperTest {
     @Autowired
-    private IEmailVerificationTokensMapper mapper;
+    private IEmailVerificationTokensMapper emailVerificationTokensMapper;
 
     @Test
     @Sql({"classpath:/sql/InsertExampleUser.sql"})
     public void testInsert() {
         final var emailVerificationToken = ExampleEmailVerificationToken.gen();
-        assert this.mapper.insert(emailVerificationToken) == 1;
+        assert this.emailVerificationTokensMapper.insert(emailVerificationToken) == 1;
     }
 
     @Test
     @Sql({"classpath:/sql/InsertExampleUser.sql", "classpath:/sql/InsertExampleEmailVerificationToken.sql"})
     public void testSelectByUUID() {
         final var emailVerificationToken = ExampleEmailVerificationToken.gen();
-        assert this.mapper.selectByUUID(emailVerificationToken.getUuid()) != null;
+        assert this.emailVerificationTokensMapper.selectByUUID(emailVerificationToken.getUuid()) != null;
     }
 
     @Test
     @Sql({"classpath:/sql/InsertExampleUser.sql", "classpath:/sql/InsertExampleEmailVerificationToken.sql"})
     public void testDelete() {
         final var emailVerificationToken = ExampleEmailVerificationToken.gen();
-        assert this.mapper.delete(emailVerificationToken.getUuid()) == 1;
+        assert this.emailVerificationTokensMapper.delete(emailVerificationToken.getUuid()) == 1;
     }
 }

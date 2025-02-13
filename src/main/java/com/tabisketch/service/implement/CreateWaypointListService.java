@@ -4,6 +4,7 @@ import com.tabisketch.bean.entity.Plan;
 import com.tabisketch.bean.entity.WaypointList;
 import com.tabisketch.bean.form.CreateWaypointListForm;
 import com.tabisketch.bean.view_model.WaypointListViewModel;
+import com.tabisketch.constant.Transporation;
 import com.tabisketch.exception.FailedInsertException;
 import com.tabisketch.exception.FailedSelectException;
 import com.tabisketch.mapper.IWaypointListsMapper;
@@ -33,7 +34,7 @@ public class CreateWaypointListService implements ICreateWaypointListService {
         if (plan == null) throw new FailedSelectException("failed to find plan");
 
         // 行先リスト作成
-        final var waypointList = new WaypointList(-1, form.getTravelDay(), plan.getId());
+        final var waypointList = new WaypointList(-1, form.getTravelDay(), Transporation.WALKING, plan.getId());
         final boolean wasInsertWaypointList = this.waypointListsMapper.insert(waypointList) == 1;
         if (!wasInsertWaypointList) throw new FailedInsertException("failed to insert waypointList");
 

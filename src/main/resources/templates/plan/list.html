@@ -20,9 +20,11 @@
         <div class="grid gap-6 grid-cols-1 xl:grid-cols-2 justify-items-center sm:my-16">
             <a th:each="plan : ${planList}" th:href="${plan.isEditable ? '/plan/edit/' + plan.uuid : '/plan/detail/' + plan.uuid}"
                class="block border overflow-hidden rounded-lg block-list w-[22rem] sm:w-[29.1875rem] h-52 sm:h-64 hover:shadow-lg my-8">
-                <div class="flex justify-center my-3 mx-3 h-36 sm:h-48">
-                    <!-- TODO:カバー画像のパスを入れる -->
-                    <img th:src="@{/images/top1.png}" class="object-cover w-full h-full aspect-video" alt="カバー画像">
+                <div class="flex justify-center my-3 mx-3 h-36 sm:h-48" th:if="${plan.thumbnailPath != '' && plan.thumbnailPath != null}">
+                    <img th:src="${plan.thumbnailPath}" class="object-cover w-full h-full" alt="カバー画像" style="aspect-ratio: 5/1">
+                </div>
+                <div class="flex justify-center my-3 mx-3 h-36 sm:h-48" th:unless="${plan.thumbnailPath != '' && plan.thumbnailPath != null}">
+                    <img th:src="@{/images/top1.png}" class="object-cover w-full h-full" alt="カバー画像" style="aspect-ratio: 5/1">
                 </div>
                 <div class="flex justify-between">
                     <span th:text="${plan.title}" class="mx-4 text-base md:text-xl"></span>

@@ -4,23 +4,25 @@ import com.tabisketch.bean.entity.ExamplePlan;
 import com.tabisketch.bean.entity.ExampleUser;
 import com.tabisketch.mapper.IPlansMapper;
 import com.tabisketch.mapper.IUsersMapper;
+import com.tabisketch.service.implement.FindOnePlanWithUserService;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class FindOnePlanWithUserServiceTest {
-    @Autowired
-    private IFindOnePlanWithUserService findOnePlanWithUserService;
-    @MockitoBean
+    @InjectMocks
+    private FindOnePlanWithUserService findOnePlanWithUserService;
+    @Mock
     private IUsersMapper usersMapper;
-    @MockitoBean
+    @Mock
     private IPlansMapper plansMapper;
 
     @Test

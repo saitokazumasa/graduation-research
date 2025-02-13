@@ -4,26 +4,28 @@ import com.tabisketch.bean.entity.ExampleUser;
 import com.tabisketch.bean.form.ExampleSendResetPasswordMailForm;
 import com.tabisketch.mapper.IResetPasswordTokensMapper;
 import com.tabisketch.mapper.IUsersMapper;
+import com.tabisketch.service.implement.SendResetPasswordMailService;
 import jakarta.mail.MessagingException;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class SendResetPasswordMailServiceTest {
-    @Autowired
-    private ISendResetPasswordMailService sendResetPasswordMailService;
-    @MockitoBean
+    @InjectMocks
+    private SendResetPasswordMailService sendResetPasswordMailService;
+    @Mock
     private IUsersMapper usersMapper;
-    @MockitoBean
+    @Mock
     private IResetPasswordTokensMapper resetPasswordTokensMapper;
-    @MockitoBean
+    @Mock
     private ISendMailService sendMailService;
 
     @Test

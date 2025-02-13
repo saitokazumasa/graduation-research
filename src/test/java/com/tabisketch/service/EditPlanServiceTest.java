@@ -4,37 +4,39 @@ import com.tabisketch.bean.entity.ExamplePlan;
 import com.tabisketch.bean.entity.ExampleUser;
 import com.tabisketch.bean.form.ExampleEditPlanForm;
 import com.tabisketch.mapper.IPlansMapper;
+import com.tabisketch.service.implement.EditPlanService;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class EditPlanServiceTest {
-    @Autowired
-    private IEditPlanService editPlanService;
-    @MockitoBean
+    @InjectMocks
+    private EditPlanService editPlanService;
+    @Mock
     private IPlansMapper plansMapper;
-    @MockitoBean
+    @Mock
     private IFindOnePlanWithUserService findOnePlanWithUserService;
 
     @Test
     public void testExecute() {
         final var plan = ExamplePlan.gen();
-        when(this.plansMapper.selectByUUID(any())).thenReturn(plan);
         when(this.findOnePlanWithUserService.execute(any(), anyString())).thenReturn(plan);
         when(this.plansMapper.update(any())).thenReturn(1);
+        when(this.plansMapper.selectByUUID(any())).thenReturn(plan);
 
         final var uuid = plan.getUuid().toString();
         final var email = ExampleUser.gen().getEmail();
         final var editPlanForm = ExampleEditPlanForm.gen();
         this.editPlanService.execute(uuid, email, editPlanForm);
 
-        verify(this.plansMapper, times(2)).selectByUUID(any());
         verify(this.findOnePlanWithUserService).execute(any(), anyString());
         verify(this.plansMapper).update(any());
+        verify(this.plansMapper).selectByUUID(any());
     }
 }

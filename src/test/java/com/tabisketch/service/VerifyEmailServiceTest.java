@@ -2,79 +2,67 @@ package com.tabisketch.service;
 
 import com.tabisketch.bean.entity.EmailVerificationToken;
 import com.tabisketch.bean.entity.ExampleEmailVerificationToken;
+import com.tabisketch.exception.InvalidEmailVerificationTokenException;
 import com.tabisketch.mapper.IEmailVerificationTokensMapper;
 import com.tabisketch.mapper.IUsersMapper;
-import org.junit.jupiter.api.Test;
+import com.tabisketch.service.implement.VerifyEmailService;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
 import java.util.stream.Stream;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class VerifyEmailServiceTest {
-    @Autowired
-    private IVerifyEmailService verifyEmailService;
-    @MockitoBean
+    @InjectMocks
+    private VerifyEmailService verifyEmailService;
+    @Mock
     private IEmailVerificationTokensMapper emailVerificationTokensMapper;
-    @MockitoBean
+    @Mock
     private IUsersMapper usersMapper;
 
-    @Test
-    public void testExecute() {
-        final var evToken = ExampleEmailVerificationToken.gen();
-        when(this.emailVerificationTokensMapper.selectByUUID(any())).thenReturn(evToken);
-        when(this.usersMapper.updateEmailVerified(anyInt(), anyBoolean())).thenReturn(1);
-        when(this.emailVerificationTokensMapper.delete(any())).thenReturn(1);
-
-        final var uuid = evToken.getUuid().toString();
-        this.verifyEmailService.execute(uuid);
-
-        verify(this.emailVerificationTokensMapper).selectByUUID(any());
-        verify(this.usersMapper).updateEmailVerified(anyInt(), anyBoolean());
-        verify(this.emailVerificationTokensMapper).delete(any());
-    }
-
     @ParameterizedTest
-    @MethodSource("lifeTimeTestData")
-    public void testExpiration(final LifeTimeTestData testData) {
-        when(this.emailVerificationTokensMapper.selectByUUID(any())).thenReturn(testData.emailVerificationToken);
-        when(this.usersMapper.updateEmailVerified(anyInt(), anyBoolean())).thenReturn(1);
-        when(this.emailVerificationTokensMapper.delete(any())).thenReturn(1);
+    @MethodSource("provideTestData")
+    public void testExecute(final EmailVerificationToken emailVerificationToken, final boolean isSuccess) {
+        if (isSuccess) {
+            when(this.emailVerificationTokensMapper.selectByUUID(any())).thenReturn(emailVerificationToken);
+            when(this.usersMapper.updateEmailVerified(anyInt(), anyBoolean())).thenReturn(1);
+            when(this.emailVerificationTokensMapper.delete(any())).thenReturn(1);
 
-        final var uuid = testData.emailVerificationToken.getUuid().toString();
-
-        try {
+            final var uuid = emailVerificationToken.getUuid().toString();
             this.verifyEmailService.execute(uuid);
-        } catch (final Exception e) {
-            System.out.println(e.getMessage());
-            assert !testData.isSuccess;
+
+            verify(this.emailVerificationTokensMapper).selectByUUID(any());
+            verify(this.usersMapper).updateEmailVerified(anyInt(), anyBoolean());
+            verify(this.emailVerificationTokensMapper).delete(any());
             return;
         }
-        assert testData.isSuccess;
+
+        when(this.emailVerificationTokensMapper.selectByUUID(any())).thenReturn(emailVerificationToken);
+
+        final var uuid = emailVerificationToken.getUuid().toString();
+        assertThrows(InvalidEmailVerificationTokenException.class, () -> this.verifyEmailService.execute(uuid));
     }
 
-    public record LifeTimeTestData(EmailVerificationToken emailVerificationToken, boolean isSuccess) {
-    }
+    private static Stream<Arguments> provideTestData() {
+        final var example = ExampleEmailVerificationToken.gen();
+        final var uuid = example.getUuid();
+        final var userId = example.getUserId();
+        final var createdAt = example.getCreatedAt();
 
-    private static Stream<Object> lifeTimeTestData() {
-        final var stream = Stream.builder();
-        final var uuid = UUID.fromString("bd725533-53a3-4a2d-9289-7fcbc7250d82");
-        final var createdAt = LocalDateTime.now().minusMinutes(EmailVerificationToken.LIFETIME_MINUTES);
-
-        stream.add(new LifeTimeTestData(
-                new EmailVerificationToken(uuid, 1, createdAt.minusMinutes(1)), false));
-        stream.add(new LifeTimeTestData(
-                new EmailVerificationToken(uuid, 1, createdAt.plusMinutes(1)), true));
-
-        return stream.build();
+        return Stream.of(
+                Arguments.of(example, true),
+                Arguments.of(new EmailVerificationToken(uuid, userId, createdAt.minusMinutes(EmailVerificationToken.LIFETIME_MINUTES - 1)), true),
+                Arguments.of(new EmailVerificationToken(uuid, userId, createdAt.minusMinutes(EmailVerificationToken.LIFETIME_MINUTES)), false)
+        );
     }
 }

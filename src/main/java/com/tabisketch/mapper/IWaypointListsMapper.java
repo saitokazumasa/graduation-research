@@ -12,6 +12,9 @@ public interface IWaypointListsMapper {
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insert(final WaypointList waypointList);
 
-    @Select("SELECT * FROM waypoint_lists WHERE id = #{id}")
-    WaypointList selectById(final int id);
+    @Select("SELECT w.* FROM waypoint_lists w " +
+            "   INNER JOIN plans p ON w.plan_id = p.id " +
+            "   INNER JOIN users u ON p.user_id = u.id " +
+            "   WHERE w.id = #{id} AND u.email = #{email}")
+    WaypointList selectByIdAndEmail(final int id, final String email);
 }

@@ -1,5 +1,6 @@
 package com.tabisketch.mapper;
 
+import com.tabisketch.bean.entity.ExampleUser;
 import com.tabisketch.bean.entity.ExampleWaypointList;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
@@ -29,7 +30,8 @@ public class WaypointListsMapperTest {
             "classpath:/sql/InsertExampleWaypointList.sql"
     })
     public void testSelectById() {
-        final var entity = ExampleWaypointList.gen();
-        assert this.mapper.selectById(entity.getId()) != null;
+        final var waypointList = ExampleWaypointList.gen();
+        final var email = ExampleUser.gen().getEmail();
+        assert this.mapper.selectByIdAndEmail(waypointList.getId(), email) != null;
     }
 }

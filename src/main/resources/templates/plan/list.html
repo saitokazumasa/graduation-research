@@ -18,8 +18,7 @@
     </div>
     <div class="container mx-auto px-4 sm:px-8">
         <div class="grid gap-6 grid-cols-1 xl:grid-cols-2 justify-items-center sm:my-16">
-            <!-- TODO: 詳細画面へのルートが出来たらth:hrefの中身を書き換える -->
-            <a th:each="plan : ${planList}" th:href="@{/}"
+            <a th:each="plan : ${planList}" th:href="${plan.isEditable ? '/plan/edit/' + plan.uuid : '/plan/detail/' + plan.uuid}"
                class="block border overflow-hidden rounded-lg block-list w-[22rem] sm:w-[29.1875rem] h-52 sm:h-64 hover:shadow-lg my-8">
                 <div class="flex justify-center my-3 mx-3 h-36 sm:h-48">
                     <!-- TODO:カバー画像のパスを入れる -->
@@ -27,8 +26,7 @@
                 </div>
                 <div class="flex justify-between">
                     <span th:text="${plan.title}" class="mx-4 text-base md:text-xl"></span>
-                    <span th:if="${plan.isEditable}"
-                          class="border border-black flex items-center justify-center mx-4 rounded-full text-center text-xs w-14">下書き</span>
+                    <span th:if="${plan.isEditable}" class="border border-black flex items-center justify-center mx-4 rounded-full text-center text-xs w-14">下書き</span>
                 </div>
             </a>
         </div>

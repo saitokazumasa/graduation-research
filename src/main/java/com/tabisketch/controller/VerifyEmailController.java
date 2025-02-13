@@ -25,17 +25,17 @@ public class VerifyEmailController {
     @GetMapping("/v/{uuid}")
     public String verify(final @PathVariable String uuid) {
         this.verifyEmailService.execute(uuid);
-        return "redirect:/mail/complate";
+        return "redirect:/mail/complete";
     }
 
     @GetMapping("/nv/{uuid}")
     public String verifyNewEmail(final @PathVariable String uuid) throws MessagingException {
         this.editEmailService.execute(uuid);
-        return "redirect:/mail/complate";
+        return "redirect:/mail/complete";
     }
 
-    @GetMapping("/complate")
-    public String complate() {
-        return "mail/complate";
+    @GetMapping("/complete")
+    public String complete() {
+        return "complete";
     }
 }

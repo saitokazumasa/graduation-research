@@ -90,7 +90,7 @@ const placeMapping = {
 const initInstanceKeys = [
     'startPlace',
     'endPlace',
-    'place0',
+    'place' + placeNum.value(),
 ];
 
 const autoCompleteList = new AutoCompleteList();
@@ -103,4 +103,14 @@ function initAutoComplete() {
         const autoComplete = new AutoComplete(inputElement);
         autoCompleteList.add(autoComplete);
     });
+    // placeNumが0の時はupdatePlaceが存在しない為処理をしない
+    if (placeNum.value() === 0) return;
+    // updatePlaceにも適応させる
+    for (let i = 0; i < placeNum.value(); i++) {
+        const inputElement = document.getElementById(`updatePlace${i}`);
+        if (!inputElement) return;
+
+        const autoComplete = new AutoComplete(inputElement);
+        autoCompleteList.add(autoComplete);
+    }
 }

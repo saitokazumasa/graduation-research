@@ -45,8 +45,8 @@
                     <div class="mb-6">
                         <p class="mb-2 sm:text-lg text-base">出発地点<span class="sm:ml-2 ml-1 text-sm text-danger">必須</span></p>
                         <!-- 出発地点が入力済みかで表示の変更 -->
-                        <th:block th:if="${startPlaceForm}" th:replace="~{fragment/modal :: startToggle}"/>
-                        <th:block th:if="${updateStartForm}" th:replace="~{fragment/update-modal :: startUpdateToggle(${updateStartForm}, ${isCreateRoute})}"/>
+                        <th:block th:if="${startPlaceForm}" th:insert="~{fragment/modal :: startToggle}"/>
+                        <th:block th:if="${updateStartForm}" th:insert="~{fragment/update-modal :: startUpdateToggle(${updateStartForm}, ${isCreateRoute})}"/>
                     </div>
                     <!-- 目的地 独自クラス「addPlaces」を取得して目的地追加ボタンを追加表示する -->
                     <div class="mb-6" th:classappend="${isCreateRoute ? '' : 'addPlaces'}">
@@ -56,14 +56,14 @@
                             <th:block th:replace="~{fragment/update-modal :: placesUpdateToggle(${placeStatus.index}, ${updatePlaceForm}, ${isCreateRoute})}"/>
                         </div>
                         <!-- 目的地追加 経路生成前に表示 -->
-                        <th:block th:if="${!isCreateRoute}" th:replace="~{fragment/modal :: placesToggle(0)}"/>
+                        <th:block th:if="${!isCreateRoute}" th:insert="~{fragment/modal :: placesToggle(0)}"/>
                     </div>
                     <!-- 終了地点 -->
                     <div class="mb-6">
                         <p class="mb-2 sm:text-lg text-base">終了地点</p>
                         <!-- 終了地点が入力済みかで表示変更 -->
-                        <th:block th:if="${endPlaceForm}" th:replace="~{fragment/modal :: end}"/>
-                        <th:block th:if="${updateEndForm}" th:replace="~{fragment/update-modal :: endUpdateToggle(${updateEndForm})}"/>
+                        <th:block th:if="${endPlaceForm}" th:insert="~{fragment/modal :: end}"/>
+                        <th:block th:if="${updateEndForm}" th:insert="~{fragment/update-modal :: endUpdateToggle(${updateEndForm})}"/>
                     </div>
                     <!-- 目的地追加 経路生成後に表示 -->
                     <div th:if="${isCreateRoute}" class="addPlaces">
@@ -159,15 +159,15 @@
             <input type="number" th:field="*{id}" hidden>
         </form>
         <div id="startFormDiv">
-            <th:block th:if="${startPlaceForm}" th:replace="~{fragment/modal :: startForm(${startPlaceForm})}"/>
-            <th:block th:if="${updateStartForm}" th:replace="~{fragment/update-modal :: startUpdateForm(${updateStartForm})}"/>
+            <th:block th:if="${startPlaceForm}" th:insert="~{fragment/modal :: startForm(${startPlaceForm})}"/>
+            <th:block th:if="${updateStartForm}" th:insert="~{fragment/update-modal :: startUpdateForm(${updateStartForm})}"/>
         </div>
         <div id="placeFormDiv">
             <th:block th:replace="~{fragment/modal :: placesForm(${placeNum}, ${placeForm})}"/>
         </div>
         <div id="endFormDiv">
-            <th:block th:if="${endPlaceForm}" th:replace="~{fragment/modal :: endForm(${endPlaceForm})}"/>
-            <th:block th:if="${updatePlaceForm}" th:replace="~{fragment/update-modal :: endUpdateForm(${updateEndForm})}"/>
+            <th:block th:if="${endPlaceForm}" th:insert="~{fragment/modal :: endForm(${endPlaceForm})}"/>
+            <th:block th:if="${updatePlaceForm}" th:insert="~{fragment/update-modal :: endUpdateForm(${updateEndForm})}"/>
         </div>
         <div id="updatePlaceFormDiv">
             <div th:each="updatePlaceForm, placeStatus : ${updatePlaceList}">

@@ -34,7 +34,7 @@ public class CreateWaypointListService implements ICreateWaypointListService {
         if (plan == null) throw new FailedSelectException("failed to find plan");
 
         // 行先リスト作成
-        final var waypointList = new WaypointList(-1, form.getTravelDay(), Transporation.WALKING, plan.getId());
+        final var waypointList = new WaypointList(-1, form.getTravelDay(), Transporation.WALK, plan.getId());
         final boolean wasInsertWaypointList = this.waypointListsMapper.insert(waypointList) == 1;
         if (!wasInsertWaypointList) throw new FailedInsertException("failed to insert waypointList");
 

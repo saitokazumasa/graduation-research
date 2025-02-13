@@ -37,9 +37,16 @@ public class UsersMapperTest {
 
     @Test
     @Sql({"classpath:/sql/InsertExampleUser.sql"})
+    public void testUpdateEmail() {
+        final var user = ExampleUser.gen();
+        assert this.usersMapper.updateEmail(user.getId(), user.getEmail()) == 1;
+    }
+
+    @Test
+    @Sql({"classpath:/sql/InsertExampleUser.sql"})
     public void testUpdatePassword() {
         final var user = ExampleUser.gen();
-        assert this.usersMapper.updatePassword(user.getId(), "$2a$10$FFbAunp0hfeWTCune.XqwO/P/61fqWlbruV/8wqzrhM3Pw0VuXxpa") == 1;
+        assert this.usersMapper.updatePassword(user.getId(), user.getPassword()) == 1;
     }
 
     @Test

@@ -51,7 +51,7 @@ class ModalElement {
         this.#closeButtons.places.push(closeButton);
 
         // autocomplete適用
-        this.setAutoComplete(document.getElementById(`place${placeNum.value()}`));
+        this.#setAutoComplete(document.getElementById(`place${placeNum.value()}`));
     }
 
     /**
@@ -116,7 +116,7 @@ class ModalElement {
         this.#closeButtons.updateStart = document.getElementById('startUpdateClose');
 
         // autocomplete適用
-        this.setAutoComplete(document.getElementById('startUpdatePlace'));
+        this.#setAutoComplete(document.getElementById('startUpdatePlace'));
     }
 
     /**
@@ -127,7 +127,7 @@ class ModalElement {
         this.#closeButtons.updateEnd = document.getElementById('endUpdateClose');
 
         // autocomplete適用
-        this.setAutoComplete(document.getElementById('endUpdatePlace'));
+        this.#setAutoComplete(document.getElementById('endUpdatePlace'));
     }
 
     /**
@@ -138,14 +138,14 @@ class ModalElement {
         this.#closeButtons.updatePlaces.push(document.getElementById(`placesUpdateClose${num}`));
 
         // autocomplete適用
-        this.setAutoComplete(document.getElementById(`updatePlace${num}`));
+        this.#setAutoComplete(document.getElementById(`updatePlace${num}`));
     }
 
     /**
      * autocomplete適用
      * @param inputElement 適用するInputElement
      */
-    setAutoComplete(inputElement) {
+    #setAutoComplete(inputElement) {
         const autoComplete = new AutoComplete(inputElement);
         autoCompleteList.add(autoComplete);
     }

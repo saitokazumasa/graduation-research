@@ -1,14 +1,13 @@
 package com.tabisketch.service.implement;
 
 import com.tabisketch.bean.entity.Plan;
-import com.tabisketch.bean.entity.User;
 import com.tabisketch.bean.form.EditPlanForm;
 import com.tabisketch.bean.view_model.PlanViewModel;
 import com.tabisketch.exception.FailedSelectException;
 import com.tabisketch.exception.FailedUpdateException;
 import com.tabisketch.mapper.IPlansMapper;
-import com.tabisketch.mapper.IUsersMapper;
 import com.tabisketch.service.IEditPlanService;
+import com.tabisketch.service.IFindOnePlanWithUserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,11 +16,14 @@ import java.util.UUID;
 @Service
 public class EditPlanService implements IEditPlanService {
     private final IPlansMapper plansMapper;
-    private final IUsersMapper usersMapper;
+    private final IFindOnePlanWithUserService findOnePlanWithUserService;
 
-    public EditPlanService(final IPlansMapper plansMapper, final IUsersMapper usersMapper) {
+    public EditPlanService(
+            final IPlansMapper plansMapper,
+            final IFindOnePlanWithUserService findOnePlanWithUserService
+    ) {
         this.plansMapper = plansMapper;
-        this.usersMapper = usersMapper;
+        this.findOnePlanWithUserService = findOnePlanWithUserService;
     }
 
     @Override
@@ -29,15 +31,8 @@ public class EditPlanService implements IEditPlanService {
     public PlanViewModel execute(final String uuid, final String email, final EditPlanForm form) {
         // プラン取得
         final var _uuid = UUID.fromString(uuid);
-        final Plan plan = this.plansMapper.selectByUUID(_uuid);
+        final Plan plan = this.findOnePlanWithUserService.execute(_uuid, email);
         if (plan == null) throw new FailedSelectException("failed to find plan");
-
-        // ユーザー取得
-        final User user = this.usersMapper.selectByEmail(email);
-        if (user == null) throw new FailedSelectException("failed to find user");
-
-        // ユーザー一致の確認
-        if (plan.getUserId() != user.getId()) throw new FailedSelectException("failed to find plan");
 
         // 更新
         final var newPlan = new Plan(

@@ -34,10 +34,10 @@
 <th:block th:fragment="cover-image(imagePath)">
     <div class="relative w-full bg-gray-500" style="aspect-ratio: 5/1">
         <img id="imagePreview"
-             th:src="${imagePath != null ? imagePath : ''}"
+             th:src="${imagePath != null && imagePath != '' ? imagePath : ''}"
              alt="現在の画像"
              class="w-full h-full object-cover"
-             th:classappend="${imagePath == null} ? 'hidden' : ''"
+             th:classappend="${imagePath != null && imagePath != '' ? '' : 'hidden'}"
         />
         <button data-modal-target="imageModal" data-modal-toggle="imageModal" type="button" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white p-2 rounded-full shadow">
             <th:block th:replace="~{fragment/svg :: camera}"/>

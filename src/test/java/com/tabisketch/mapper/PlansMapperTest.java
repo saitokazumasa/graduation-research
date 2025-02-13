@@ -45,7 +45,14 @@ public class PlansMapperTest {
 
     @Test
     @Sql({"classpath:/sql/InsertExampleUser.sql", "classpath:/sql/InsertExamplePlan.sql"})
-    public void testDelete() {
+    public void testUpdate() {
+        final var plan = ExamplePlan.gen();
+        assert this.plansMapper.update(plan) == 1;
+    }
+
+    @Test
+    @Sql({"classpath:/sql/InsertExampleUser.sql", "classpath:/sql/InsertExamplePlan.sql"})
+    public void testDeleteByUUIDAndEmail() {
         final var uuid = ExamplePlan.gen().getUuid();
         final var email = ExampleUser.gen().getEmail();
         assert this.plansMapper.deleteByUUIDAndEmail(uuid, email) == 1;

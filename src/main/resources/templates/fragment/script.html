@@ -88,17 +88,6 @@
     <script src="/js/packings.js"></script>
 </th:block>
 
-<th:block th:fragment="walkCheckbox">
-    <script>
-        const walkCheckbox = document.getElementById('walkFlag');
-        const walkThreshold = document.getElementById('walkThreshold');
-
-        walkCheckbox.addEventListener('change', () => {
-            walkThreshold.disabled = !walkCheckbox.checked;
-        });
-    </script>
-</th:block>
-
 <th:block th:fragment="planEdit">
     <script src="/js/editForm.js"></script>
     <script src="/js/editButtons.js"></script>

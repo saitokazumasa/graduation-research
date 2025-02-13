@@ -1,5 +1,6 @@
 package com.tabisketch.mapper;
 
+import com.tabisketch.bean.entity.ExamplePlan;
 import com.tabisketch.bean.entity.ExampleUser;
 import com.tabisketch.bean.entity.ExampleWaypointList;
 import org.junit.jupiter.api.Test;
@@ -57,5 +58,17 @@ public class WaypointListsMapperTest {
         final var id = ExampleWaypointList.gen().getId();
         final var email = ExampleUser.gen().getEmail();
         assert this.waypointListsMapper.deleteByIdAndEmail(id, email) == 1;
+    }
+
+    @Test
+    @Sql({
+            "classpath:/sql/InsertExampleUser.sql",
+            "classpath:/sql/InsertExamplePlan.sql",
+            "classpath:/sql/InsertExampleWaypointList.sql"
+    })
+    public void testDeleteByPlanUUIDAndEmail() {
+        final var uuid = ExamplePlan.gen().getUuid();
+        final var email = ExampleUser.gen().getEmail();
+        assert this.waypointListsMapper.deleteByPlanUUIDAndEmail(uuid, email) >= 1;
     }
 }

@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.stream.Stream;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -38,14 +39,14 @@ public class EditPlanRestControllerTest {
     public void testPost() throws Exception {
         final var uuid = ExamplePlan.gen().getUuid();
         final var editPlanForm = ExampleEditPlanForm.gen();
-        final var output = ExamplePlanViewModel.gen();
+        final var planViewModel = ExamplePlanViewModel.gen();
 
-        when(this.editPlanService.execute(any(), any())).thenReturn(output);
+        when(this.editPlanService.execute(any(), anyString(), any())).thenReturn(planViewModel);
         this.mockMvc.perform(post("/api/plan/edit/" + uuid)
                         .flashAttr("editPlanForm", editPlanForm)
                         .with(csrf()))
                 .andExpect(status().isOk())
-                .andExpect(content().json(this.objectMapper.writeValueAsString(output)));
+                .andExpect(content().json(this.objectMapper.writeValueAsString(planViewModel)));
     }
 
     @ParameterizedTest
@@ -53,15 +54,15 @@ public class EditPlanRestControllerTest {
     @MethodSource("validationTestData")
     public void testValidation(final EditPlanForm form) {
         final var uuid = ExamplePlan.gen().getUuid();
-        final var output = ExamplePlanViewModel.gen();
+        final var planViewModel = ExamplePlanViewModel.gen();
 
-        when(this.editPlanService.execute(any(), any())).thenReturn(output);
+        when(this.editPlanService.execute(any(), anyString(), any())).thenReturn(planViewModel);
         try {
             this.mockMvc.perform(post("/api/plan/edit/" + uuid)
                             .flashAttr("editPlanForm", form)
                             .with(csrf()))
                     .andExpect(status().isOk())
-                    .andExpect(content().json(this.objectMapper.writeValueAsString(output)));
+                    .andExpect(content().json(this.objectMapper.writeValueAsString(planViewModel)));
         } catch (final Exception e) {
             System.out.println(e.getMessage());
             assert true;

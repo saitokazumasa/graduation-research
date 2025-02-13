@@ -45,6 +45,9 @@
 </th:block>
 
 <th:block th:fragment="modal">
+    <script th:inline="javascript">
+        const initialPlaceNum = /*[[${placeNum}]]*/0;
+    </script>
     <script src="/js/autocomplete.js"></script>
     <script src="/js/errorMessage.js"></script>
     <script src="/js/formValidate.js"></script>

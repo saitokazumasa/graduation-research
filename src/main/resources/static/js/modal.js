@@ -214,7 +214,8 @@ class Fragment {
     }
 }
 
-const placeNum = new PlaceNum();
+// initialPlaceNumはmodelから受け取ったplaceNumの値
+const placeNum = new PlaceNum(initialPlaceNum);
 const modal = new ModalElement();
 const errorMessage = new ErrorMessage();
 const formValidate = new FormValidator();

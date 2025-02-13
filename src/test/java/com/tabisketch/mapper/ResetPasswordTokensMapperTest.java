@@ -16,21 +16,21 @@ public class ResetPasswordTokensMapperTest {
     @Test
     @Sql({"classpath:/sql/InsertExampleUser.sql"})
     public void testInsert() {
-        final var entity = ExampleResetPasswordToken.gen();
-        assert this.mapper.insert(entity) == 1;
+        final var resetPasswordToken = ExampleResetPasswordToken.gen();
+        assert this.mapper.insert(resetPasswordToken) == 1;
     }
 
     @Test
     @Sql({"classpath:/sql/InsertExampleUser.sql", "classpath:/sql/InsertExampleResetPasswordToken.sql"})
     public void testSelectByUUID() {
-        final var entity = ExampleResetPasswordToken.gen();
-        assert this.mapper.selectByUUID(entity.getUuid()) != null;
+        final var resetPasswordToken = ExampleResetPasswordToken.gen();
+        assert this.mapper.selectByUUID(resetPasswordToken.getUuid()) != null;
     }
 
     @Test
     @Sql({"classpath:/sql/InsertExampleUser.sql", "classpath:/sql/InsertExampleResetPasswordToken.sql"})
     public void testDelete() {
-        final var entity = ExampleResetPasswordToken.gen();
-        assert this.mapper.delete(entity.getUuid()) == 1;
+        final var resetPasswordToken = ExampleResetPasswordToken.gen();
+        assert this.mapper.delete(resetPasswordToken.getUuid()) == 1;
     }
 }

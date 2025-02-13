@@ -19,7 +19,7 @@ public class PlansMapperTest {
     @Test
     @Sql({"classpath:/sql/InsertExampleUser.sql"})
     public void testInsert() {
-        final var entity = ExamplePlan.gen();
+        final var plan = ExamplePlan.gen();
         final var uuid = UUID.randomUUID();
         plan.setId(-1);
         plan.setUuid(uuid);

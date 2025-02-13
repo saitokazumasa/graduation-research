@@ -16,21 +16,21 @@ public class EmailVerificationTokensMapperTest {
     @Test
     @Sql({"classpath:/sql/InsertExampleUser.sql"})
     public void testInsert() {
-        final var entity = ExampleEmailVerificationToken.gen();
-        assert this.mapper.insert(entity) == 1;
+        final var emailVerificationToken = ExampleEmailVerificationToken.gen();
+        assert this.mapper.insert(emailVerificationToken) == 1;
     }
 
     @Test
     @Sql({"classpath:/sql/InsertExampleUser.sql", "classpath:/sql/InsertExampleEmailVerificationToken.sql"})
     public void testSelectByUUID() {
-        final var entity = ExampleEmailVerificationToken.gen();
-        assert this.mapper.selectByUUID(entity.getUuid()) != null;
+        final var emailVerificationToken = ExampleEmailVerificationToken.gen();
+        assert this.mapper.selectByUUID(emailVerificationToken.getUuid()) != null;
     }
 
     @Test
     @Sql({"classpath:/sql/InsertExampleUser.sql", "classpath:/sql/InsertExampleEmailVerificationToken.sql"})
     public void testDelete() {
-        final var entity = ExampleEmailVerificationToken.gen();
-        assert this.mapper.delete(entity.getUuid()) == 1;
+        final var emailVerificationToken = ExampleEmailVerificationToken.gen();
+        assert this.mapper.delete(emailVerificationToken.getUuid()) == 1;
     }
 }

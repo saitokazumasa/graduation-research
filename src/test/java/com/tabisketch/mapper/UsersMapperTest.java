@@ -15,37 +15,37 @@ public class UsersMapperTest {
 
     @Test
     public void testInsert() {
-        final var entity = ExampleUser.gen();
-        entity.setId(-1);
-        assert this.mapper.insert(entity) == 1;
-        assert entity.getId() != -1;
+        final var user = ExampleUser.gen();
+        user.setId(-1);
+        assert this.mapper.insert(user) == 1;
+        assert user.getId() != -1;
     }
 
     @Test
     @Sql({"classpath:/sql/InsertExampleUser.sql"})
     public void testSelectById() {
-        final var entity = ExampleUser.gen();
-        assert this.mapper.selectById(entity.getId()) != null;
+        final var user = ExampleUser.gen();
+        assert this.mapper.selectById(user.getId()) != null;
     }
 
     @Test
     @Sql({"classpath:/sql/InsertExampleUser.sql"})
     public void testSelectByEmail() {
-        final var entity = ExampleUser.gen();
-        assert this.mapper.selectByEmail(entity.getEmail()) != null;
+        final var user = ExampleUser.gen();
+        assert this.mapper.selectByEmail(user.getEmail()) != null;
     }
 
     @Test
     @Sql({"classpath:/sql/InsertExampleUser.sql"})
     public void testUpdatePassword() {
-        final var entity = ExampleUser.gen();
-        assert this.mapper.updatePassword(entity.getId(), "$2a$10$FFbAunp0hfeWTCune.XqwO/P/61fqWlbruV/8wqzrhM3Pw0VuXxpa") == 1;
+        final var user = ExampleUser.gen();
+        assert this.mapper.updatePassword(user.getId(), "$2a$10$FFbAunp0hfeWTCune.XqwO/P/61fqWlbruV/8wqzrhM3Pw0VuXxpa") == 1;
     }
 
     @Test
     @Sql({"classpath:/sql/InsertExampleUser.sql"})
     public void testUpdateEmailVerified() {
-        final var entity = ExampleUser.gen();
-        assert this.mapper.updateEmailVerified(entity.getId(), !entity.isEmailVerified()) == 1;
+        final var user = ExampleUser.gen();
+        assert this.mapper.updateEmailVerified(user.getId(), !user.isEmailVerified()) == 1;
     }
 }

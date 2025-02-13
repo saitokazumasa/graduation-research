@@ -17,10 +17,10 @@ public class WaypointListsMapperTest {
     @Test
     @Sql({"classpath:/sql/InsertExampleUser.sql", "classpath:/sql/InsertExamplePlan.sql"})
     public void testInsert() {
-        final var entity = ExampleWaypointList.gen();
-        entity.setId(-1);
-        assert this.mapper.insert(entity) == 1;
-        assert entity.getId() != -1;
+        final var waypointList = ExampleWaypointList.gen();
+        waypointList.setId(-1);
+        assert this.mapper.insert(waypointList) == 1;
+        assert waypointList.getId() != -1;
     }
 
     @Test

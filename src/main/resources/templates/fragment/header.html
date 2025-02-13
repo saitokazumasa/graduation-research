@@ -3,13 +3,13 @@
 <body>
 <th:block th:fragment="header">
     <header class="w-full">
-        <nav class="box-border border-2 h-14 sm:h-28 flex items-center justify-between px-3 whitespace-nowrap">
+        <nav class="box-border border-2 h-14 sm:h-28 flex items-center justify-between px-3 whitespace-nowrap z-50">
             <div class="flex items-center">
                 <img th:src="@{/images/icon.png}" alt="たびすけっちのアイコン" class="h-12 w-12">
                 <a th:href="@{/}" class="mx-3 sm:text-title font-extrabold text-xl">たびすけっち</a>
             </div>
             <!-- ハンバーガーメニュー (sm未満で表示) -->
-            <button class="tham tham-e-squeeze tham-w-6 sm:hidden">
+            <button class="tham tham-e-squeeze tham-w-6 sm:hidden z-40">
                 <div class="tham-box">
                     <div class="tham-inner"></div>
                 </div>
@@ -30,7 +30,8 @@
             </ul>
         </nav>
         <!-- ハンバーガーメニュー用のメニュー (sm未満で表示) -->
-        <ul class="fixed right-0 h-full w-1/2 bg-white flex-col border-l-2 border-b-2 text-center pt-4 space-y-10 hidden text-base" id="mobile-menu">
+        <ul class="fixed top-0 right-0 h-full w-1/2 bg-white flex-col border-l-2 border-b-2 text-center space-y-10 z-30 hidden text-base" id="mobile-menu">
+            <li class="mb-20"></li>
             <li sec:authorize="isAuthenticated()"><a th:href="@{/plan/list}">プラン一覧</a></li>
             <li sec:authorize="isAuthenticated()"><a th:href="@{/plan/create}">プラン作成</a></li>
             <li sec:authorize="isAuthenticated()"><a th:href="@{/user/edit}">アカウント編集</a></li>
@@ -42,6 +43,7 @@
                 </form>
             </li>
         </ul>
+        <div class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-20 hidden" id="overlay"></div>
     </header>
 </th:block>
 </body>

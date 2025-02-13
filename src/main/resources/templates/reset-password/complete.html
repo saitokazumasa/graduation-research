@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="ja">
+<th:block th:replace="~{fragment/head :: head('パスワード変更完了')}"/>
+<body class="flex flex-col min-h-screen bg-gray-50">
+<th:block th:replace="~{fragment/header :: header}"/>
+<main class="flex flex-col items-center mt-10 flex-grow">
+    <h2 class="text-center sm:text-3xl text-lg font-medium text-default w-3/4">
+        パスワード変更完了
+    </h2>
+    <div class="my-16 text-center sm:text-xl text-sm w-3/4">
+        <p class="my-2">パスワードが正常に変更されました。</p>
+        <p class="my-2">ログインページに戻ります。</p>
+    </div>
+    <button type="button" class="button-primary" style="max-width: 7.375rem" onclick="location.href='/login'">続行</button>
+</main>
+<th:block th:replace="~{fragment/footer :: footer}"/>
+<th:block th:replace="~{fragment/script :: header}"/>
+</body>
+</html>

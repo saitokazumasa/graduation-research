@@ -43,7 +43,7 @@ public class VerifyEmailControllerTest {
 
     @Test
     @WithMockUser
-    public void testcomplete() throws Exception {
+    public void testComplete() throws Exception {
         this.mockMvc.perform(get("/mail/complete"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("mail/complete"));

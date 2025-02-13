@@ -133,7 +133,7 @@ public class ResetPasswordControllerTest {
 
     @Test
     @WithMockUser
-    public void testcomplete() throws Exception {
+    public void testComplete() throws Exception {
         this.mockMvc.perform(get("/reset-password/complete"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("reset-password/complete"));

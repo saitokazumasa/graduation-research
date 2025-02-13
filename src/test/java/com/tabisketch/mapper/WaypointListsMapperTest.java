@@ -12,14 +12,14 @@ import org.springframework.test.context.jdbc.Sql;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class WaypointListsMapperTest {
     @Autowired
-    private IWaypointListsMapper mapper;
+    private IWaypointListsMapper waypointListsMapper;
 
     @Test
     @Sql({"classpath:/sql/InsertExampleUser.sql", "classpath:/sql/InsertExamplePlan.sql"})
     public void testInsert() {
         final var waypointList = ExampleWaypointList.gen();
         waypointList.setId(-1);
-        assert this.mapper.insert(waypointList) == 1;
+        assert this.waypointListsMapper.insert(waypointList) == 1;
         assert waypointList.getId() != -1;
     }
 
@@ -29,9 +29,9 @@ public class WaypointListsMapperTest {
             "classpath:/sql/InsertExamplePlan.sql",
             "classpath:/sql/InsertExampleWaypointList.sql"
     })
-    public void testSelectById() {
+    public void testSelectByIdAndEmail() {
         final var waypointList = ExampleWaypointList.gen();
         final var email = ExampleUser.gen().getEmail();
-        assert this.mapper.selectByIdAndEmail(waypointList.getId(), email) != null;
+        assert this.waypointListsMapper.selectByIdAndEmail(waypointList.getId(), email) != null;
     }
 }

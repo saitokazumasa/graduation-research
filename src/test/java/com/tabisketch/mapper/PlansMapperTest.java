@@ -14,7 +14,7 @@ import java.util.UUID;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class PlansMapperTest {
     @Autowired
-    private IPlansMapper mapper;
+    private IPlansMapper plansMapper;
 
     @Test
     @Sql({"classpath:/sql/InsertExampleUser.sql"})
@@ -23,7 +23,7 @@ public class PlansMapperTest {
         final var uuid = UUID.randomUUID();
         plan.setId(-1);
         plan.setUuid(uuid);
-        assert this.mapper.insert(plan) == 1;
+        assert this.plansMapper.insert(plan) == 1;
         assert plan.getId() != -1;
         assert !plan.getUuid().equals(uuid);
     }
@@ -33,14 +33,14 @@ public class PlansMapperTest {
     public void testSelectByUUIDAndEmail() {
         final var uuid = ExamplePlan.gen().getUuid();
         final var email = ExampleUser.gen().getEmail();
-        assert this.mapper.selectByUUIDAndEmail(uuid, email) != null;
+        assert this.plansMapper.selectByUUIDAndEmail(uuid, email) != null;
     }
 
     @Test
     @Sql({"classpath:/sql/InsertExampleUser.sql", "classpath:/sql/InsertExamplePlan.sql"})
     public void testSelectByUserId() {
         final var userId = ExampleUser.gen().getId();
-        assert this.mapper.selectByUserId(userId) != null;
+        assert this.plansMapper.selectByUserId(userId) != null;
     }
 
     @Test
@@ -48,6 +48,6 @@ public class PlansMapperTest {
     public void testDelete() {
         final var uuid = ExamplePlan.gen().getUuid();
         final var email = ExampleUser.gen().getEmail();
-        assert this.mapper.deleteByUUIDAndEmail(uuid, email) == 1;
+        assert this.plansMapper.deleteByUUIDAndEmail(uuid, email) == 1;
     }
 }

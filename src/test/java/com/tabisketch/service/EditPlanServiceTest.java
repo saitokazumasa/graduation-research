@@ -28,16 +28,13 @@ public class EditPlanServiceTest {
         final var plan = ExamplePlan.gen();
         when(this.findOnePlanWithUserService.execute(any(), anyString())).thenReturn(plan);
         when(this.plansMapper.update(any())).thenReturn(1);
-        when(this.plansMapper.selectByUUID(any())).thenReturn(plan);
 
-        final var uuid = plan.getUuid().toString();
         final var email = ExampleUser.gen().getEmail();
         final var editPlanForm = ExampleEditPlanForm.gen();
-        final var planViewModel = this.editPlanService.execute(uuid, email, editPlanForm);
+        final var planViewModel = this.editPlanService.execute(email, editPlanForm);
         assert planViewModel != null;
 
         verify(this.findOnePlanWithUserService).execute(any(), anyString());
         verify(this.plansMapper).update(any());
-        verify(this.plansMapper).selectByUUID(any());
     }
 }

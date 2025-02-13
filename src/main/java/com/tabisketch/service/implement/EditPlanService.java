@@ -11,8 +11,6 @@ import com.tabisketch.service.IFindOnePlanWithUserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.UUID;
-
 @Service
 public class EditPlanService implements IEditPlanService {
     private final IPlansMapper plansMapper;
@@ -28,10 +26,9 @@ public class EditPlanService implements IEditPlanService {
 
     @Override
     @Transactional
-    public PlanViewModel execute(final String uuid, final String email, final EditPlanForm form) {
+    public PlanViewModel execute(final String email, final EditPlanForm form) {
         // プラン取得
-        final var _uuid = UUID.fromString(uuid);
-        final Plan plan = this.findOnePlanWithUserService.execute(_uuid, email);
+        final Plan plan = this.findOnePlanWithUserService.execute(form.getUuid(), email);
         if (plan == null) throw new FailedSelectException("failed to find plan");
 
         // 更新
@@ -47,11 +44,7 @@ public class EditPlanService implements IEditPlanService {
         final boolean wasUpdatedPlan = this.plansMapper.update(newPlan) == 1;
         if (!wasUpdatedPlan) throw new FailedUpdateException("failed to update plan");
 
-        // 最新プラン取得
-        final Plan updatedPlan = this.plansMapper.selectByUUID(_uuid);
-        if (updatedPlan == null) throw new FailedSelectException("failed to find plan");
-
         // データ加工
-        return new PlanViewModel(updatedPlan);
+        return new PlanViewModel(newPlan);
     }
 }

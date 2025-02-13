@@ -89,37 +89,10 @@
                             </div>
                         </details>
                     </section>
-                    <!-- オプションのセクション -->
-                    <section class="pt-10">
-                        <details open class="p-4 group overflow-hidden transition-[max-height] duration-500">
-                            <summary class="sm:text-xl text-lg cursor-pointer font-semibold marker:text-transparent group-open:before:rotate-90  before:origin-center relative before:w-[18px] before:h-[18px] before:transition-transform before:duration-200 before:-left-1 before:top-2/4 before:-translate-y-2/4 before:absolute before:bg-no-repeat before:bg-[length:18px_18px] before:bg-center before:bg-[url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20class%3D%22h-6%20w-6%22%20fill%3D%22none%22%20viewBox%3D%220%200%2024%2024%22%20stroke%3D%22currentColor%22%20stroke-width%3D%222%22%3E%0A%20%20%3Cpath%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20d%3D%22M9%205l7%207-7%207%22%20%2F%3E%0A%3C%2Fsvg%3E')]">
-                                オプション
-                            </summary>
-                            <hr class="my-2 scale-x-150"/>
-                            <div class="sm:text-lg text-base -m-4 -mt-2 p-4 flex flex-col">
-                                利用する交通手段
-                                <th:block th:replace="~{fragment/svg :: three-transportation}"/>
-                                <div class="my-1 sm:text-base text-sm">
-                                    <label for="useTollRoad">
-                                        <input type="checkbox" id="useTollRoad" name="useTollRoad" form="editDayForm" th:checked="${editDayForm.useTollRoad}" class="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-5 before:w-5 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-blue-700 checked:bg-blue-700 checked:before:bg-blue-700 hover:before:opacity-10">
-                                        <span class="ml-2 text-center">有料道路の利用</span>
-                                    </label>
-                                </div>
-                                <div class="my-1 sm:text-base text-sm">
-                                    <label for="useFerry">
-                                        <input type="checkbox" id="useFerry" name="true" value="true" form="editDayForm" th:checked="${editDayForm.useFerry}" class="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-5 before:w-5 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-blue-700 checked:bg-blue-700 checked:before:bg-blue-700 hover:before:opacity-10">
-                                        <span class="ml-2 text-center">フェリーの利用</span>
-                                    </label>
-                                </div>
-                                <div class="my-1 sm:text-base text-sm">
-                                    <label for="walkFlag">
-                                        <input type="checkbox" id="walkFlag" name="walkFlag" th:checked="${editDayForm.walkThreshold > 0}" class="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-5 before:w-5 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-blue-700 checked:bg-blue-700 checked:before:bg-blue-700 hover:before:opacity-10">
-                                        <span class="ml-2 text-center">徒歩で移動可能な時間を指定</span>
-                                    </label>
-                                </div>
-                                <label class="ml-10"><input type="number" id="walkThreshold" name="walkThreshold" form="editDayForm" th:field="${editDayForm.walkThreshold}" class="sm:w-56 w-32 sm:h-8 h-6 border border-b-gray-400 rounded-lg text-base text-center disabled:bg-[#e5e5e5] disabled:border-[#888] disabled:text-[#888]" min="0" max=""><span class="mx-4">分</span></label>
-                            </div>
-                        </details>
+                    <!-- 利用する交通手段のセクション -->
+                    <section class="pt-10 sm:text-lg text-base -m-4 -mt-2 p-4 flex flex-col">
+                        利用する交通手段
+                        <th:block th:replace="~{fragment/svg :: three-transportation}"/>
                     </section>
                 </div>
                 <!-- ボタンのセクション -->

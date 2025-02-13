@@ -29,6 +29,7 @@
         </div>
         <div class="mx-10 flex">
             <section class="sm:w-1/2 w-full">
+                <!-- 日付の表示 -->
                 <div class="flex items-end space-x-0 pb-[0.625rem] border-b-2 mt-6">
                     <div th:each="index : ${#numbers.sequence(1, days)}">
                         <a th:href="@{/plan/d/__${uuid}__/edit(day=__${index}__)}"
@@ -38,32 +39,35 @@
                         </a>
                     </div>
                 </div>
+                <!-- 各種地点の表示 -->
                 <div class="flex flex-col mt-6 mb-10">
+                    <!-- 出発地点 -->
                     <div class="mb-6">
                         <p class="mb-2 sm:text-lg text-base">出発地点<span class="sm:ml-2 ml-1 text-sm text-danger">必須</span></p>
                         <!-- 出発地点が入力済みかで表示の変更 -->
                         <th:block th:if="${startPlaceForm}" th:replace="~{fragment/modal :: startToggle}"/>
                         <th:block th:if="${updateStartForm}" th:replace="~{fragment/update-modal :: startUpdateToggle(${updateStartForm}, ${isCreateRoute})}"/>
                     </div>
-                    <!-- 経路未生成の時に独自クラス addPlacesを追加 -->
+                    <!-- 目的地 独自クラス「addPlaces」を取得して目的地追加ボタンを追加表示する -->
                     <div class="mb-6" th:classappend="${isCreateRoute ? '' : 'addPlaces'}">
                         <p class="mb-2 sm:text-lg text-base">目的地</p>
                         <!-- 目的地が入力済みかで表示の変更 -->
                         <div th:each="updatePlaceForm, placeStatus : ${updatePlaceList}">
                             <th:block th:replace="~{fragment/update-modal :: placesUpdateToggle(${placeStatus.index}, ${updatePlaceForm}, ${isCreateRoute})}"/>
                         </div>
-                        <!-- 経路生成前に表示 -->
-                        <th:block th:if="${!isCreateRoute}" th:replace="~{fragment/modal :: placesToggle(${placeNum})}"/>
+                        <!-- 目的地追加 経路生成前に表示 -->
+                        <th:block th:if="${!isCreateRoute}" th:replace="~{fragment/modal :: placesToggle(0)}"/>
                     </div>
+                    <!-- 終了地点 -->
                     <div class="mb-6">
                         <p class="mb-2 sm:text-lg text-base">終了地点</p>
                         <!-- 終了地点が入力済みかで表示変更 -->
                         <th:block th:if="${endPlaceForm}" th:replace="~{fragment/modal :: end}"/>
                         <th:block th:if="${updateEndForm}" th:replace="~{fragment/update-modal :: endUpdateToggle(${updateEndForm})}"/>
                     </div>
-                    <!-- 経路生成後に表示 -->
+                    <!-- 目的地追加 経路生成後に表示 -->
                     <div th:if="${isCreateRoute}" class="addPlaces">
-                        <th:block th:replace="~{fragment/modal :: placesToggle(${placeNum})}"/>
+                        <th:block th:replace="~{fragment/modal :: placesToggle(0)}"/>
                     </div>
                     <!-- おすすめ目的地のセクション -->
                     <section class="pt-10">
@@ -85,6 +89,7 @@
                             </div>
                         </details>
                     </section>
+                    <!-- オプションのセクション -->
                     <section class="pt-10">
                         <details open class="p-4 group overflow-hidden transition-[max-height] duration-500">
                             <summary class="sm:text-xl text-lg cursor-pointer font-semibold marker:text-transparent group-open:before:rotate-90  before:origin-center relative before:w-[18px] before:h-[18px] before:transition-transform before:duration-200 before:-left-1 before:top-2/4 before:-translate-y-2/4 before:absolute before:bg-no-repeat before:bg-[length:18px_18px] before:bg-center before:bg-[url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20class%3D%22h-6%20w-6%22%20fill%3D%22none%22%20viewBox%3D%220%200%2024%2024%22%20stroke%3D%22currentColor%22%20stroke-width%3D%222%22%3E%0A%20%20%3Cpath%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20d%3D%22M9%205l7%207-7%207%22%20%2F%3E%0A%3C%2Fsvg%3E')]">
@@ -96,13 +101,13 @@
                                 <th:block th:replace="~{fragment/svg :: three-transportation}"/>
                                 <div class="my-1 sm:text-base text-sm">
                                     <label for="useTollRoad">
-                                        <input type="checkbox" id="useTollRoad" name="useTollRoad" form="editDay" th:checked="${editDayForm.useTollRoad}" class="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-5 before:w-5 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-blue-700 checked:bg-blue-700 checked:before:bg-blue-700 hover:before:opacity-10">
+                                        <input type="checkbox" id="useTollRoad" name="useTollRoad" form="editDayForm" th:checked="${editDayForm.useTollRoad}" class="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-5 before:w-5 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-blue-700 checked:bg-blue-700 checked:before:bg-blue-700 hover:before:opacity-10">
                                         <span class="ml-2 text-center">有料道路の利用</span>
                                     </label>
                                 </div>
                                 <div class="my-1 sm:text-base text-sm">
                                     <label for="useFerry">
-                                        <input type="checkbox" id="useFerry" name="true" value="true" form="editDay" th:checked="${editDayForm.useFerry}" class="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-5 before:w-5 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-blue-700 checked:bg-blue-700 checked:before:bg-blue-700 hover:before:opacity-10">
+                                        <input type="checkbox" id="useFerry" name="true" value="true" form="editDayForm" th:checked="${editDayForm.useFerry}" class="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-5 before:w-5 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-blue-700 checked:bg-blue-700 checked:before:bg-blue-700 hover:before:opacity-10">
                                         <span class="ml-2 text-center">フェリーの利用</span>
                                     </label>
                                 </div>
@@ -117,34 +122,39 @@
                         </details>
                     </section>
                 </div>
-                <div class="flex justify-center mb-20">
-                    <!-- ボタンイベント editButtons.js -->
-                    <button type="button" id="backButton" class="sm:mx-10 mx-5 block items-center justify-center button-secondary">保存して戻る</button>
-                    <!-- titleとオプションのupdateをし、経路生成処理に送信 -->
-                    <button type="button" id="crateRouteButton" class="sm:mx-10 mx-5 block items-center justify-center button-primary">経路生成</button>
-                </div>
-                <div class="flex justify-center mb-20" id="editButtonsDiv" th:classappend="${isCreateRoute ? '' : 'hidden'}">
-                    <!-- 日付追加で画面遷移 -->
-                    <button type="button" class="sm:mx-10 mx-5 flex items-center justify-center button-secondary" id="addDayButton">
-                        <th:block th:replace="~{fragment/svg :: plus}"/>
-                        日付の追加
-                    </button>
-                    <!-- プラン確定処理に飛ばす -->
-                    <button type="button" class="sm:mx-10 mx-5 block items-center justify-center button-primary" id="planConfirmButton">プラン確定</button>
-                </div>
+                <!-- ボタンのセクション -->
+                <section class="mb-20">
+                    <div class="flex justify-center">
+                        <!-- ボタンイベント editButtons.js -->
+                        <button type="button" id="backButton" class="sm:mx-10 mx-5 block items-center justify-center button-secondary">保存して戻る</button>
+                        <!-- titleとオプションのupdateをし、経路生成処理に送信 -->
+                        <button type="button" id="crateRouteButton" class="sm:mx-10 mx-5 block items-center justify-center button-primary">経路生成</button>
+                    </div>
+                    <div class="flex justify-center mt-10" id="editButtonsDiv" th:classappend="${isCreateRoute ? '' : 'hidden'}">
+                        <!-- 日付追加で画面遷移 -->
+                        <button type="button" class="sm:mx-10 mx-5 flex items-center justify-center button-secondary" id="addDayButton">
+                            <th:block th:replace="~{fragment/svg :: plus}"/>
+                            日付の追加
+                        </button>
+                        <!-- プラン確定処理に飛ばす -->
+                        <button type="button" class="sm:mx-10 mx-5 block items-center justify-center button-primary" id="planConfirmButton">プラン確定</button>
+                    </div>
+                </section>
             </section>
+            <!-- マップ表示のセクション -->
             <section class="sm:w-1/2 hidden sm:inline-block">
                 <div id="map" class="w-full h-full"></div>
             </section>
         </div>
     </div>
-    <div class="invisible">
-        <form th:object="${editPlanForm}" id="editPlanForm">
+    <!-- 使用するForm一覧 -->
+    <div>
+        <form th:object="${editPlanForm}" id="editPlanForm" class="invisible">
             <input type="text" th:field="*{thumbnailPath}">
             <input type="checkbox" th:field="*{editable}">
             <input type="checkbox" th:field="*{publiclyViewable}">
         </form>
-        <form th:object="${editDayForm}" id="editDayForm">
+        <form th:object="${editDayForm}" id="editDayForm" class="invisible">
             <!-- todo: editDayFormのinputフィールド追加 -->
             <input type="number" th:field="*{id}" hidden>
         </form>

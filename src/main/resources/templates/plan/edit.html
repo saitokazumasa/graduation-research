@@ -36,7 +36,8 @@
                 <div class="flex items-end space-x-0 pb-[0.625rem] border-b-2 mt-6">
                     <!-- todo: 日付表示する為に planIdが一致する waypoint_listsの行数を 仮:${days}に入れて渡す -->
 <!--                    <div th:each="index : ${#numbers.sequence(1, days)}">-->
-<!--                        <a th:href="@{/plan/d/__${uuid}__/edit(day=__${index}__)}"-->
+<!--                        &lt;!&ndash; todo: selectedDayにはパラメータのdayを入れる &ndash;&gt;-->
+<!--                        <a th:href="@{/plan/edit/__${editPlanForm.uuid}__(day=__${index}__)}"-->
 <!--                           th:classappend="${index == selectedDay} ? 'pt-5 pb-3 sm:px-6 lg:px-12 px-8 bg-green-600 text-white text-lg h-12' : 'pt-3 pb-3 sm:px-4 lg:px-10 px-6 bg-green-400 text-white'"-->
 <!--                           class="rounded-t-md text-center items-center cursor-pointer">-->
 <!--                            <span th:text="${index} + '日目'"></span>-->
@@ -106,7 +107,7 @@
                     <!-- 利用する交通手段のセクション -->
                     <section class="pt-10 sm:text-lg text-base -m-4 -mt-2 p-4 flex flex-col">
                         利用する交通手段
-                        <!-- todo: th:objectで 仮:${editWayPointList} を使ってるformのidを引数で入れる フラグメント先でform='引数'みたいに使いたい -->
+                        <!-- todo: th:objectで th:objectで仮:${editWayPointListForm} を使ってるformのidを引数で入れる フラグメント先でform='引数'みたいに使いたい -->
 <!--                        <th:block th:replace="~{fragment/svg :: three-transportation(editWayPointListForm)}"/>-->
                     </section>
                 </div>
@@ -154,6 +155,8 @@
 <!--        <form th:object="${editWayPointListForm}" id="editWayPointListForm" class="invisible">-->
 <!--            &lt;!&ndash; todo: editWayPointListFormのinputフィールド追加（input:form=this.form.idで取得してるやつ以外） &ndash;&gt;-->
 <!--            <input type="number" th:field="*{id}">-->
+<!--            <input type="text" th:field="*{mainTransporation}">-->
+<!--            <input type="text" th:field="*{planUUID}">-->
 <!--        </form>-->
 <!--        &lt;!&ndash; todo: それぞれのmodalで使う formObject指定 上のtoggleと一緒 &ndash;&gt;-->
 <!--        <div id="startFormDiv">-->
@@ -181,7 +184,6 @@
 <!-- todo: 一旦scriptもコメント化 -->
 <!--<th:block th:replace="~{fragment/script :: svgCheckbox}"/>-->
 <!--<script src="/js/draganddrop.js"></script>-->
-<!--<script src="/js/radioButtonSelect.js"></script>-->
 <!--<th:block th:replace="~{fragment/script :: flowbite}"/>-->
 <!--<th:block th:replace="~{fragment/script :: map}"/>-->
 <!--&lt;!&ndash; todo: fragment/script :: modal の中でControllerから送られる ${placeNum} をJSで受け取る為コメント化 &ndash;&gt;-->

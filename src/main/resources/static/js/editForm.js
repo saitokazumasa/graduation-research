@@ -1,15 +1,14 @@
 class EditForm {
     #editPlanForm;
-    #editDayForm;
+    #editWayPointListForm;
 
     constructor() {
-        this.#editPlanForm = document.getElementById('editPlanForm');
-        this.#editDayForm = document.getElementById('editDayForm');
+        this.initForm();
     }
 
     initForm() {
         this.#editPlanForm = document.getElementById('editPlanForm');
-        this.#editDayForm = document.getElementById('editDayForm');
+        this.#editWayPointListForm = document.getElementById('editWayPointListForm');
     }
 
     /**
@@ -29,11 +28,24 @@ class EditForm {
     }
 
     /**
-     * editDayFormのformData取得
+     * editWayPointListFormのformData取得
      * @returns {FormData}
      */
-    #getDayFormData() {
-        return new FormData(this.#editDayForm);
+    #getWayPointListFormData() {
+        const formData = new FormData(this.#editWayPointListForm);
+        return this.#formatWayPointForm(formData);
+    }
+
+    /**
+     * todo: editWayPointListFormの交通手段をformatする
+     */
+    #formatWayPointForm(formData) {
+        // 文字列のtrueかfalseが入る
+        const car = formData.get('checkCar');
+        const cycle = formData.get('checkCycle');
+        const train = formData.get('checkTrain');
+
+        return formData;
     }
 
     /**
@@ -67,18 +79,17 @@ class EditForm {
      * EditDayRestControllerに送信
      * @returns {Promise<void>}
      */
-    async postEditDayAPI() {
+    async postEditWayPointListAPI() {
         const csrfToken = document.querySelector('meta[name="_csrf"]').content;
         const csrfHeaderName = document.querySelector('meta[name="_csrf_header"]').content;
-        const uuid = this.#getUUID();
         try {
             // 非同期でPOSTリクエストを送信
-            const response = await fetch(`/api/day/edit/${uuid}`, {
+            const response = await fetch('/api/waypoint-list/edit', {
                 method: 'POST',
                 headers: {
                     [csrfHeaderName]: csrfToken
                 },
-                body: this.#getDayFormData(),
+                body: this.#getWayPointListFormData(),
             });
 
             // 通信が成功しないとき

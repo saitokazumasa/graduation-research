@@ -36,7 +36,7 @@ class EditButtons {
         // editPlanFormを使って更新
         await editForm.postEditPlanAPI();
         // editDayFormを使って更新
-        await editForm.postEditDayAPI();
+        await editForm.postEditWayPointListAPI();
 
         // プラン一覧に遷移（ブラウザの戻るボタンが効かないように）
         window.location.replace('/plan/list');
@@ -54,7 +54,7 @@ class EditButtons {
         // editPlanFormを使って更新
         await editForm.postEditPlanAPI();
         // editDayFormを使って更新
-        await editForm.postEditDayAPI();
+        await editForm.postEditWayPointListAPI();
         // todo: 経路生成をするAPIに送信
         // todo: 経路生成後にplacesも更新
 
@@ -95,7 +95,7 @@ class EditButtons {
         // editPlanFormを使って更新
         await editForm.postEditPlanAPI();
         // editDayFormを使って更新
-        await editForm.postEditDayAPI();
+        await editForm.postEditWayPointListAPI();
 
         // プラン一覧に遷移（ブラウザの戻るボタンが効かないように）
         window.location.replace('/plan/list');

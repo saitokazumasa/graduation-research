@@ -1,6 +1,7 @@
 package com.tabisketch.bean.form;
 
-import jakarta.validation.constraints.NotBlank;
+import com.tabisketch.constant.Transporation;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,16 +12,13 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class EditPlanForm {
-    @NotNull
-    private UUID uuid;
-
-    @NotBlank
-    private String title;
+public class EditWaypointListForm {
+    @Min(1)
+    private int id;
 
     @NotNull
-    private String thumbnailPath;
+    private Transporation mainTransporation;
 
-    private boolean editable;
-    private boolean publiclyViewable;
+    @NotNull
+    private UUID planUUID;
 }

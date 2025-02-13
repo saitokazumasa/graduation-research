@@ -1,10 +1,10 @@
 package com.tabisketch.rest_controller;
 
-import com.tabisketch.bean.form.EditPlanForm;
-import com.tabisketch.bean.view_model.PlanViewModel;
+import com.tabisketch.bean.form.CreateWaypointListForm;
+import com.tabisketch.bean.view_model.WaypointListViewModel;
 import com.tabisketch.constant.AuthenticationPrincipalExpression;
 import com.tabisketch.exception.InvalidFormException;
-import com.tabisketch.service.IEditPlanService;
+import com.tabisketch.service.ICreateWaypointListService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -13,22 +13,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/plan/edit")
-public class EditPlanRestController {
-    private final IEditPlanService editPlanService;
+@RequestMapping("/api/waypoint-list/create")
+public class CreateWaypointListRestController {
+    private final ICreateWaypointListService createWaypointListService;
 
-    public EditPlanRestController(final IEditPlanService editPlanService) {
-        this.editPlanService = editPlanService;
+    public CreateWaypointListRestController(final ICreateWaypointListService createWaypointListService) {
+        this.createWaypointListService = createWaypointListService;
     }
 
     @PostMapping
-    public PlanViewModel post(
+    public WaypointListViewModel post(
             final @AuthenticationPrincipal(expression = AuthenticationPrincipalExpression.EMAIL) String email,
-            final @Validated EditPlanForm editPlanForm,
+            final @Validated CreateWaypointListForm createWaypointListForm,
             final BindingResult bindingResult
     ) {
         if (bindingResult.hasErrors()) throw new InvalidFormException("invalid form");
 
-        return this.editPlanService.execute(email, editPlanForm);
+        return this.createWaypointListService.execute(email, createWaypointListForm);
     }
 }

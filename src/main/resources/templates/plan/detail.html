@@ -14,19 +14,23 @@
         </div>
         <div class="flex flex-col">
             <label class="text-center bg-red-50 flex justify-center items-center w-full" style="aspect-ratio: 5/1">
-                <img th:src="${plan.thumbnail}" alt="サムネイル画像">
+                <!-- todo:planViewModel plan.thumbnailPathを th:srcに -->
+<!--                <img th:src="${plan.thumbnailPath}" alt="サムネイル画像">-->
             </label>
             <div class="flex">
                 <div class="flex w-full mx-4">
                     <div class="lg:w-80 sm:w-52 w-32"></div>
                     <div class="w-auto text-center mx-auto my-10">
-                        <span class="font-bold w-full sm:text-3xl text-xl text-center" th:text="${plan.title}"></span>
+                        <!-- todo:planViewModel plan.titleを th:textに -->
+<!--                        <span class="font-bold w-full sm:text-3xl text-xl text-center" th:text="${plan.title}"></span>-->
                     </div>
                     <div class="flex items-center justify-center lg:w-80 sm:w-40 w-32 mr-10">
-                        <a th:href="@{/share/__${plan.uuid}__/packings}" class="sm:mx-4 mx-2 block item s-center justify-center button-secondary lg:w-24 w-24 lg:text-base sm:text-sm text-center">持ち物</a>
-                        <div class="mx-2">
-                            <th:block th:replace="~{fragment/popup :: link-share}"/>
-                        </div>
+                        <!-- 持ち物リストに遷移する -->
+<!--                        <a th:href="@{}" class="sm:mx-4 mx-2 block item s-center justify-center button-secondary lg:w-24 w-24 lg:text-base sm:text-sm text-center">持ち物</a> -->
+                        <!-- todo: リンク共有一旦をコメント化 土曜日までに実装する -->
+<!--                        <div class="mx-2">-->
+<!--                            <th:block th:replace="~{fragment/popup :: link-share}"/>-->
+<!--                        </div>-->
                         <div class="mx-2">
                             <th:block th:replace="~{fragment/popup :: delete-plan}"/>
                         </div>
@@ -40,29 +44,35 @@
         <div class="mx-10 flex">
             <section class="sm:w-1/2 w-full">
                 <div class="flex items-end space-x-0 pb-[0.625rem] border-b-2 mt-6">
-                    <div th:each="index : ${#numbers.sequence(1, plan.days)}">
-                        <a th:href="@{/share/__${plan.uuid}__/plan(day=__${index}__)}"
-                           th:classappend="${index == selectedDay} ? 'pt-5 pb-3 sm:px-6 lg:px-12 px-8 bg-green-600 text-white text-lg h-12' : 'pt-3 pb-3 sm:px-4 lg:px-10 px-6 bg-green-400 text-white'"
-                           class="rounded-t-md text-center items-center cursor-pointer">
-                            <span th:text="${index} + '日目'"></span>
-                        </a>
-                    </div>
+                    <!-- 日付のタブ表示 -->
+                    <!-- todo: WaypointListの行数（下でいうplan.days）で th:eachを回す -->
+<!--                    <div th:each="index : ${#numbers.sequence(1, plan.days)}">-->
+                        <!-- todo: planViewModel plan.uuidを使用し /plan/detail/{uuid}?day=1に画面更新する
+                                   selectDay にはパラメータで取得した日付 -->
+<!--                        <a th:href="@{/plan/detail/__${plan.uuid}__(day=__${index}__)}"-->
+<!--                           th:classappend="${index == selectedDay} ? 'pt-5 pb-3 sm:px-6 lg:px-12 px-8 bg-green-600 text-white text-lg h-12' : 'pt-3 pb-3 sm:px-4 lg:px-10 px-6 bg-green-400 text-white'"-->
+<!--                           class="rounded-t-md text-center items-center cursor-pointer">-->
+<!--                            <span th:text="${index} + '日目'"></span>-->
+<!--                        </a>-->
+<!--                    </div>-->
                 </div>
                 <div class="flex flex-col mt-6 mb-10">
-                    <div th:each="place, placeStatus : ${plan.placeList}" class="mb-6">
-                        <div th:if="${placeStatus.first}">
-                            <p class="mb-2 sm:text-lg text-base">出発地点</p>
-                            <th:block th:replace="~{fragment/detail-place :: start(${place})}"/>
-                        </div>
-                        <div th:if="${!placeStatus.first && !placeStatus.last}">
-                            <p class="mb-2 sm:text-lg text-base" th:if="${placeStatus.index == 1}">目的地</p>
-                            <th:block th:replace="~{fragment/detail-place :: places(${place})}"/>
-                        </div>
-                        <div th:if="${placeStatus.last}">
-                            <p class="mb-2 sm:text-lg text-base">終了地点</p>
-                            <th:block th:replace="~{fragment/detail-place :: end(${place})}"/>
-                        </div>
-                    </div>
+                    <!-- todo: 日付ごとの地点Listを取得 仮:${placeList} 各地点の情報は
+                            場所名:name, 開始時間:startTime, 終了時間:endTime, 予算:budget, 移動時間:toTravelTime, 移動手段:toTransportation -->
+<!--                    <div th:each="place, placeStatus : ${placeList}" class="mb-6">-->
+<!--                        <div th:if="${placeStatus.first}">-->
+<!--                            <p class="mb-2 sm:text-lg text-base">出発地点</p>-->
+<!--                            <th:block th:replace="~{fragment/detail-place :: start(${place})}"/>-->
+<!--                        </div>-->
+<!--                        <div th:if="${!placeStatus.first && !placeStatus.last}">-->
+<!--                            <p class="mb-2 sm:text-lg text-base" th:if="${placeStatus.index == 1}">目的地</p>-->
+<!--                            <th:block th:replace="~{fragment/detail-place :: places(${place})}"/>-->
+<!--                        </div>-->
+<!--                        <div th:if="${placeStatus.last}">-->
+<!--                            <p class="mb-2 sm:text-lg text-base">終了地点</p>-->
+<!--                            <th:block th:replace="~{fragment/detail-place :: end(${place})}"/>-->
+<!--                        </div>-->
+<!--                    </div>-->
                 </div>
                 <div class="flex justify-center mb-20">
                     <button type="button" class="sm:mx-10 mx-5 block items-center justify-center button-secondary" onclick="window.location.href='/plan/list'">戻る</button>
@@ -76,7 +86,8 @@
 </main>
 <th:block th:replace="~{fragment/footer :: footer}"/>
 <th:block th:replace="~{fragment/script :: flowbite}"/>
-<th:block th:replace="~{fragment/script :: linkShare}"/>
+<!-- todo: リンク共有一旦をコメント化 土曜日までに実装する -->
+<!--<th:block th:replace="~{fragment/script :: linkShare}"/>-->
 <th:block th:replace="~{fragment/script :: deletePlan}"/>
 <th:block th:replace="~{fragment/script :: map}"/>
 <th:block th:replace="~{fragment/script :: modal}"/>

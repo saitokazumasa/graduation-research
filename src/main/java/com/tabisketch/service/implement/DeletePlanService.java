@@ -5,7 +5,6 @@ import com.tabisketch.exception.FailedDeleteException;
 import com.tabisketch.exception.FailedSelectException;
 import com.tabisketch.mapper.IPlansMapper;
 import com.tabisketch.service.IDeletePlanService;
-import com.tabisketch.service.IFindOnePlanWithUserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,14 +13,9 @@ import java.util.UUID;
 @Service
 public class DeletePlanService implements IDeletePlanService {
     private final IPlansMapper plansMapper;
-    private final IFindOnePlanWithUserService findOnePlanWithUserService;
 
-    public DeletePlanService(
-            final IPlansMapper plansMapper,
-            final IFindOnePlanWithUserService findOnePlanWithUserService
-    ) {
+    public DeletePlanService(final IPlansMapper plansMapper) {
         this.plansMapper = plansMapper;
-        this.findOnePlanWithUserService = findOnePlanWithUserService;
     }
 
     @Override
@@ -29,7 +23,7 @@ public class DeletePlanService implements IDeletePlanService {
     public void execute(final String uuid, final String email) {
         // プラン取得
         final var _uuid = UUID.fromString(uuid);
-        final Plan plan = this.findOnePlanWithUserService.execute(_uuid, email);
+        final Plan plan = this.plansMapper.selectByUUIDAndEmail(_uuid, email);
         if (plan == null) throw new FailedSelectException("failed to find plan");
 
         // 削除

@@ -21,11 +21,19 @@ public class PlansMapperTest {
     public void testInsert() {
         final var entity = ExamplePlan.gen();
         final var uuid = UUID.randomUUID();
-        entity.setId(-1);
-        entity.setUuid(uuid);
-        assert this.mapper.insert(entity) == 1;
-        assert entity.getId() != -1;
-        assert !entity.getUuid().equals(uuid);
+        plan.setId(-1);
+        plan.setUuid(uuid);
+        assert this.mapper.insert(plan) == 1;
+        assert plan.getId() != -1;
+        assert !plan.getUuid().equals(uuid);
+    }
+
+    @Test
+    @Sql({"classpath:/sql/InsertExampleUser.sql", "classpath:/sql/InsertExamplePlan.sql"})
+    public void testSelectByUUIDAndEmail() {
+        final var uuid = ExamplePlan.gen().getUuid();
+        final var email = ExampleUser.gen().getEmail();
+        assert this.mapper.selectByUUIDAndEmail(uuid, email) != null;
     }
 
     @Test

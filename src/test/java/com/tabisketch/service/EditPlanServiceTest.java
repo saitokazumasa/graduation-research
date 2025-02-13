@@ -20,13 +20,11 @@ public class EditPlanServiceTest {
     private EditPlanService editPlanService;
     @Mock
     private IPlansMapper plansMapper;
-    @Mock
-    private IFindOnePlanWithUserService findOnePlanWithUserService;
 
     @Test
     public void testExecute() {
         final var plan = ExamplePlan.gen();
-        when(this.findOnePlanWithUserService.execute(any(), anyString())).thenReturn(plan);
+        when(this.plansMapper.selectByUUIDAndEmail(any(), anyString())).thenReturn(plan);
         when(this.plansMapper.update(any())).thenReturn(1);
 
         final var email = ExampleUser.gen().getEmail();
@@ -34,7 +32,7 @@ public class EditPlanServiceTest {
         final var planViewModel = this.editPlanService.execute(email, editPlanForm);
         assert planViewModel != null;
 
-        verify(this.findOnePlanWithUserService).execute(any(), anyString());
+        verify(this.plansMapper).selectByUUIDAndEmail(any(), anyString());
         verify(this.plansMapper).update(any());
     }
 }

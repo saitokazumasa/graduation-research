@@ -21,20 +21,18 @@ public class DeletePlanServiceTest {
     private DeletePlanService deletePlanService;
     @Mock
     private IPlansMapper plansMapper;
-    @Mock
-    private IFindOnePlanWithUserService findOnePlanWithUserService;
 
     @Test
     public void testExecute() {
         final var plan = ExamplePlan.gen();
-        when(this.findOnePlanWithUserService.execute(any(), anyString())).thenReturn(plan);
+        when(this.plansMapper.selectByUUIDAndEmail(any(), anyString())).thenReturn(plan);
         when(this.plansMapper.delete(any())).thenReturn(1);
 
         final String uuid = plan.getUuid().toString();
         final String email = ExampleUser.gen().getEmail();
         this.deletePlanService.execute(uuid, email);
 
-        verify(this.findOnePlanWithUserService).execute(any(), anyString());
+        verify(this.plansMapper).selectByUUIDAndEmail(any(), anyString());
         verify(this.plansMapper).delete(any());
     }
 }

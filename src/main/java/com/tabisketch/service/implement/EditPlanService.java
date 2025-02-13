@@ -7,28 +7,22 @@ import com.tabisketch.exception.FailedSelectException;
 import com.tabisketch.exception.FailedUpdateException;
 import com.tabisketch.mapper.IPlansMapper;
 import com.tabisketch.service.IEditPlanService;
-import com.tabisketch.service.IFindOnePlanWithUserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class EditPlanService implements IEditPlanService {
     private final IPlansMapper plansMapper;
-    private final IFindOnePlanWithUserService findOnePlanWithUserService;
 
-    public EditPlanService(
-            final IPlansMapper plansMapper,
-            final IFindOnePlanWithUserService findOnePlanWithUserService
-    ) {
+    public EditPlanService(final IPlansMapper plansMapper) {
         this.plansMapper = plansMapper;
-        this.findOnePlanWithUserService = findOnePlanWithUserService;
     }
 
     @Override
     @Transactional
     public PlanViewModel execute(final String email, final EditPlanForm form) {
         // プラン取得
-        final Plan plan = this.findOnePlanWithUserService.execute(form.getUuid(), email);
+        final Plan plan = this.plansMapper.selectByUUIDAndEmail(form.getUuid(), email);
         if (plan == null) throw new FailedSelectException("failed to find plan");
 
         // 更新

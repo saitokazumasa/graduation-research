@@ -33,7 +33,8 @@ public class EditPlanServiceTest {
         final var uuid = plan.getUuid().toString();
         final var email = ExampleUser.gen().getEmail();
         final var editPlanForm = ExampleEditPlanForm.gen();
-        this.editPlanService.execute(uuid, email, editPlanForm);
+        final var planViewModel = this.editPlanService.execute(uuid, email, editPlanForm);
+        assert planViewModel != null;
 
         verify(this.findOnePlanWithUserService).execute(any(), anyString());
         verify(this.plansMapper).update(any());

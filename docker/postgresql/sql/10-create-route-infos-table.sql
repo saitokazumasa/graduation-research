@@ -1,7 +1,7 @@
--- CREATE TABLE IF NOT EXISTS route_infos (
---     id                  SERIAL  PRIMARY KEY,
---     travel_mode         INT     NOT NULL,
---     travel_time_minutes INT     NOT NULL,
---     destination_id      INT     NOT NULL,
---     FOREIGN KEY (destination_id) REFERENCES destinations (id)
--- );
+CREATE TABLE IF NOT EXISTS destination_points (
+    id               SERIAL    PRIMARY KEY,
+    place_id         TEXT      NOT NULL,
+    arrival_datetime TIMESTAMP NOT NULL,
+    waypoint_list_id INT       NOT NULL,
+    FOREIGN KEY (waypoint_list_id) REFERENCES waypoint_lists (id)
+);

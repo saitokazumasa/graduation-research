@@ -88,14 +88,21 @@ const placeMapping = {
 };
 
 const initInstanceKeys = [
-    'startPlace',
-    'endPlace',
+    isSetStart ? 'startUpdatePlace' : 'startPlace',
+    isSetEnd ? 'endUpdatePlace' : 'endPlace',
     'place' + placeNum.value(),
 ];
 
 const autoCompleteList = new AutoCompleteList();
 
 function initAutoComplete() {
+    // 目的地が1つでも入力済みの時
+    if (isSetPlace) {
+        for (let i = 0; i < placeNum.value(); i++) {
+            // 更新Formの要素にも適用する
+            initInstanceKeys.push(`updatePlace${i}`);
+        }
+    }
     initInstanceKeys.forEach(key => {
         const inputElement = document.getElementById(key);
         if (!inputElement) return;
@@ -103,14 +110,4 @@ function initAutoComplete() {
         const autoComplete = new AutoComplete(inputElement);
         autoCompleteList.add(autoComplete);
     });
-    // placeNumが0の時はupdatePlaceが存在しない為処理をしない
-    if (placeNum.value() === 0) return;
-    // updatePlaceにも適応させる
-    for (let i = 0; i < placeNum.value(); i++) {
-        const inputElement = document.getElementById(`updatePlace${i}`);
-        if (!inputElement) return;
-
-        const autoComplete = new AutoComplete(inputElement);
-        autoCompleteList.add(autoComplete);
-    }
 }

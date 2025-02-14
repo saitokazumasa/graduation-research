@@ -1,6 +1,5 @@
 package com.tabisketch.google;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tabisketch.google.bean.entity.RouteMatrixAPIRequest;
 import com.tabisketch.google.constant.RouteTravelMode;
 import com.tabisketch.google.constant.TransitTravelMode;
@@ -9,12 +8,11 @@ import com.tabisketch.google.service.implement.RouteMatrixAPIService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 
-@SpringBootTest(classes = {RouteMatrixAPIService.class, RestTemplate.class, ObjectMapper.class})
+@SpringBootTest(classes = {RouteMatrixAPIService.class})
 public class RouteMatrixAPIServiceTest {
     @Autowired
     private IRouteMatrixAPIService routeMatrixAPIService;

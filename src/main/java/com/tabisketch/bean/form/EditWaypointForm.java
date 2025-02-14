@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class UpdateWaypointForm {
+public class EditWaypointForm {
     @Min(1)
     private int id;
 

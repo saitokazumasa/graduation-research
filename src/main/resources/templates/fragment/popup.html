@@ -90,11 +90,8 @@
                     <div class="mt-10 w-full">
                         <h3 class="mb-5 text-xl text-red-600 whitespace-nowrap">本当に削除してもよろしいですか？</h3>
                         <div class="flex justify-center mt-10 whitespace-nowrap">
-                            <!-- TODO:削除処理に飛ぶように変更する -->
-                            <button type="submit" class="button-primary bg-red-500 hover:bg-red-600">はい</button>
-                            <button data-modal-hide="deletePlan" type="button" class="button-secondary outline-gray-400 text-black mx-5">
-                                いいえ
-                            </button>
+                            <button data-modal-hide="deletePlan" type="button" class="button-secondary outline-gray-400 text-black mx-5">いいえ</button>
+                            <button type="button" id="deletePlanButton" class="button-primary bg-red-500 hover:bg-red-600">はい</button>
                         </div>
                     </div>
                 </div>

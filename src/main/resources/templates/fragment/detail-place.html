@@ -5,22 +5,25 @@
     <title>Title</title>
 </head>
 <body>
-<th:block th:fragment="start(startPlace)">
+<th:block th:fragment="start(place)">
     <div class="input text-center text-label max-w-md w-4/5 h-10 sm:h-12 flex justify-between items-center" id="startToggle" type="button">
-        <span class="text-[10px] sm:text-base absolute" th:text="${startPlace.startTime}">時間</span>
-        <span class="flex-1 text-base sm:text-xl text-center truncate ... px-2" th:text="${startPlace.name}">出発地点を入力する</span>
+        <span class="text-[10px] sm:text-base absolute" th:text="${#temporals.format(place.startTime, 'HH:mm')}">時間</span>
+        <span class="flex-1 text-base sm:text-xl text-center truncate ... px-2" th:text="${place.name}">出発地点を入力する</span>
         <span></span>
     </div>
-    <div class="flex justify-center items-center my-3">
-        <th:block th:replace="~{fragment/svg :: ${startPlace.toTransportation} }"/>
-        <span class="text-xs ml-5" th:text="${startPlace.toTravelTime}"></span>
+    <div class="flex justify-center items-center">
+        <th:block th:if="${place.toTransportation.name() == 'Driving'}" th:insert="~{fragment/svg :: car}"/>
+        <th:block th:if="${place.toTransportation.name() == 'Bicycling'}" th:insert="~{fragment/svg :: cycle}"/>
+        <th:block th:if="${place.toTransportation.name() == 'Transit'}" th:insert="~{fragment/svg :: train}"/>
+        <th:block th:if="${place.toTransportation.name() == 'Walking'}" th:insert="~{fragment/svg :: walk}"/>
+        <span class="text-base ml-5" th:text="${place.toTravelTime > 60 ? (place.toTravelTime / 60) + '時間' + (place.toTravelTime % 60) + '分' : place.toTravelTime + '分'}"></span>
     </div>
 </th:block>
 
-<th:block th:fragment="end(endPlace)">
+<th:block th:fragment="end(place)">
     <div class="input text-center text-label max-w-md w-4/5 h-10 sm:h-12 flex justify-between items-center" id="endToggle" type="button">
-        <span class="text-[10px] sm:text-base absolute" th:text="${endPlace.endTime}">時間</span>
-        <span class="flex-1 text-base sm:text-xl text-center truncate ... px-2" th:text="${endPlace.name}">終了地点を入力する</span>
+        <span class="text-[10px] sm:text-base absolute" th:text="${#temporals.format(place.endTime, 'HH:mm')}">時間</span>
+        <span class="flex-1 text-base sm:text-xl text-center truncate ... px-2" th:text="${place.name}">終了地点を入力する</span>
         <span></span>
     </div>
 </th:block>
@@ -28,15 +31,18 @@
 <th:block th:fragment="places(place)">
     <div class="input text-center text-label max-w-md w-4/5 flex justify-between items-center h-10 sm:h-12" type="button">
         <span class="text-[10px] sm:text-base sm:flex">
-            <span class="block" th:text="${place.startTime}">開始時間</span>
-            <span class="block" th:text="'~'+${place.endTime}">終了時間</span>
+            <span class="block" th:text="${#temporals.format(place.startTime, 'HH:mm')}">開始時間</span>
+            <span class="block" th:text="'~'+${#temporals.format(place.endTime, 'HH:mm')}">終了時間</span>
         </span>
         <span class="text-base sm:text-xl truncate ... px-2" th:text="${place.name}">目的地を追加する</span>
         <span class="text-[8px] sm:text-xs w-auto" th:text="'予算：'+${place.budget}+'円'"></span>
     </div>
     <div class="flex justify-center items-center my-3">
-        <th:block th:replace="~{fragment/svg :: ${place.toTransportation} }"/>
-        <span class="text-xs ml-5" th:text="${place.toTravelTime}"></span>
+        <th:block th:if="${place.toTransportation.name() == 'Driving'}" th:insert="~{fragment/svg :: car}"/>
+        <th:block th:if="${place.toTransportation.name() == 'Bicycling'}" th:insert="~{fragment/svg :: cycle}"/>
+        <th:block th:if="${place.toTransportation.name() == 'Transit'}" th:insert="~{fragment/svg :: train}"/>
+        <th:block th:if="${place.toTransportation.name() == 'Walking'}" th:insert="~{fragment/svg :: walk}"/>
+        <span class="text-base ml-5" th:text="${place.toTravelTime > 60 ? (place.toTravelTime / 60) + '時間' + (place.toTravelTime % 60) + '分' : place.toTravelTime + '分'}"></span>
     </div>
 </th:block>
 </body>

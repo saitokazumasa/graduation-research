@@ -29,7 +29,7 @@ public class VerifyEmailControllerTest {
         final var uuid = ExampleEmailVerificationToken.gen().getUuid().toString();
         this.mockMvc.perform(get("/mail/v/" + uuid))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/mail/complate"));
+                .andExpect(redirectedUrl("/mail/complete"));
     }
 
     @Test
@@ -38,14 +38,14 @@ public class VerifyEmailControllerTest {
         final var uuid = ExampleNewEmailVerificartionToken.gen().getUuid().toString();
         this.mockMvc.perform(get("/mail/nv/" + uuid))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/mail/complate"));
+                .andExpect(redirectedUrl("/mail/complete"));
     }
 
     @Test
     @WithMockUser
-    public void testComplate() throws Exception {
-        this.mockMvc.perform(get("/mail/complate"))
+    public void testComplete() throws Exception {
+        this.mockMvc.perform(get("/mail/complete"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("mail/complate"));
+                .andExpect(view().name("mail/complete"));
     }
 }

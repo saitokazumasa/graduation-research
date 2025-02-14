@@ -80,11 +80,11 @@ public class ResetPasswordController {
             return "reset-password/{uuid}";
         }
 
-        return "redirect:/reset-password/complate";
+        return "redirect:/reset-password/complete";
     }
 
-    @GetMapping("/complate")
-    public String complate() {
-        return "reset-password/complate";
+    @GetMapping("/complete")
+    public String complete() {
+        return "reset-password/complete";
     }
 }

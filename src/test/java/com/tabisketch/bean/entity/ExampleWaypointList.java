@@ -1,5 +1,7 @@
 package com.tabisketch.bean.entity;
 
+import com.tabisketch.constant.Transporation;
+
 public class ExampleWaypointList {
     private ExampleWaypointList() {
     }
@@ -8,6 +10,7 @@ public class ExampleWaypointList {
         return new WaypointList(
                 1,
                 1,
+                Transporation.WALKING,
                 1
         );
     }

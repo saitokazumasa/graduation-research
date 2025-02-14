@@ -92,12 +92,12 @@ public class EditUserController {
             System.err.println(e.getMessage());
         }
 
-        return "redirect:/user/edit/password/complate";
+        return "redirect:/user/edit/password/complete";
     }
 
-    @GetMapping("/password/complate")
-    public String complatePassword(final HttpSession httpSession) {
+    @GetMapping("/password/complete")
+    public String completePassword(final HttpSession httpSession) {
         httpSession.invalidate();
-        return "user/edit/password/complate";
+        return "user/edit/password/complete";
     }
 }

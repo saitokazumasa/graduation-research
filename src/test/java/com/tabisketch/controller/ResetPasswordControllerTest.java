@@ -104,7 +104,7 @@ public class ResetPasswordControllerTest {
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(model().hasNoErrors())
-                .andExpect(redirectedUrl("/reset-password/complate"));
+                .andExpect(redirectedUrl("/reset-password/complete"));
     }
 
     @ParameterizedTest
@@ -133,9 +133,9 @@ public class ResetPasswordControllerTest {
 
     @Test
     @WithMockUser
-    public void testComplate() throws Exception {
-        this.mockMvc.perform(get("/reset-password/complate"))
+    public void testComplete() throws Exception {
+        this.mockMvc.perform(get("/reset-password/complete"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("reset-password/complate"));
+                .andExpect(view().name("reset-password/complete"));
     }
 }

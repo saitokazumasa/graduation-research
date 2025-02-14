@@ -1,4 +1,4 @@
-package com.tabisketch.rest_controller;
+package com.tabisketch.controller;
 
 import com.tabisketch.bean.entity.ExamplePlan;
 import com.tabisketch.service.IDeletePlanService;
@@ -11,10 +11,11 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(DeletePlanRestController.class)
-public class DeletePlanRestControllerTest {
+@WebMvcTest(DeletePlanController.class)
+public class DeletePlanControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @MockitoBean
@@ -24,8 +25,9 @@ public class DeletePlanRestControllerTest {
     @WithMockUser
     public void testPost() throws Exception {
         final var uuid = ExamplePlan.gen().getUuid();
-        this.mockMvc.perform(post("/api/plan/delete/" + uuid)
-                .with(csrf())
-        ).andExpect(status().isOk());
+        this.mockMvc.perform(post("/plan/delete/" + uuid)
+                        .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/plan/list"));
     }
 }

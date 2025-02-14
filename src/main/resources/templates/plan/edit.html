@@ -129,12 +129,11 @@
 <th:block th:replace="~{fragment/footer :: footer}"/>
 <!-- todo: 一旦scriptもコメント化 -->
 <th:block th:replace="~{fragment/script :: svgThreeRadio}"/>
-<script src="/js/draganddrop.js"></script>
 <th:block th:replace="~{fragment/script :: flowbite}"/>
 <th:block th:replace="~{fragment/script :: map}"/>
-<!--&lt;!&ndash; todo: fragment/script :: modal の中でControllerから送られる ${placeNum} をJSで受け取る為コメント化 &ndash;&gt;-->
-<!--&lt;!&ndash;<th:block th:replace="~{fragment/script :: modal}"/>&ndash;&gt;-->
-<!--<th:block th:replace="~{fragment/script :: previewImage}"/>-->
+<!-- todo: fragment/script :: modal の中でControllerから送られる ${placeNum} をJSで受け取る為コメント化 -->
+<!--<th:block th:replace="~{fragment/script :: modal}"/>-->
+<th:block th:replace="~{fragment/script :: previewImage}"/>
 <!--<th:block th:replace="~{fragment/script :: planEdit}"/>-->
 <th:block th:replace="~{fragment/script :: googleMapsAPI}"/>
 </body>

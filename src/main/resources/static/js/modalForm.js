@@ -40,17 +40,17 @@ class ModalForm {
             element.addEventListener('submit', async(e) => await this.#updateFormSubmit(e, ModalType.updatePlaces, index)));
     }
 
-    /**
-     * おすすめ目的地のformイベントを割り当て
-     */
-    #attachRecommendFormEvent() {
-        // 各form要素に recommend という独自クラスを付与し取得する
-        document.querySelectorAll('.recommend').forEach(element => {
-            element.addEventListener('submit', async(e) => {
-                await this.#createFormSubmit(e, ModalType.recommend);
-            });
-        });
-    }
+    // /**
+    //  * おすすめ目的地のformイベントを割り当て
+    //  */
+    // #attachRecommendFormEvent() {
+    //     // 各form要素に recommend という独自クラスを付与し取得する
+    //     document.querySelectorAll('.recommend').forEach(element => {
+    //         element.addEventListener('submit', async(e) => {
+    //             await this.#createFormSubmit(e, ModalType.recommend);
+    //         });
+    //     });
+    // }
 
     /**
      * 目的地追加formの更新
@@ -128,9 +128,9 @@ class ModalForm {
 
         // modalを切り替えるターゲット変更
         modalType === ModalType.recommend ? modal.changeToggleTarget(ModalType.places, placeNum.value()) : modal.changeToggleTarget(modalType, formNum);
-        // おすすめ目的地フラグメントを呼び出し
-        await this.newAddRecommendFragment();
-        this.#attachRecommendFormEvent();
+        // // おすすめ目的地フラグメントを呼び出し
+        // await this.newAddRecommendFragment();
+        // this.#attachRecommendFormEvent();
         // 目的地追加とおすすめ目的地追加時
         if (modalType === ModalType.places || modalType === ModalType.recommend) await this.#newAddPlaceFragment();
 
@@ -170,21 +170,21 @@ class ModalForm {
         this.#setPlaceFormElement();
     }
 
-    /**
-     * おすすめ目的地フラグメントを挿入
-     */
-    async newAddRecommendFragment() {
-        // おすすめ目的地フラグメント呼び出し
-        const newFragment = new Fragment();
-        // ローディング表示を出す
-        const loading = document.getElementById('loadingDiv');
-        loading.classList.remove('hidden');
-        // オススメ目的地を取得する
-        await newFragment.initRecommendFragment();
-        newFragment.addRecommendFragment();
-        // ローディング表示を消す
-        loading.classList.add('hidden');
-    }
+    // /**
+    //  * おすすめ目的地フラグメントを挿入
+    //  */
+    // async newAddRecommendFragment() {
+    //     // おすすめ目的地フラグメント呼び出し
+    //     const newFragment = new Fragment();
+    //     // ローディング表示を出す
+    //     const loading = document.getElementById('loadingDiv');
+    //     loading.classList.remove('hidden');
+    //     // オススメ目的地を取得する
+    //     await newFragment.initRecommendFragment();
+    //     newFragment.addRecommendFragment();
+    //     // ローディング表示を消す
+    //     loading.classList.add('hidden');
+    // }
 
     /**
      * endTimeを(startTime+stayTime)に
@@ -285,9 +285,9 @@ class ModalForm {
         modal.closeModal(modalType, formNum);
         modal.changeToggleDisplay(modalType, formNum, placeId);
 
-        // おすすめ目的地フラグメントを呼び出し
-        await this.newAddRecommendFragment();
-        this.#attachRecommendFormEvent();
+        // // おすすめ目的地フラグメントを呼び出し
+        // await this.newAddRecommendFragment();
+        // this.#attachRecommendFormEvent();
 
         // modalイベントの再アタッチ
         initFlowbite();

@@ -22,7 +22,11 @@ public class DeletePlanController {
             final @PathVariable String uuid,
             final @AuthenticationPrincipal(expression = AuthenticationPrincipalExpression.EMAIL) String email
     ) {
-        this.deletePlanService.execute(uuid, email);
+        try {
+            this.deletePlanService.execute(uuid, email);
+        } catch (final Exception e) {
+            return "redirect:/plan/list";
+        }
         return "redirect:/plan/list";
     }
 }

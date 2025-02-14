@@ -31,17 +31,22 @@ public class CreatePlanController {
             final @AuthenticationPrincipal(expression = AuthenticationPrincipalExpression.EMAIL) String email,
             final Model model
     ) {
-        final Plan plan = this.createPlanService.execute(email);
-        final var editPlanForm = new EditPlanForm(
-                plan.getUuid(),
-                plan.getTitle(),
-                plan.getThumbnailPath(),
-                plan.isEditable(),
-                plan.isPubliclyViewable()
-        );
-        model.addAttribute("editPlanForm", editPlanForm);
-        model.addAttribute("createWaypointListForm", new CreateWaypointListForm());
-        return "plan/create";
+        try {
+            final Plan plan = this.createPlanService.execute(email);
+            final var editPlanForm = new EditPlanForm(
+                    plan.getUuid(),
+                    plan.getTitle(),
+                    plan.getThumbnailPath(),
+                    plan.isEditable(),
+                    plan.isPubliclyViewable()
+            );
+            model.addAttribute("editPlanForm", editPlanForm);
+            model.addAttribute("createWaypointListForm", new CreateWaypointListForm());
+            return "plan/create";
+        } catch (final Exception e) {
+            System.err.println(e.getMessage());
+            return "redirect:/plan/list";
+        }
     }
 
     @PostMapping

@@ -21,9 +21,9 @@
             //     useFerry: true,
             //     maxWalkingTime: 1
             // };
+            // initializeMaps(placeIds, travelModes, options);
+            initializeMaps();
             initAutoComplete();
-            initializeMaps(placeIds, travelModes, options);
-
             window.closePopup = function() {
                 openPopupMap(placeIds,travelModes,options);
             }
@@ -40,10 +40,6 @@
     <script src="/js/flowbite.min.js"></script>
 </th:block>
 
-<th:block th:fragment="check">
-    <script src="/js/check.js"></script>
-</th:block>
-
 <th:block th:fragment="map">
     <script src="/js/map.js"></script>
 </th:block>
@@ -57,8 +53,8 @@
     <script src="/js/modal.js"></script>
 </th:block>
 
-<th:block th:fragment="svgCheckbox">
-    <script src="/js/svgCheckbox.js"></script>
+<th:block th:fragment="svgThreeRadio">
+    <script src="/js/svgThreeRadio.js"></script>
 </th:block>
 
 <th:block th:fragment="svgRadioButton">
@@ -87,6 +83,11 @@
 
 <th:block th:fragment="packing">
     <script src="/js/packings.js"></script>
+</th:block>
+
+<th:block th:fragment="planEdit">
+    <script src="/js/editForm.js"></script>
+    <script src="/js/editButtons.js"></script>
 </th:block>
 </body>
 </html>

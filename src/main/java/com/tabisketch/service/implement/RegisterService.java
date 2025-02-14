@@ -60,4 +60,26 @@ public class RegisterService implements IRegisterService {
         final SendMailForm sendMailForm = SendMailForm.genRegisterMail(tabisketchEmail, user.getEmail(), uuid);
         this.sendMailService.execute(sendMailForm);
     }
+
+    @Override
+    @Transactional
+    public void resendEmail(String email) throws MessagingException {
+        // ユーザーをメールアドレスから取得
+        User user = this.usersMapper.selectByEmail(email);
+        if (user == null) {
+            throw new IllegalArgumentException("User not found for email: " + email);
+        }
+
+        // 新しい EmailVerificationToken を作成
+        EmailVerificationToken evToken = new EmailVerificationToken(UUID.randomUUID(), user.getId(), LocalDateTime.now());
+        int result = this.emailVerificationTokensMapper.insert(evToken);
+        if(result != 1) {
+            throw new FailedInsertException("failed to insert email verification token");
+        }
+
+        // 認証メール送信
+        final String uuid = evToken.getUuid().toString();
+        final SendMailForm sendMailForm = SendMailForm.genRegisterMail(tabisketchEmail, user.getEmail(), uuid);
+        this.sendMailService.execute(sendMailForm);
+    }
 }

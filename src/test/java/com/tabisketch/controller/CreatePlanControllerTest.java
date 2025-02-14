@@ -12,8 +12,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @WebMvcTest(CreatePlanController.class)
 public class CreatePlanControllerTest {
@@ -28,7 +28,7 @@ public class CreatePlanControllerTest {
         final var uuid = ExamplePlan.gen().getUuid().toString();
         when(this.createPlanService.execute(anyString())).thenReturn(uuid);
         mockMvc.perform(get("/plan/create"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/plan/edit/" + uuid));
+                .andExpect(status().isOk())
+                .andExpect(view().name("plan/create"));
     }
 }

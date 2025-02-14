@@ -24,21 +24,17 @@ public class CreatePlanServiceTest {
     private IUsersMapper usersMapper;
     @Mock
     private IPlansMapper plansMapper;
-    @Mock
-    private IWaypointListsMapper waypointListsMapper;
 
     @Test
     public void testExecute() {
         final var user = ExampleUser.gen();
         when(this.usersMapper.selectByEmail(anyString())).thenReturn(user);
         when(this.plansMapper.insert(any())).thenReturn(1);
-        when(this.waypointListsMapper.insert(any())).thenReturn(1);
 
         final String uuid = this.createPlanService.execute(user.getEmail());
         assert !uuid.isBlank();
 
         verify(this.usersMapper).selectByEmail(anyString());
         verify(this.plansMapper).insert(any());
-        verify(this.waypointListsMapper).insert(any());
     }
 }

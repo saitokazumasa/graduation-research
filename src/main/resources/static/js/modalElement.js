@@ -13,8 +13,8 @@ class ModalElement {
             start: document.getElementById('startModal'),
             end: document.getElementById('endModal'),
             places: document.getElementById(`placeModal${placeNum.value()}`),
-            updateStart: null,
-            updateEnd: null,
+            updateStart: isSetStart ? document.getElementById('startUpdateModal') : null,
+            updateEnd: isSetEnd ? document.getElementById('endUpdateModal') : null,
             updatePlaces: []
         };
 
@@ -25,12 +25,10 @@ class ModalElement {
         };
 
         // 既に出発地点が設定済みの時
-        if (isSetStart) this.setStartUpdateModal();
-        // 既に終了地点が設定済みの時
-        if (isSetEnd) this.setEndUpdateModal();
-        // 既に目的地が設定済みの時
         if (isSetPlace) {
-            for (let i = 0; i < placeNum.value(); i++) this.setPlacesUpdateModal(i);
+            for (let i = 0; i < placeNum.value(); i++) {
+                this.#modals.updatePlaces.push(document.getElementById(`placesUpdateModal${i}`));
+            }
         }
     }
 

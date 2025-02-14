@@ -1,6 +1,5 @@
 package com.tabisketch.controller;
 
-import com.tabisketch.bean.entity.Plan;
 import com.tabisketch.bean.form.CreateWaypointListForm;
 import com.tabisketch.bean.form.EditPlanForm;
 import com.tabisketch.constant.AuthenticationPrincipalExpression;
@@ -32,21 +31,15 @@ public class CreatePlanController {
             final Model model
     ) {
         try {
-            final Plan plan = this.createPlanService.execute(email);
-            final var editPlanForm = new EditPlanForm(
-                    plan.getUuid(),
-                    plan.getTitle(),
-                    plan.getThumbnailPath(),
-                    plan.isEditable(),
-                    plan.isPubliclyViewable()
-            );
+            final EditPlanForm editPlanForm = this.createPlanService.execute(email);
             model.addAttribute("editPlanForm", editPlanForm);
-            model.addAttribute("createWaypointListForm", new CreateWaypointListForm());
-            return "plan/create";
         } catch (final Exception e) {
             System.err.println(e.getMessage());
             return "redirect:/plan/list";
         }
+
+        model.addAttribute("createWaypointListForm", new CreateWaypointListForm());
+        return "plan/create";
     }
 
     @PostMapping

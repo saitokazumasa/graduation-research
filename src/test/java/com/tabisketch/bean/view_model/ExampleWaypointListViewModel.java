@@ -9,7 +9,7 @@ public class ExampleWaypointListViewModel {
     public static WaypointListViewModel gen() {
         return new WaypointListViewModel(
                 2,
-                Transporation.WALKING,
+                Transporation.WALK,
                 2
         );
     }

@@ -1,7 +1,9 @@
-package com.tabisketch.constant;
+package com.tabisketch.google.constant;
 
 /// 移動手段
-public enum Transporation {
+public enum RouteTravelMode {
+    /// 未指定
+    TRAVEL_MODE_UNSPECIFIED,
     /// 乗用車
     DRIVE,
     /// 自転車

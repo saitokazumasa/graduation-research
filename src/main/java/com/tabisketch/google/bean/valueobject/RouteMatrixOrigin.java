@@ -1,4 +1,4 @@
-package com.tabisketch.google.bean;
+package com.tabisketch.google.bean.valueobject;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

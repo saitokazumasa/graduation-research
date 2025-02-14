@@ -1,4 +1,4 @@
-package com.tabisketch.google.bean;
+package com.tabisketch.google.bean.valueobject;
 
 import com.tabisketch.google.constant.TollPass;
 import lombok.AllArgsConstructor;

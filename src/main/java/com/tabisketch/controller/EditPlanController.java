@@ -23,7 +23,7 @@ public class EditPlanController {
     }
 
     @GetMapping
-    public String get(final Model model) {
+    public String get(final @PathVariable String uuid, final Model model) {
         model.addAttribute("editPlanForm", new EditPlanForm());
         return "plan/edit";
     }

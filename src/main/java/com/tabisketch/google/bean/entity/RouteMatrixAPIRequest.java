@@ -31,25 +31,20 @@ public class RouteMatrixAPIRequest {
             final RouteMatrixOrigin[] origins,
             final RouteMatrixDestination[] destinations,
             final RouteTravelMode travelMode,
-            final RoutingPreference routingPreference,
             final LocalDateTime departureTime,
             final TransitPreferences transitPreferences
     ) {
         assert origins != null && origins.length >= 1;
         assert destinations != null && destinations.length >= 1;
         assert travelMode != null;
-        if (travelMode == RouteTravelMode.DRIVE) {
-            assert routingPreference != null;
-        } else {
-            assert routingPreference == null;
-        }
         assert departureTime != null;
         assert transitPreferences != null;
 
         this.origins = origins;
         this.destinations = destinations;
         this.travelMode = travelMode;
-        this.routingPreference = routingPreference;
+        if (travelMode == RouteTravelMode.DRIVE || travelMode == RouteTravelMode.TWO_WHEELER)
+            this.routingPreference = RoutingPreference.TRAFFIC_AWARE;
         this.departureTime = departureTime;
         this.transitPreferences = transitPreferences;
     }
@@ -59,7 +54,6 @@ public class RouteMatrixAPIRequest {
         private ArrayList<RouteMatrixOrigin> origins;
         private ArrayList<RouteMatrixDestination> destinations;
         private RouteTravelMode travelMode;
-        private RoutingPreference routingPreference;
         private LocalDateTime departureTime;
         private TransitPreferences transitPreferences;
 
@@ -99,7 +93,6 @@ public class RouteMatrixAPIRequest {
                     list,
                     this.destinations,
                     this.travelMode,
-                    this.routingPreference,
                     this.departureTime,
                     this.transitPreferences
             );
@@ -122,7 +115,6 @@ public class RouteMatrixAPIRequest {
                     this.origins,
                     list,
                     this.travelMode,
-                    this.routingPreference,
                     this.departureTime,
                     this.transitPreferences
             );
@@ -133,18 +125,6 @@ public class RouteMatrixAPIRequest {
                     this.origins,
                     this.destinations,
                     travelMode,
-                    this.routingPreference,
-                    this.departureTime,
-                    this.transitPreferences
-            );
-        }
-
-        public Builder setRoutingPreference(final RoutingPreference routingPreference) {
-            return new Builder(
-                    this.origins,
-                    this.destinations,
-                    this.travelMode,
-                    routingPreference,
                     this.departureTime,
                     this.transitPreferences
             );
@@ -155,7 +135,6 @@ public class RouteMatrixAPIRequest {
                     this.origins,
                     this.destinations,
                     this.travelMode,
-                    this.routingPreference,
                     departureTime,
                     this.transitPreferences
             );
@@ -171,7 +150,6 @@ public class RouteMatrixAPIRequest {
                     this.origins,
                     this.destinations,
                     this.travelMode,
-                    this.routingPreference,
                     this.departureTime,
                     transitPreferences
             );
@@ -182,7 +160,6 @@ public class RouteMatrixAPIRequest {
                     this.origins.toArray(new RouteMatrixOrigin[0]),
                     this.destinations.toArray(new RouteMatrixDestination[0]),
                     this.travelMode,
-                    this.routingPreference,
                     this.departureTime,
                     this.transitPreferences
             );

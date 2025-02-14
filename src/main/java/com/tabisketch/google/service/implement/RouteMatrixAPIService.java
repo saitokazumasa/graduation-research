@@ -23,7 +23,7 @@ public class RouteMatrixAPIService implements IRouteMatrixAPIService {
     private final String apiUrl;
     private final String apiKey;
 
-    public RouteMatrixAPIService(final @Value("${GOOGLE_MAPS_PLATFORM_API_KEY}") String apiKey) {
+    public RouteMatrixAPIService(final @Value("${google-maps-platform-api-key}") String apiKey) {
         this.restTemplate = new RestTemplate();
         this.objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
         this.apiUrl = "https://routes.googleapis.com/distanceMatrix/v2:computeRouteMatrix";

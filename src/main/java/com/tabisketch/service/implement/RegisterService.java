@@ -1,43 +1,31 @@
 package com.tabisketch.service.implement;
 
-import com.tabisketch.bean.entity.EmailVerificationToken;
 import com.tabisketch.bean.entity.User;
 import com.tabisketch.bean.form.RegisterForm;
-import com.tabisketch.bean.form.SendMailForm;
+import com.tabisketch.bean.form.SendVerifyEmailMailFrom;
 import com.tabisketch.exception.FailedInsertException;
-import com.tabisketch.mapper.IEmailVerificationTokensMapper;
 import com.tabisketch.mapper.IUsersMapper;
 import com.tabisketch.service.IRegisterService;
-import com.tabisketch.service.ISendMailService;
+import com.tabisketch.service.ISendVerifyEmailMailService;
 import jakarta.mail.MessagingException;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
-
 @Service
 public class RegisterService implements IRegisterService {
     private final IUsersMapper usersMapper;
-    private final IEmailVerificationTokensMapper emailVerificationTokensMapper;
-    private final ISendMailService sendMailService;
+    private final ISendVerifyEmailMailService sendVerifyEmailMailService;
     private final PasswordEncoder passwordEncoder;
-    private final String tabisketchEmail;
 
     public RegisterService(
             final IUsersMapper usersMapper,
-            final IEmailVerificationTokensMapper emailVerificationTokensMapper,
-            final ISendMailService sendMailService,
-            final PasswordEncoder passwordEncoder,
-            final @Value("${spring.mail.username}") String tabisketchEmail
+            final ISendVerifyEmailMailService sendVerifyEmailMailService,
+            final PasswordEncoder passwordEncoder
     ) {
         this.usersMapper = usersMapper;
-        this.emailVerificationTokensMapper = emailVerificationTokensMapper;
-        this.sendMailService = sendMailService;
+        this.sendVerifyEmailMailService = sendVerifyEmailMailService;
         this.passwordEncoder = passwordEncoder;
-        this.tabisketchEmail = tabisketchEmail;
     }
 
     @Override
@@ -51,35 +39,8 @@ public class RegisterService implements IRegisterService {
         final boolean wasInsertUser = this.usersMapper.insert(user) == 1;
         if (!wasInsertUser) throw new FailedInsertException("failed to insert user");
 
-        final var evToken = new EmailVerificationToken(UUID.randomUUID(), user.getId(), LocalDateTime.now());
-        final boolean wasInsertEVToken = this.emailVerificationTokensMapper.insert(evToken) == 1;
-        if (!wasInsertEVToken) throw new FailedInsertException("failed to insert email verification token");
-
-        // 認証メールを送信
-        final String uuid = evToken.getUuid().toString();
-        final SendMailForm sendMailForm = SendMailForm.genRegisterMail(tabisketchEmail, user.getEmail(), uuid);
-        this.sendMailService.execute(sendMailForm);
-    }
-
-    @Override
-    @Transactional
-    public void resendEmail(String email) throws MessagingException {
-        // ユーザーをメールアドレスから取得
-        User user = this.usersMapper.selectByEmail(email);
-        if (user == null) {
-            throw new IllegalArgumentException("User not found for email: " + email);
-        }
-
-        // 新しい EmailVerificationToken を作成
-        EmailVerificationToken evToken = new EmailVerificationToken(UUID.randomUUID(), user.getId(), LocalDateTime.now());
-        int result = this.emailVerificationTokensMapper.insert(evToken);
-        if(result != 1) {
-            throw new FailedInsertException("failed to insert email verification token");
-        }
-
         // 認証メール送信
-        final String uuid = evToken.getUuid().toString();
-        final SendMailForm sendMailForm = SendMailForm.genRegisterMail(tabisketchEmail, user.getEmail(), uuid);
-        this.sendMailService.execute(sendMailForm);
+        final var sendVerifyEmailMailForm = new SendVerifyEmailMailFrom(form.getEmail());
+        this.sendVerifyEmailMailService.execute(sendVerifyEmailMailForm);
     }
 }

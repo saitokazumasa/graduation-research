@@ -5,6 +5,4 @@ import jakarta.mail.MessagingException;
 
 public interface IRegisterService {
     void execute(final RegisterForm form) throws MessagingException;
-
-    void resendEmail(String email) throws Exception;
 }

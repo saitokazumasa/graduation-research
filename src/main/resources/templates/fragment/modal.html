@@ -36,6 +36,7 @@
                     </button>
                 </div>
                 <!-- Modal body -->
+                <!-- todo: 親htmlで呼び出すobjectの引数名を合わせる 出発地点を登録するCreate○○Formを指定 -->
                 <form class="p-4 sm:p-5" th:object="${startPlaceForm}" id="startPlaceForm">
                     <span id="startError" class="text-danger text-sm mb-2 flex justify-center"></span>
                     <div class="space-y-4 w-full">
@@ -43,6 +44,7 @@
                             <label class="block mb-2" for="startPlace">出発地点<span class="ml-2 text-sm text-danger">必須</span></label>
                             <input th:field="*{name}" class="w-full input focus:ring-0" id="startPlace" name="startPlace" type="text"/>
                         </div>
+                        <!-- todo: 呼び出すinput:fieldをオブジェクトに合わせる -->
                         <input th:field="*{googlePlaceId}" class="hidden" id="startPlaceId" type="text"/>
                         <input th:field="*{latitude}"  class="hidden" id="startLat" type="text"/>
                         <input th:field="*{longitude}" class="hidden" id="startLng" type="text"/>
@@ -99,9 +101,11 @@
                     </button>
                 </div>
                 <!-- Modal body -->
+                <!-- todo: 親htmlで呼び出すobjectの引数名を合わせる 終了地点を登録するCreate○○Formを指定 -->
                 <form class="p-4 sm:p-5" th:object="${endPlaceForm}" id="endPlaceForm">
                     <span id="endError" class="text-danger text-sm mb-2 flex justify-center"></span>
                     <div class="space-y-4 w-full">
+                        <!-- todo: 呼び出すinput:fieldをオブジェクトに合わせる -->
                         <div>
                             <label class="block mb-2" for="endPlace">終了地点<span class="ml-2 text-sm text-danger">必須</span></label>
                             <input th:field="*{name}" class="w-full input focus:ring-0" id="endPlace" type="text"/>
@@ -166,9 +170,11 @@
                     </button>
                 </div>
                 <!-- Modal body -->
+                <!-- todo: 親htmlで呼び出すobjectの引数名を合わせる 出発地点を登録するCreate○○Formを指定 -->
                 <form class="p-4 sm:p-5" th:id="'placeForm' + ${num}">
                     <span th:id="'placeError' + ${num}" class="text-danger text-sm mb-2 flex justify-center"></span>
                     <div class="space-y-4 w-full">
+                        <!-- todo: 呼び出すinput:fieldをオブジェクトに合わせる -->
                         <input name="googlePlaceId" th:value="${placeForm.googlePlaceId}" class="hidden" th:id="'placeId' + ${num}" type="text"/>
                         <input name="latitude" th:value="${placeForm.latitude}" class="hidden" th:id="'placeLat' + ${num}" type="text"/>
                         <input name="longitude" th:value="${placeForm.longitude}" class="hidden" th:id="'placeLng' + ${num}" type="text"/>
@@ -190,6 +196,7 @@
                                     <span>円</span>
                                 </div>
                             </div>
+                            <!-- todo: endTime を startTime+stayTimeにする処理がある modalForm.js:#setEndTime -->
                             <div class="w-1/2 pl-3">
                                 <label class="block mb-2" th:for="'stayTime' + ${num}">滞在時間</label>
                                 <div class="flex items-end">

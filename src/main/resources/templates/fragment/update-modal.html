@@ -8,14 +8,17 @@
 
 <th:block th:fragment="startUpdateToggle(updateStartForm, isCreateRoute)">
     <!-- Modal toggle -->
+    <!-- todo: 出発地点更新用Formを受け取って 場所名、開始時間の表示 -->
     <button class="input text-center text-label max-w-md w-4/5 h-10 sm:h-12 flex justify-between items-center"
             data-modal-target="startUpdateModal" data-modal-toggle="startUpdateModal" id="startUpdateToggle" type="button">
         <span class="text-[10px] sm:text-base" th:text="${updateStartForm.startTime}"></span>
         <span class="flex-1 text-base sm:text-xl truncate ... px-2" th:text="${updateStartForm.name}">出発地点を入力する</span>
         <span></span>
     </button>
+    <!-- todo: 経路生成済みの時は移動手段・時間の表示 -->
     <div class="flex justify-center" th:classappend="${isCreateRoute ? '' : 'hidden'}" id="startTransportationData">
         <span class="inline-flex justify-between items-center space-x-4 w-48">
+            <!-- todo: 移動手段のenumの比較 -->
             <th:block th:if="${updateStartForm.toTransportation.name() == 'Driving'}" th:insert="~{fragment/svg :: car}"/>
             <th:block th:if="${updateStartForm.toTransportation.name() == 'Bicycling'}" th:insert="~{fragment/svg :: cycle}"/>
             <th:block th:if="${updateStartForm.toTransportation.name() == 'Transit'}" th:insert="~{fragment/svg :: train}"/>
@@ -23,6 +26,7 @@
             <span th:text="${updateStartForm.toTravelTime}"></span>
         </span>
         <!-- todo: 移動手段の変更 selectedにしてもいいかも -->
+        <!--       参考:https://flowbite.com/docs/forms/select/#select-input-example -->
     </div>
 </th:block>
 
@@ -48,6 +52,7 @@
                     </button>
                 </div>
                 <!-- Modal body -->
+                <!-- todo: 親htmlで呼び出すobjectの引数名を合わせる 出発地点を更新するUpdate○○Formを指定 -->
                 <form class="p-4 sm:p-5" th:object="${updateStartForm}" id="updateStartForm">
                     <span id="updateStartError" class="text-danger text-sm mb-2 flex justify-center"></span>
                     <div class="space-y-4 w-full">
@@ -89,6 +94,7 @@
 </th:block>
 
 <th:block th:fragment="endUpdateToggle(updateEndForm)">
+    <!-- todo: 終了地点更新Formを受け取って、場所名、時間の表示 -->
     <button class="input text-center text-label max-w-md w-4/5 h-10 sm:h-12 flex justify-center items-center"
             data-modal-target="endUpdateModal" data-modal-toggle="endUpdateModal" id="endUpdateToggle" type="button">
         <span class="text-[10px] sm:text-base" th:text="${updateEndForm.endTime}"></span>
@@ -117,6 +123,7 @@
                     </button>
                 </div>
                 <!-- Modal body -->
+                <!-- todo: 親htmlで呼び出すobjectの引数名を合わせ 終了地点を更新するUpdate○○Formを指定 -->
                 <form class="p-4 sm:p-5" th:object="${updateEndForm}" id="updateEndForm">
                     <span id="updateEndError" class="text-danger text-sm mb-2 flex justify-center"></span>
                     <div class="space-y-4 w-full">
@@ -150,6 +157,7 @@
 <th:block th:fragment="placesUpdateToggle(num, updatePlaceForm, isCreateRoute)">
     <div class="flex items-center">
         <!-- Modal toggle -->
+        <!-- todo: 目的地更新用Formを受け取って 場所名、開始時間～終了時間、予算の表示 -->
         <button class="input text-center text-label max-w-md w-4/5 flex justify-between items-center h-10 sm:h-12"
                 th:data-modal-target="'placesUpdateModal' + ${num}" th:data-modal-toggle="'placesUpdateModal' + ${num}"
                 th:id="'placesUpdateToggle' + ${num}" type="button">
@@ -165,8 +173,10 @@
         </button>
     </div>
     <!-- 経路生成後に表示 -->
+    <!-- todo: 経路生成済みの時は移動手段・時間の表示 -->
     <div class="flex justify-center" th:classappend="${isCreateRoute ? '' : 'hidden'}" th:id="${'placeTransportationData' + num}">
         <span class="inline-flex justify-between items-center space-x-4 w-48">
+            <!-- todo: 移動手段のenumの比較 -->
             <th:block th:if="${updatePlaceForm.toTransportation.name() == 'Driving'}" th:insert="~{fragment/svg :: car}"/>
             <th:block th:if="${updatePlaceForm.toTransportation.name() == 'Bicycling'}" th:insert="~{fragment/svg :: cycle}"/>
             <th:block th:if="${updatePlaceForm.toTransportation.name() == 'Transit'}" th:insert="~{fragment/svg :: train}"/>
@@ -174,6 +184,7 @@
             <span th:text="${updatePlaceForm.toTravelTime}"></span>
         </span>
         <!-- todo: 移動手段の変更 selectedにしてもいいかも -->
+        <!--       参考:https://flowbite.com/docs/forms/select/#select-input-example -->
     </div>
 </th:block>
 
@@ -199,13 +210,15 @@
                     </button>
                 </div>
                 <!-- Modal body -->
+                <!-- todo: 親htmlで呼び出すobjectの引数名を合わせる 目的地を更新するUpdate○○Formを指定 -->
                 <form class="p-4 sm:p-5" th:id="'updatePlaceForm'+${num}">
                     <span th:id="'updatePlaceError'+${num}" class="text-danger text-sm mb-2 flex justify-center"></span>
                     <div class="space-y-4 w-full">
+                        <!-- todo: オブジェクトとfieldを合わせる -->
                         <input name="googlePlaceId" th:value="${updatePlaceForm.googlePlaceId}" th:id="'placeUpdatePlaceId'+${num}" class="hidden" type="text"/>
                         <input name="latitude" th:value="${updatePlaceForm.latitude}" th:id="'placeUpdateLat'+${num}" class="hidden" type="text"/>
                         <input name="longitude" th:value="${updatePlaceForm.longitude}" th:id="'placeUpdateLng'+${num}" class="hidden" type="text"/>
-                        <input name="id" th:value="${updatePlaceForm.id}" th:id="'id'+${num}" class="hidden" type="number">
+                        <input th:value="${updatePlaceForm.id}" th:id="'id'+${num}" class="hidden" type="number">
                         <input name="dayId" th:value="${updatePlaceForm.dayId}" class="hidden" type="number"/>
                         <input name="startTime" th:value="${updatePlaceForm.startTime}" th:id="'placeUpdateStartTime'+${num}" class="hidden" type="time"/>
                         <input name="endTime" th:value="${updatePlaceForm.endTime}" th:id="'placeUpdateEndTime'+${num}" class="hidden" type="time"/>

@@ -1,8 +1,7 @@
-package com.tabisketch.service;
+package com.tabisketch.google;
 
 import com.tabisketch.google.bean.entity.RouteMatrixAPIRequest;
 import com.tabisketch.google.constant.RouteTravelMode;
-import com.tabisketch.google.constant.RoutingPreference;
 import com.tabisketch.google.constant.TransitTravelMode;
 import com.tabisketch.google.service.implement.RouteMatrixAPIService;
 import org.junit.jupiter.api.Test;
@@ -29,12 +28,12 @@ public class RouteMatrixAPIServiceTest {
                 // 練馬区立美術館
                 .addDestination("ChIJRwH1ILHtGGARbxZaKQyO3HQ")
                 .setTravelMode(RouteTravelMode.WALK)
-//                .setRoutingPreference(RoutingPreference.TRAFFIC_AWARE)
                 .setDepartureTime(LocalDateTime.now())
                 .setTransitPreferences(TransitTravelMode.TRANSIT_TRAVEL_MODE_UNSPECIFIED)
                 .build();
 
-        final var response = this.routeMatrixAPIService.execute(request);
-        System.out.println(response);
+        // NOTE: RouteMatrixAPIテストをしたい場合は、以下のコメントアウトを解除して実行する
+//        final var response = this.routeMatrixAPIService.execute(request);
+//        System.out.println(response);
     }
 }

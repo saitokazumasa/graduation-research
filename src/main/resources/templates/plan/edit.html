@@ -35,13 +35,7 @@
                 <section class="sm:w-1/2 w-full">
                     <!-- 日付の表示 -->
                     <div class="flex items-end space-x-0 pb-[0.625rem] border-b-2 mt-6">
-                        <div th:each="index : ${#numbers.sequence(1, travelDays)}">
-                            <a th:href="@{/plan/edit/__${createWaypointListForm.planUUID}__(day=__${index}__)}"
-                               th:classappend="${index == selectedDay} ? 'pt-5 pb-3 sm:px-6 lg:px-12 px-8 bg-green-600 text-white text-lg h-12' : 'pt-3 pb-3 sm:px-4 lg:px-10 px-6 bg-green-400 text-white'"
-                               class="rounded-t-md text-center items-center cursor-pointer">
-                                <span th:text="${index} + '日目'"></span>
-                            </a>
-                        </div>
+                        <span th:text="${selectedDay} + '日目'" class="text-4xl"></span>
                     </div>
                     <!-- 各種地点の表示 -->
                     <div class="flex flex-col mt-6 mb-10">

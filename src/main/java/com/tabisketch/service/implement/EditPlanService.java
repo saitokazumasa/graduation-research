@@ -2,7 +2,6 @@ package com.tabisketch.service.implement;
 
 import com.tabisketch.bean.entity.Plan;
 import com.tabisketch.bean.form.EditPlanForm;
-import com.tabisketch.bean.view_model.PlanViewModel;
 import com.tabisketch.exception.FailedSelectException;
 import com.tabisketch.exception.FailedUpdateException;
 import com.tabisketch.mapper.IPlansMapper;
@@ -20,7 +19,7 @@ public class EditPlanService implements IEditPlanService {
 
     @Override
     @Transactional
-    public PlanViewModel execute(final String email, final EditPlanForm form) {
+    public void execute(final String email, final EditPlanForm form) {
         // プラン取得
         final Plan plan = this.plansMapper.selectByUUIDAndEmail(form.getUuid(), email);
         if (plan == null) throw new FailedSelectException("failed to find plan");
@@ -37,8 +36,5 @@ public class EditPlanService implements IEditPlanService {
         );
         final boolean wasUpdatedPlan = this.plansMapper.update(newPlan) == 1;
         if (!wasUpdatedPlan) throw new FailedUpdateException("failed to update plan");
-
-        // データ加工
-        return new PlanViewModel(newPlan);
     }
 }

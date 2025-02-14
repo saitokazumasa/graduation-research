@@ -1,28 +1,43 @@
 class ModalForm {
     #startFormElement;
-    placeFormElement = [];
+    #placeFormElement;
     #endFormElement;
     #startUpdateFormElement;
     #endUpdateFormElement;
     #placesUpdateFormElement = [];
 
     constructor() {
-        this.#startFormElement = document.getElementById('startPlaceForm');
-        for (let i = 0; i <= placeNum.value(); i++) {
-            this.placeFormElement.push(document.getElementById(`placeForm${i}`));
+        // todo: formのkeyからエレメント取得
+        this.#startFormElement = !isSetStart ? document.getElementById('startPlaceForm') : null;
+        this.#startUpdateFormElement = isSetStart ? document.getElementById('startUpdatePlace') : null;
+
+        this.#placeFormElement = document.getElementById(`placeForm${placeNum.value()}`);
+        // すでに目的地が登録されているとき
+        if (isSetPlace) {
+            for (let i = 0; i < placeNum.value(); i++) {
+                this.#placesUpdateFormElement.push(document.getElementById(`updatePlaceForm${i}`));
+            }
         }
-        this.#endFormElement = document.getElementById('endPlaceForm');
+
+        this.#endFormElement = !isSetEnd ? document.getElementById('endPlaceForm') : null;
+        this.#endUpdateFormElement = isSetEnd ? document.getElementById('endUpdatePlace') : null;
+
         this.initFormEvent();
     }
 
     /**
-     * #startFormElement placeFormElement #endFormElementにsubmitイベント割り当て
+     * 各formにsubmitイベントの割り当て
      */
     initFormEvent() {
-        if (this.#startFormElement) this.#startFormElement.addEventListener('submit', (e) => this.#createFormSubmit(e, ModalType.start) );
-        if (this.#endFormElement) this.#endFormElement.addEventListener('submit', (e) => this.#createFormSubmit(e, ModalType.end) );
-        if (this.placeFormElement) this.placeFormElement.forEach((element) =>
-            element.addEventListener('submit', async(e) => await this.#createFormSubmit(e, ModalType.places)));
+        if (this.#startFormElement) this.#startFormElement.addEventListener('submit', (e) => this.#createFormSubmit(e, ModalType.start));
+        if (this.#startUpdateFormElement) this.#startUpdateFormElement.addEventListener('submit', (e) => this.#updateFormSubmit(e, ModalType.updateStart));
+
+        if (this.#endFormElement) this.#endFormElement.addEventListener('submit', (e) => this.#createFormSubmit(e, ModalType.end));
+        if (this.#endUpdateFormElement) this.#endUpdateFormElement.addEventListener('submit', (e) => this.#updateFormSubmit(e, ModalType.updateEnd));
+
+        if (this.#placeFormElement) this.#placeFormElement.addEventListener('submit', async(e) => await this.#createFormSubmit(e, ModalType.places));
+        if (this.#placesUpdateFormElement) this.#placesUpdateFormElement.forEach((element, index) =>
+            element.addEventListener('submit', async(e) => await this.#updateFormSubmit(e, ModalType.updatePlaces, index)));
     }
 
     /**
@@ -37,10 +52,12 @@ class ModalForm {
         });
     }
 
-    #addPlaceFormElement(num) {
-        this.placeFormElement.push(document.getElementById(`placeForm${num}`));
-        this.placeFormElement[num].addEventListener('submit', async(e) =>
-            await this.#createFormSubmit(e, ModalType.places));
+    /**
+     * 目的地追加formの更新
+     */
+    #setPlaceFormElement() {
+        this.#placeFormElement = document.getElementById(`placeForm${placeNum.value()}`);
+        this.#placeFormElement.addEventListener('submit', async(e) => await this.#createFormSubmit(e, ModalType.places));
     }
 
     /**
@@ -148,9 +165,9 @@ class ModalForm {
 
         // form項番を増やす
         placeNum.increment();
-        modal.addPlacesElement();
+        modal.setPlaceElement();
         // 追加した目的地フラグメントを変数に入れる
-        this.#addPlaceFormElement(placeNum.value());
+        this.#setPlaceFormElement();
     }
 
     /**
@@ -249,6 +266,7 @@ class ModalForm {
             const updateNameInput = document.getElementById(`updatePlace${formNum}`);
             formData.append(updateNameInput.name, updateNameInput.value);
             this.#setEndTime(formNum, formData, modalType);
+            // idをセット
             const id = document.getElementById(`id${formNum}`);
             formData.set('id', id.value);
         }

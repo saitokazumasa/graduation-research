@@ -7,16 +7,12 @@ class ModalElement {
      * トグルボタンを格納するオブジェクト
      */
     #toggleButtons;
-    /**
-     * クローズボタンを格納するオブジェクト
-     */
-    #closeButtons;
 
     constructor() {
         this.#modals = {
             start: document.getElementById('startModal'),
             end: document.getElementById('endModal'),
-            places: [document.getElementById(`placeModal${placeNum.value()}`)],
+            places: document.getElementById(`placeModal${placeNum.value()}`),
             updateStart: null,
             updateEnd: null,
             updatePlaces: []
@@ -25,30 +21,25 @@ class ModalElement {
         this.#toggleButtons = {
             start: document.getElementById('startToggle'),
             end: document.getElementById('endToggle'),
-            places: [document.getElementById(`placeToggleBtn${placeNum.value()}`)],
+            places: document.getElementById(`placeToggleBtn${placeNum.value()}`),
         };
 
-        this.#closeButtons = {
-            start: document.getElementById('startClose'),
-            end: document.getElementById('endClose'),
-            places: [document.getElementById(`placeCloseBtn${placeNum.value()}`)],
-            updateStart: null,
-            updateEnd: null,
-            updatePlaces: []
-        };
+        // 既に出発地点が設定済みの時
+        if (isSetStart) this.setStartUpdateModal();
+        // 既に終了地点が設定済みの時
+        if (isSetEnd) this.setEndUpdateModal();
+        // 既に目的地が設定済みの時
+        if (isSetPlace) {
+            for (let i = 0; i < placeNum.value(); i++) this.setPlacesUpdateModal(i);
+        }
     }
 
     /**
      * 目的地のelementを配列に追加・autocomplete適用
      */
-    addPlacesElement() {
-        const modal = document.getElementById(`placeModal${placeNum.value()}`);
-        const toggleButton = document.getElementById(`placeToggleBtn${placeNum.value()}`);
-        const closeButton = document.getElementById(`placeCloseBtn${placeNum.value()}`);
-
-        this.#modals.places.push(modal);
-        this.#toggleButtons.places.push(toggleButton);
-        this.#closeButtons.places.push(closeButton);
+    setPlaceElement() {
+        this.#modals.places = document.getElementById(`placeModal${placeNum.value()}`);
+        this.#toggleButtons.places = document.getElementById(`placeToggleBtn${placeNum.value()}`);
 
         // autocomplete適用
         this.#setAutoComplete(document.getElementById(`place${placeNum.value()}`));
@@ -60,8 +51,8 @@ class ModalElement {
      * @param num formNum
      * @returns {Modal}
      */
-    getModal(modalType, num = null) {
-        return num !== null ? new Modal(this.#modals[modalType][num]) : new Modal(this.#modals[modalType]);
+    #getModal(modalType, num = null) {
+        return num !== null && modalType !== ModalType.places ? new Modal(this.#modals[modalType][num]) : new Modal(this.#modals[modalType]);
     }
 
     /**
@@ -70,7 +61,7 @@ class ModalElement {
      * @param num formNum
      * @returns {*}
      */
-    getToggleBtn(modalType, num = null) {
+    #getToggleBtn(modalType, num = null) {
         if (modalType.startsWith('update')) modalType = modalType.replace('update', '').toLowerCase();
         return num !== null ? this.#toggleButtons[modalType][num] : this.#toggleButtons[modalType];
     }
@@ -102,7 +93,7 @@ class ModalElement {
             } catch (error) {
                 console.error(error);
             }
-            const toggleBtn = this.getToggleBtn(ModalType.places, formNum);
+            const toggleBtn = this.#getToggleBtn(ModalType.places, formNum);
             toggleBtn.classList.add('hidden'); // Modal表示のボタンを隠す
             deleteBtn.classList.add('hidden'); // ✕ボタンを隠す
         });
@@ -113,7 +104,6 @@ class ModalElement {
      */
     setStartUpdateModal() {
         this.#modals.updateStart = document.getElementById('startUpdateModal');
-        this.#closeButtons.updateStart = document.getElementById('startUpdateClose');
 
         // autocomplete適用
         this.#setAutoComplete(document.getElementById('startUpdatePlace'));
@@ -124,7 +114,6 @@ class ModalElement {
      */
     setEndUpdateModal() {
         this.#modals.updateEnd = document.getElementById('endUpdateModal');
-        this.#closeButtons.updateEnd = document.getElementById('endUpdateClose');
 
         // autocomplete適用
         this.#setAutoComplete(document.getElementById('endUpdatePlace'));
@@ -135,7 +124,6 @@ class ModalElement {
      */
     setPlacesUpdateModal(num) {
         this.#modals.updatePlaces.push(document.getElementById(`placesUpdateModal${num}`));
-        this.#closeButtons.updatePlaces.push(document.getElementById(`placesUpdateClose${num}`));
 
         // autocomplete適用
         this.#setAutoComplete(document.getElementById(`updatePlace${num}`));
@@ -158,15 +146,15 @@ class ModalElement {
     closeModal(modalType, num = null) {
         const modal = modalType === ModalType.recommend
             ? new Modal(document.getElementById(`recommendModal${num}`))
-            : this.getModal(modalType, num);
+            : this.#getModal(modalType, num);
         modal.hide();
     }
 
     /**
-     * modalを消す
+     * modalFormを消す（目的地追加時、目的地の追加toggleで表示してたmodalを）
      */
     deleteModal() {
-        const modal = this.getModal(ModalType.places, placeNum.value());
+        const modal = this.#getModal(ModalType.places, placeNum.value());
         modal.destroyAndRemoveInstance();
     }
 
@@ -257,7 +245,7 @@ class ModalElement {
         if (!stayTimeInput.value) stayTimeSpan.textContent = '滞在時間：30分';
         else stayTimeSpan.textContent = '滞在時間：' + stayTimeInput.value + '分';
         // 緑色の枠線をけす
-        const toggleBtn = this.getToggleBtn(ModalType.places, formNum);
+        const toggleBtn = this.#getToggleBtn(ModalType.places, formNum);
         toggleBtn.classList.remove('border-interactive');
 
         this.#displayDeleteButton(formNum, placeId);
@@ -265,12 +253,11 @@ class ModalElement {
 
     /**
      * 開くModalをUpdateFormに切り替える
-     * createのFormを削除
      * @param modalType {String}
      * @param num
      */
     changeToggleTarget(modalType, num = null) {
-        const toggleBtn = this.getToggleBtn(modalType, num);
+        const toggleBtn = this.#getToggleBtn(modalType, num);
         // '○○UpdateModal' にターゲットを変える
         const newTarget = num !== null ? `${modalType}UpdateModal${num}` : `${modalType}UpdateModal`;
         // data-modal-target data-modal-toggleを変更

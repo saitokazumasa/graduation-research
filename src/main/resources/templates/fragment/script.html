@@ -46,7 +46,10 @@
 
 <th:block th:fragment="modal">
     <script th:inline="javascript">
-        const initialPlaceNum = /*[[${placeNum}]]*/0;
+        const initialPlaceNum = /*[[${placeNum}]]*/0; // 目的地の個数
+        const isSetStart = /*[[${isSetStart}]]*/false; // 出発地点が既に登録されているか
+        const isSetEnd = /*[[${isSetEnd}]]*/false; // 終了地点が既に登録されているか
+        const isSetPlace = /*[[${isSetPlace}]]*/false; // 目的地が既に登録されているか
     </script>
     <script src="/js/autocomplete.js"></script>
     <script src="/js/errorMessage.js"></script>

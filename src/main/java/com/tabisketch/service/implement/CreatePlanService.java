@@ -2,6 +2,7 @@ package com.tabisketch.service.implement;
 
 import com.tabisketch.bean.entity.Plan;
 import com.tabisketch.bean.entity.User;
+import com.tabisketch.bean.form.EditPlanForm;
 import com.tabisketch.exception.FailedInsertException;
 import com.tabisketch.exception.FailedSelectException;
 import com.tabisketch.mapper.IPlansMapper;
@@ -27,7 +28,7 @@ public class CreatePlanService implements ICreatePlanService {
 
     @Override
     @Transactional
-    public Plan execute(final String email) {
+    public EditPlanForm execute(final String email) {
         // ユーザー取得
         final User user = this.usersMapper.selectByEmail(email);
         if (user == null) throw new FailedSelectException("failed to find user");
@@ -37,6 +38,8 @@ public class CreatePlanService implements ICreatePlanService {
         final boolean wasInsertUser = this.plansMapper.insert(plan) == 1;
         if (!wasInsertUser) throw new FailedInsertException("failed to insert plan");
 
-        return this.plansMapper.selectByUUIDAndEmail(plan.getUuid(), email);
+        // 作成したプランを加工してリターン
+        final var created = this.plansMapper.selectByUUIDAndEmail(plan.getUuid(), email);
+        return new EditPlanForm(created);
     }
 }

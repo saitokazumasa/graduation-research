@@ -1,5 +1,6 @@
 package com.tabisketch.bean.form;
 
+import com.tabisketch.bean.entity.Plan;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -23,4 +24,12 @@ public class EditPlanForm {
 
     private boolean editable;
     private boolean publiclyViewable;
+
+    public EditPlanForm(final Plan plan) {
+        this.uuid = plan.getUuid();
+        this.title = plan.getTitle();
+        this.thumbnailPath = plan.getThumbnailPath();
+        this.publiclyViewable = plan.isPubliclyViewable();
+        this.editable = plan.isEditable();
+    }
 }

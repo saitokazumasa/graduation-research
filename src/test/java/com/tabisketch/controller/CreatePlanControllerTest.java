@@ -36,8 +36,8 @@ public class CreatePlanControllerTest {
     @Test
     @WithMockUser
     public void testGet() throws Exception {
-        final var plan = ExamplePlan.gen();
-        when(this.createPlanService.execute(anyString())).thenReturn(plan);
+        final var editPlanForm = ExampleEditPlanForm.gen();
+        when(this.createPlanService.execute(anyString())).thenReturn(editPlanForm);
         mockMvc.perform(get("/plan/create"))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("editPlanForm"))

@@ -3,7 +3,6 @@ package com.tabisketch.service.implement;
 import com.tabisketch.bean.entity.Plan;
 import com.tabisketch.bean.entity.WaypointList;
 import com.tabisketch.bean.form.CreateWaypointListForm;
-import com.tabisketch.bean.view_model.WaypointListViewModel;
 import com.tabisketch.constant.Transporation;
 import com.tabisketch.exception.FailedInsertException;
 import com.tabisketch.exception.FailedSelectException;
@@ -28,7 +27,7 @@ public class CreateWaypointListService implements ICreateWaypointListService {
 
     @Override
     @Transactional
-    public WaypointListViewModel execute(final String email, final CreateWaypointListForm form) {
+    public WaypointList execute(final String email, final CreateWaypointListForm form) {
         // プラン取得
         final Plan plan = this.plansMapper.selectByUUIDAndEmail(form.getPlanUUID(), email);
         if (plan == null) throw new FailedSelectException("failed to find plan");
@@ -42,7 +41,6 @@ public class CreateWaypointListService implements ICreateWaypointListService {
         final WaypointList created = this.waypointListsMapper.selectByIdAndEmail(waypointList.getId(), email);
         if (created == null) throw new FailedSelectException("failed to find waypointList");
 
-        // データ加工
-        return new WaypointListViewModel(created);
+        return created;
     }
 }

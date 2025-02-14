@@ -29,8 +29,7 @@ public class EditPlanServiceTest {
 
         final var email = ExampleUser.gen().getEmail();
         final var editPlanForm = ExampleEditPlanForm.gen();
-        final var planViewModel = this.editPlanService.execute(email, editPlanForm);
-        assert planViewModel != null;
+        this.editPlanService.execute(email, editPlanForm);
 
         verify(this.plansMapper).selectByUUIDAndEmail(any(), anyString());
         verify(this.plansMapper).update(any());

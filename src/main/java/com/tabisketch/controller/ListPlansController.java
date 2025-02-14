@@ -1,6 +1,6 @@
 package com.tabisketch.controller;
 
-import com.tabisketch.bean.view_model.PlanViewModel;
+import com.tabisketch.bean.entity.Plan;
 import com.tabisketch.constant.AuthenticationPrincipalExpression;
 import com.tabisketch.service.IListPlanService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,7 +22,7 @@ public class ListPlansController {
 
     @GetMapping
     public String get(final @AuthenticationPrincipal(expression = AuthenticationPrincipalExpression.EMAIL) String email, final Model model) {
-        final List<PlanViewModel> planList = this.listPlanService.execute(email);
+        final List<Plan> planList = this.listPlanService.execute(email);
         model.addAttribute("planList", planList);
         return "plan/list";
     }

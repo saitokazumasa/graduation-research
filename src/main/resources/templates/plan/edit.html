@@ -21,9 +21,7 @@
             <div class="flex">
                 <span class="inline-block h-12 w-12 my-auto ml-8"></span>
                 <div class="sm:border-b-2 border-b w-1/2 text-center mx-auto my-10">
-                    <!-- todo: th:valueに editPlanForm.title を使う 下のコメントアウトしてるやつ -->
-                    <input type="text" name="title" value="タイトルを入力" class="w-full sm:text-3xl text-xl text-center border-none">
-<!--                    <input type="text" name="title" form="editPlanForm" th:value="${editPlanForm.title}" placeholder="タイトルを入力してください" class="w-full sm:text-3xl text-xl text-center border-none">-->
+                    <input type="text" name="title" form="editPlanForm" th:value="${editPlanForm.title}" placeholder="タイトルを入力してください" class="w-full sm:text-3xl text-xl text-center border-0">
                 </div>
                 <button onclick="openPopup()" class="sm:hidden inline-block h-12 w-12 my-auto mr-8 cursor-pointer">
                     <th:block th:replace="~{fragment/svg :: map}"/>
@@ -52,20 +50,20 @@
 <!--                        &lt;!&ndash; 出発地点が入力済みかで表示の変更 &ndash;&gt;-->
 <!--                        &lt;!&ndash; todo: 出発地点Formを送って表示 登録済み：updateStartForm 未登録：startPlaceForm &ndash;&gt;-->
 <!--                        <th:block th:if="${startPlaceForm}" th:insert="~{fragment/modal :: startToggle}"/>-->
-<!--                        <th:block th:if="${updateStartForm}" th:insert="~{fragment/update-modal :: startUpdateToggle(${updateStartForm}, ${isCreateRoute})}"/>-->
+<!--                        <th:block th:if="${updateStartForm}" th:insert="~{fragment/update-modal :: startUpdateToggle(${updateStartForm}, ${isCreatedRoute})}"/>-->
 <!--                    </div>-->
 <!--                    &lt;!&ndash; 目的地 独自クラス「addPlaces」を取得して目的地追加ボタンを追加表示する &ndash;&gt;-->
-<!--                    &lt;!&ndash; todo: 経路生成済みか 仮:${isCreateRoute} を判別して独自class追加（idだと重複してしまうから） &ndash;&gt;-->
-<!--                    <div class="mb-6" th:classappend="${isCreateRoute ? '' : 'addPlaces'}">-->
+<!--                    &lt;!&ndash; todo: 経路生成済みか 仮:${isCreatedRoute} を判別して独自class追加（idだと重複してしまうから） &ndash;&gt;-->
+<!--                    <div class="mb-6" th:classappend="${isCreatedRoute ? '' : 'addPlaces'}">-->
 <!--                        <p class="mb-2 sm:text-lg text-base">目的地</p>-->
 <!--                        &lt;!&ndash; 目的地が入力済みかで表示の変更 &ndash;&gt;-->
 <!--                        &lt;!&ndash; todo: 目的地更新Form 仮:${updatePlaceForm} の入ったList ${updatePlaceList} を取得して th:eachで目的地更新のトグル表示 &ndash;&gt;-->
 <!--                        <div th:each="updatePlaceForm, placeStatus : ${updatePlaceList}">-->
-<!--                            <th:block th:replace="~{fragment/update-modal :: placesUpdateToggle(${placeStatus.index}, ${updatePlaceForm}, ${isCreateRoute})}"/>-->
+<!--                            <th:block th:replace="~{fragment/update-modal :: placesUpdateToggle(${placeStatus.index}, ${updatePlaceForm}, ${isCreatedRoute})}"/>-->
 <!--                        </div>-->
 <!--                        &lt;!&ndash; 経路生成前の目的地追加表示 &ndash;&gt;-->
 <!--                        &lt;!&ndash; todo: ${placeNum}に現在登録されている 目的地の個数を入れてフラグメント呼び出し &ndash;&gt;-->
-<!--                        <th:block th:if="${!isCreateRoute}" th:insert="~{fragment/modal :: placesToggle(placeNum)}"/>-->
+<!--                        <th:block th:if="${!isCreatedRoute}" th:insert="~{fragment/modal :: placesToggle(placeNum)}"/>-->
 <!--                    </div>-->
 <!--                    &lt;!&ndash; 終了地点 &ndash;&gt;-->
 <!--                    <div class="mb-6">-->
@@ -77,7 +75,7 @@
 <!--                    </div>-->
 <!--                    &lt;!&ndash; 経路生成後の目的地追加表示 &ndash;&gt;-->
 <!--                    &lt;!&ndash; todo: ${placeNum}に現在登録されている 目的地の個数を入れてフラグメント呼び出し &ndash;&gt;-->
-<!--                    <div th:if="${isCreateRoute}" class="addPlaces">-->
+<!--                    <div th:if="${isCreatedRoute}" class="addPlaces">-->
 <!--                        <th:block th:replace="~{fragment/modal :: placesToggle(placeNum)}"/>-->
 <!--                    </div>-->
                     <!-- おすすめ目的地のセクション　一旦コメント化 -->
@@ -105,10 +103,10 @@
 <!--                        </details>-->
 <!--                    </section>-->
                     <!-- 利用する交通手段のセクション -->
-                    <section class="pt-10 sm:text-lg text-base -m-4 -mt-2 p-4 flex flex-col">
+                    <section th:if="${!isCreatedRoute}" class="pt-10 sm:text-lg text-base -m-4 -mt-2 p-4 flex flex-col">
                         利用する交通手段
-                        <!-- todo: th:objectで th:objectで仮:${editWayPointListForm} を使ってるformのidを引数で入れる フラグメント先でform='引数'みたいに使いたい -->
-<!--                        <th:block th:replace="~{fragment/svg :: three-transportation(editWayPointListForm)}"/>-->
+                        <!-- 引数は th:object=${editWaypointListForm} のform.id -->
+                        <th:block th:replace="~{fragment/svg :: three-transportation(editWayPointListForm)}"/>
                     </section>
                 </div>
                 <!-- ボタンのセクション -->
@@ -119,16 +117,16 @@
                         <!-- titleとオプションのupdateをし、経路生成処理に送信 -->
                         <button type="button" id="crateRouteButton" class="sm:mx-10 mx-5 block items-center justify-center button-primary">経路生成</button>
                     </div>
-                    <!-- todo: 経路生成済みか 仮:${isCreateRoute} を判別して表示切替-->
-<!--                    <div class="flex justify-center mt-10" id="editButtonsDiv" th:classappend="${isCreateRoute ? '' : 'hidden'}">-->
-<!--                        &lt;!&ndash; 日付追加ボタンで同じ画面にリダイレクト &ndash;&gt;-->
-<!--                        <button type="button" class="sm:mx-10 mx-5 flex items-center justify-center button-secondary" id="addDayButton">-->
-<!--                            <th:block th:replace="~{fragment/svg :: plus}"/>-->
-<!--                            日付の追加-->
-<!--                        </button>-->
-<!--                        &lt;!&ndash; プラン確定処理に飛ばす &ndash;&gt;-->
-<!--                        <button type="button" class="sm:mx-10 mx-5 block items-center justify-center button-primary" id="planConfirmButton">プラン確定</button>-->
-<!--                    </div>-->
+                    <!-- 経路生成済みか を判別して表示切替-->
+                    <div class="flex justify-center mt-10" id="editButtonsDiv" th:classappend="${isCreatedRoute ? '' : 'hidden'}">
+                        <!-- 日付追加ボタンで同じ画面にリダイレクト -->
+                        <button type="button" class="sm:mx-10 mx-5 flex items-center justify-center button-secondary" id="addDayButton">
+                            <th:block th:replace="~{fragment/svg :: plus}"/>
+                            日付の追加
+                        </button>
+                        <!-- プラン確定処理に飛ばす -->
+                        <button type="button" class="sm:mx-10 mx-5 block items-center justify-center button-primary" id="planConfirmButton">プラン確定</button>
+                    </div>
                 </section>
             </section>
             <!-- マップ表示のセクション -->
@@ -137,27 +135,23 @@
             </section>
         </div>
     </div>
-        <!-- todo: 以下使用するform一覧なので全部コメント化 -->
-        <!-- 使用するForm一覧 -->
-<!--    <div>-->
-<!--        &lt;!&ndash; todo: th:objectで プラン編集Formの呼び出し &ndash;&gt;-->
-<!--        <form th:object="${editPlanForm}" id="editPlanForm" class="invisible">-->
-<!--            &lt;!&ndash; todo: プラン編集Formのinputフィールド追加（input:form=this.form.id を使ってるやつ以外） &ndash;&gt;-->
-<!--            <input type="text" th:field="*{uuid}">-->
-<!--            <input type="text" th:field="*{thumbnailPath}">-->
-<!--            &lt;!&ndash; checkboxがtrueでもfalseでも送られる &ndash;&gt;-->
-<!--            <input type="hidden" name="editable" value="false">-->
-<!--            <input type="checkbox" th:field="*{editable}">-->
-<!--            <input type="hidden" name="publiclyViewable" value="false">-->
-<!--            <input type="checkbox" th:field="*{publiclyViewable}">-->
-<!--        </form>-->
-<!--        &lt;!&ndash; todo: th:objectで ウェイポイント編集Formの呼び出し &ndash;&gt;-->
-<!--        <form th:object="${editWayPointListForm}" id="editWayPointListForm" class="invisible">-->
-<!--            &lt;!&ndash; todo: editWayPointListFormのinputフィールド追加（input:form=this.form.idで取得してるやつ以外） &ndash;&gt;-->
-<!--            <input type="number" th:field="*{id}">-->
-<!--            <input type="text" th:field="*{mainTransporation}">-->
-<!--            <input type="text" th:field="*{planUUID}">-->
-<!--        </form>-->
+    <!-- todo: 以下使用するform一覧なので全部コメント化 -->
+    <!-- 使用するForm一覧 -->
+    <div>
+        <form th:object="${editPlanForm}" id="editPlanForm" class="invisible">
+            <input type="text" th:field="*{uuid}">
+            <input type="text" th:field="*{thumbnailPath}">
+            <!-- checkboxがtrueでもfalseでも送られる -->
+            <input type="hidden" name="editable" value="false">
+            <input type="checkbox" th:field="*{editable}">
+            <input type="hidden" name="publiclyViewable" value="false">
+            <input type="checkbox" th:field="*{publiclyViewable}">
+        </form>
+        <form th:object="${editWaypointListForm}" id="editWayPointListForm" class="invisible">
+            <input type="number" th:field="*{id}">
+            <input type="text" th:field="*{mainTransporation}">
+            <input type="text" th:field="*{planUUID}">
+        </form>
 <!--        &lt;!&ndash; todo: それぞれのmodalで使う formObject指定 上のtoggleと一緒 &ndash;&gt;-->
 <!--        <div id="startFormDiv">-->
 <!--            <th:block th:if="${startPlaceForm}" th:insert="~{fragment/modal :: startForm(${startPlaceForm})}"/>-->
@@ -172,19 +166,19 @@
 <!--        </div>-->
 <!--        <div id="updatePlaceFormDiv">-->
 <!--            <div th:each="updatePlaceForm, placeStatus : ${updatePlaceList}">-->
-<!--                <th:block th:replace="~{fragment/update-modal :: placesUpdateToggle(${placeStatus.index}, ${updatePlaceForm}, ${isCreateRoute})}"/>-->
+<!--                <th:block th:replace="~{fragment/update-modal :: placesUpdateToggle(${placeStatus.index}, ${updatePlaceForm}, ${isCreatedRoute})}"/>-->
 <!--            </div>-->
 <!--        </div>-->
 <!--        <div id="recommendFormDiv">-->
 <!--            <th:block th:if="${!#lists.isEmpty(recommendList)}" th:insert="~{fragment/recommend :: recommendForm(${recommendList})}"/>-->
 <!--        </div>-->
-<!--    </div>-->
+    </div>
 </main>
 <th:block th:replace="~{fragment/footer :: footer}"/>
 <!-- todo: 一旦scriptもコメント化 -->
-<!--<th:block th:replace="~{fragment/script :: svgCheckbox}"/>-->
-<!--<script src="/js/draganddrop.js"></script>-->
-<!--<th:block th:replace="~{fragment/script :: flowbite}"/>-->
+<th:block th:replace="~{fragment/script :: svgThreeRadio}"/>
+<script src="/js/draganddrop.js"></script>
+<th:block th:replace="~{fragment/script :: flowbite}"/>
 <!--<th:block th:replace="~{fragment/script :: map}"/>-->
 <!--&lt;!&ndash; todo: fragment/script :: modal の中でControllerから送られる ${placeNum} をJSで受け取る為コメント化 &ndash;&gt;-->
 <!--&lt;!&ndash;<th:block th:replace="~{fragment/script :: modal}"/>&ndash;&gt;-->

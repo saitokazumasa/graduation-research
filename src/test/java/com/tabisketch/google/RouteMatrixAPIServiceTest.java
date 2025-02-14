@@ -3,6 +3,7 @@ package com.tabisketch.google;
 import com.tabisketch.google.bean.entity.RouteMatrixAPIRequest;
 import com.tabisketch.google.constant.RouteTravelMode;
 import com.tabisketch.google.constant.TransitTravelMode;
+import com.tabisketch.google.service.IRouteMatrixAPIService;
 import com.tabisketch.google.service.implement.RouteMatrixAPIService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,7 @@ import java.time.LocalDateTime;
 @SpringBootTest
 public class RouteMatrixAPIServiceTest {
     @Autowired
-    private RouteMatrixAPIService routeMatrixAPIService;
+    private IRouteMatrixAPIService routeMatrixAPIService;
 
     @Test
     public void testExecute() throws IOException {

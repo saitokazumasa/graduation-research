@@ -1,5 +1,6 @@
 package com.tabisketch.bean.entity;
 
+import com.tabisketch.constant.Transporation;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,6 +18,10 @@ public class DestinationPoint {
     private String placeId;
     /// 到着日時
     private LocalDateTime arrivalDatetime;
+    /// ここに着くまでの移動手段
+    private Transporation transporation;
+    /// ここに着くまでにかかる移動時間（秒）
+    private int duration;
     /// 関連する「行先リスト」の識別子
     private int waypointListId;
 }

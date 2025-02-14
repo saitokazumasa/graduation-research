@@ -1,9 +1,9 @@
 package com.tabisketch.service;
 
+import com.tabisketch.bean.entity.ExamplePlan;
 import com.tabisketch.bean.entity.ExampleUser;
 import com.tabisketch.mapper.IPlansMapper;
 import com.tabisketch.mapper.IUsersMapper;
-import com.tabisketch.mapper.IWaypointListsMapper;
 import com.tabisketch.service.implement.CreatePlanService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,13 +28,15 @@ public class CreatePlanServiceTest {
     @Test
     public void testExecute() {
         final var user = ExampleUser.gen();
+        final var plan = ExamplePlan.gen();
         when(this.usersMapper.selectByEmail(anyString())).thenReturn(user);
         when(this.plansMapper.insert(any())).thenReturn(1);
+        when(this.plansMapper.selectByUUIDAndEmail(any(), anyString())).thenReturn(plan);
 
-        final String uuid = this.createPlanService.execute(user.getEmail());
-        assert !uuid.isBlank();
+        this.createPlanService.execute(user.getEmail());
 
         verify(this.usersMapper).selectByEmail(anyString());
         verify(this.plansMapper).insert(any());
+        verify(this.plansMapper).selectByUUIDAndEmail(any(), anyString());
     }
 }

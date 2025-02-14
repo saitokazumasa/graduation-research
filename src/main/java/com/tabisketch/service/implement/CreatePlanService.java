@@ -27,7 +27,7 @@ public class CreatePlanService implements ICreatePlanService {
 
     @Override
     @Transactional
-    public String execute(final String email) {
+    public Plan execute(final String email) {
         // ユーザー取得
         final User user = this.usersMapper.selectByEmail(email);
         if (user == null) throw new FailedSelectException("failed to find user");
@@ -37,6 +37,6 @@ public class CreatePlanService implements ICreatePlanService {
         final boolean wasInsertUser = this.plansMapper.insert(plan) == 1;
         if (!wasInsertUser) throw new FailedInsertException("failed to insert plan");
 
-        return plan.getUuid().toString();
+        return this.plansMapper.selectByUUIDAndEmail(plan.getUuid(), email);
     }
 }

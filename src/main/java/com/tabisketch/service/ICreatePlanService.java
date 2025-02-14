@@ -1,5 +1,8 @@
 package com.tabisketch.service;
 
+import com.tabisketch.bean.entity.Plan;
+
 public interface ICreatePlanService {
-    String execute(final String email);
+    /// @return 作成したPlan
+    Plan execute(final String email);
 }

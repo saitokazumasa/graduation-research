@@ -10,7 +10,7 @@ public class ExampleWaypointList {
         return new WaypointList(
                 1,
                 1,
-                Transporation.WALKING,
+                Transporation.WALK,
                 1
         );
     }

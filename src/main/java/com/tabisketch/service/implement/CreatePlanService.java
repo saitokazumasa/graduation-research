@@ -43,7 +43,7 @@ public class CreatePlanService implements ICreatePlanService {
         final boolean wasInsertUser = this.plansMapper.insert(plan) == 1;
         if (!wasInsertUser) throw new FailedInsertException("failed to insert plan");
 
-        final var waypointList = new WaypointList(-1, 1, Transporation.WALKING, plan.getId());
+        final var waypointList = new WaypointList(-1, 1, Transporation.WALK, plan.getId());
         final boolean wasInsertWaypointList = this.waypointListsMapper.insert(waypointList) == 1;
         if (!wasInsertWaypointList) throw new FailedInsertException("failed to insert waypoint");
 

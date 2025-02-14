@@ -48,4 +48,4 @@ jobs:
         run: docker/bin/init_db.sh docker/postgresql/sql/
 
       - name: Build and test
-        run: mvn test
+        run: mvn clean test

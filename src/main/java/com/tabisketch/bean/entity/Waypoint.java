@@ -14,6 +14,8 @@ import java.time.LocalDateTime;
 public class Waypoint {
     /// 識別子
     private int id;
+    /// 表示名
+    private String label;
     /// Google Place Id
     private String placeId;
     /// 順番
@@ -24,9 +26,9 @@ public class Waypoint {
     private LocalDateTime arrivalDatetime;
     /// 滞在時間（秒）
     private int stayTime;
-    /// ここに着くまでの移動手段
+    /// 次の地点までの移動手段
     private Transporation transporation;
-    /// ここに着くまでにかかる移動時間（秒）
+    /// 次の地点までにかかる移動時間（秒）
     private int duration;
     /// 予算
     private int budget;

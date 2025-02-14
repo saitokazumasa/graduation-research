@@ -1,5 +1,6 @@
 CREATE TABLE IF NOT EXISTS waypoints (
     id                         SERIAL         PRIMARY KEY,
+    label                      VARCHAR(64)    NOT NULL,
     place_id                   TEXT           NOT NULL,
     visit_order                INT            NOT NULL,
     preferred_arrival_datetime TIMESTAMP,

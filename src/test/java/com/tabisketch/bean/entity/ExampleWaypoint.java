@@ -12,7 +12,7 @@ public class ExampleWaypoint {
                 "placeId",
                 1,
                 null,
-                LocalDateTime.now(),
+                LocalDateTime.of(2025, 1, 1, 0, 0, 0),
                 0,
                 Transporation.WALK,
                 0,

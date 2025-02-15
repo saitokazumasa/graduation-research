@@ -17,6 +17,14 @@ public interface IWaypointListsMapper {
             "WHERE w.id = #{id} AND u.email = #{email}")
     WaypointList selectByIdAndEmail(final int id, final String email);
 
+    @Select("""
+            SELECT w.* FROM waypoint_lists w
+                INNER JOIN plans p ON w.plan_id = p.id
+                INNER JOIN users u ON p.user_id = u.id
+            WHERE p.uuid = #{planUUID} AND w.travel_day = #{travelDay} AND u.email = #{email}
+            """)
+    WaypointList selectByPlanUUIDAndTravelDayAndEmail(final UUID planUUID, final int travelDay, final String email);
+
     @Update("UPDATE waypoint_lists w SET" +
             "   main_transporation = #{waypointList.mainTransporation} " +
             "FROM plans p " +

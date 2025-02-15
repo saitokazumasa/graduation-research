@@ -42,6 +42,19 @@ public class WaypointListsMapperTest {
             "classpath:/sql/InsertExamplePlan.sql",
             "classpath:/sql/InsertExampleWaypointList.sql"
     })
+    public void testSelectByPlanUUIDAndTravelDayAndEmail() {
+        final var planUUID = ExamplePlan.gen().getUuid();
+        final var traveDay = ExampleWaypointList.gen().getTravelDay();
+        final var email = ExampleUser.gen().getEmail();
+        assert this.waypointListsMapper.selectByPlanUUIDAndTravelDayAndEmail(planUUID, traveDay, email) != null;
+    }
+
+    @Test
+    @Sql({
+            "classpath:/sql/InsertExampleUser.sql",
+            "classpath:/sql/InsertExamplePlan.sql",
+            "classpath:/sql/InsertExampleWaypointList.sql"
+    })
     public void testUpdate() {
         final var waypointList = ExampleWaypointList.gen();
         final var email = ExampleUser.gen().getEmail();

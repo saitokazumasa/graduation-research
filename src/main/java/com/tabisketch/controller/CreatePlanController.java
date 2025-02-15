@@ -70,7 +70,7 @@ public class CreatePlanController {
 
             redirectAttributes.addFlashAttribute("editPlanForm", newEditPlanForm);
             redirectAttributes.addFlashAttribute("editWaypointListForm", editWaypointListForm);
-            return "redirect:/plan/edit/" + newEditPlanForm.getUuid();
+            return String.format("redirect:/plan/edit/%s/%s", newEditPlanForm.getUuid(), 1);
         } catch (final Exception e) {
             System.err.println(e.getMessage());
             return "plan/create";

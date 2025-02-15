@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.UUID;
+
 @Controller
 @RequestMapping("/plan/delete/{uuid}")
 public class DeletePlanController {
@@ -19,7 +21,7 @@ public class DeletePlanController {
 
     @PostMapping
     public String post(
-            final @PathVariable String uuid,
+            final @PathVariable UUID uuid,
             final @AuthenticationPrincipal(expression = AuthenticationPrincipalExpression.EMAIL) String email
     ) {
         try {

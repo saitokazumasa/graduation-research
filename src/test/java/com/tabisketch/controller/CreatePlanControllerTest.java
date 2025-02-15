@@ -65,7 +65,7 @@ public class CreatePlanControllerTest {
                             .with(csrf()))
                     .andExpect(status().is3xxRedirection())
                     .andExpect(model().hasNoErrors())
-                    .andExpect(redirectedUrl("/plan/edit/" + editPlanForm.getUuid()));
+                    .andExpect(redirectedUrl(String.format("/plan/edit/%s/%s", editPlanForm.getUuid(), createWaypointListForm.getTravelDay())));
             return;
         }
 

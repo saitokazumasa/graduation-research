@@ -2,6 +2,7 @@ package com.tabisketch.mapper;
 
 import com.tabisketch.bean.entity.ExampleDeparturePoint;
 import com.tabisketch.bean.entity.ExampleUser;
+import com.tabisketch.bean.entity.ExampleWaypointList;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,5 +39,18 @@ public class DeparturePointsMapperTest {
         final var id = ExampleDeparturePoint.gen().getId();
         final var email = ExampleUser.gen().getEmail();
         assert this.departurePointsMapper.selectByIdAndEmail(id, email) != null;
+    }
+
+    @Test
+    @Sql({
+            "classpath:/sql/InsertExampleUser.sql",
+            "classpath:/sql/InsertExamplePlan.sql",
+            "classpath:/sql/InsertExampleWaypointList.sql",
+            "classpath:/sql/InsertExampleDeparturePoint.sql"
+    })
+    public void testSelectByWaypointListIdAndEmail() {
+        final var waypointListId = ExampleWaypointList.gen().getId();
+        final var email = ExampleUser.gen().getEmail();
+        assert this.departurePointsMapper.selectByWaypointListIdAndEmail(waypointListId, email) != null;
     }
 }

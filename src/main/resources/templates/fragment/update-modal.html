@@ -1,281 +1,227 @@
-<!--<!DOCTYPE html>-->
-<!--<html lang="ja">-->
-<!--<head>-->
-<!--    <meta charset="UTF-8">-->
-<!--    <title>Title</title>-->
-<!--</head>-->
-<!--<body>-->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
 
-<!--<th:block th:fragment="startUpdateToggle(updateStartForm, isCreateRoute)">-->
-<!--    &lt;!&ndash; Modal toggle &ndash;&gt;-->
-<!--    &lt;!&ndash; todo: 出発地点更新用Formを受け取って 場所名、開始時間の表示 &ndash;&gt;-->
-<!--    <button class="input text-center text-label max-w-md w-4/5 h-10 sm:h-12 flex justify-between items-center"-->
-<!--            data-modal-target="startUpdateModal" data-modal-toggle="startUpdateModal" id="startUpdateToggle" type="button">-->
-<!--        <span class="text-[10px] sm:text-base" th:text="${updateStartForm.startTime}"></span>-->
-<!--        <span class="flex-1 text-base sm:text-xl truncate ... px-2" th:text="${updateStartForm.name}">出発地点を入力する</span>-->
-<!--        <span></span>-->
-<!--    </button>-->
-<!--    &lt;!&ndash; todo: 経路生成済みの時は移動手段・時間の表示 &ndash;&gt;-->
-<!--    <div class="flex justify-center" th:classappend="${isCreateRoute ? '' : 'hidden'}" id="startTransportationData">-->
-<!--        <span class="inline-flex justify-between items-center space-x-4 w-48">-->
-<!--            &lt;!&ndash; todo: 移動手段のenumの比較 &ndash;&gt;-->
-<!--            <th:block th:if="${updateStartForm.toTransportation.name() == 'Driving'}" th:insert="~{fragment/svg :: car}"/>-->
-<!--            <th:block th:if="${updateStartForm.toTransportation.name() == 'Bicycling'}" th:insert="~{fragment/svg :: cycle}"/>-->
-<!--            <th:block th:if="${updateStartForm.toTransportation.name() == 'Transit'}" th:insert="~{fragment/svg :: train}"/>-->
-<!--            <th:block th:if="${updateStartForm.toTransportation.name() == 'Walking'}" th:insert="~{fragment/svg :: walk}"/>-->
-<!--            <span th:text="${updateStartForm.toTravelTime}"></span>-->
-<!--        </span>-->
-<!--        &lt;!&ndash; todo: 移動手段の変更 selectedにしてもいいかも &ndash;&gt;-->
-<!--        &lt;!&ndash;       参考:https://flowbite.com/docs/forms/select/#select-input-example &ndash;&gt;-->
-<!--    </div>-->
-<!--</th:block>-->
+<th:block th:fragment="startUpdate">
+    <!-- Modal toggle -->
+    <button class="input text-center text-label max-w-md w-4/5 h-10 sm:h-12 flex justify-between items-center"
+            data-modal-target="startUpdateModal" data-modal-toggle="startUpdateModal" id="startUpdateToggle" type="button">
+        <!-- 場所名、開始時間の表示 -->
+        <span class="text-[10px] sm:text-base" th:text="*{#temporals.format(departurePoint.departureDatetime, 'HH:mm')}"></span>
+        <span class="flex-1 text-base sm:text-xl truncate ... px-2" th:text="*{departurePoint.label}">出発地点を入力する</span>
+        <span></span>
+    </button>
+    <!-- 移動手段・時間の表示 -->
+    <div class="flex justify-center" id="startTransportationData">
+        <span class="inline-flex justify-between items-center space-x-4 w-48">
+            <!-- 移動手段のenumの比較 -->
+            <th:block th:if="*{departurePoint.transporation == T(com.tabisketch.constant.Transporation).DRIVE}" th:insert="~{fragment/svg :: car}"/>
+            <th:block th:if="*{departurePoint.transporation == T(com.tabisketch.constant.Transporation).BICYCLE}" th:insert="~{fragment/svg :: cycle}"/>
+            <th:block th:if="*{departurePoint.transporation == T(com.tabisketch.constant.Transporation).WALK}" th:insert="~{fragment/svg :: walk}"/>
+<!--            todo: 移動時間の表示 -->
+<!--            <span th:text="${departurePoint.toTravelTime}"></span>-->
+        </span>
+        <!-- todo: 移動手段の変更 selectedにしてもいいかも -->
+        <!--       参考:https://flowbite.com/docs/forms/select/#select-input-example -->
+    </div>
+    <!-- Main modal -->
+    <div aria-hidden="true"
+         class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full sm:inset-0 h-[calc(100%-1rem)] max-h-full text-label text-base"
+         id="startUpdateModal" tabindex="-1">
+        <div class="relative p-4 w-full max-w-md max-h-full">
+            <!-- Modal content -->
+            <div class="relative bg-white rounded-lg shadow">
+                <!-- Modal header -->
+                <div class="flex items-center justify-between p-4 sm:p-5 rounded-t border-b border-frame">
+                    <h3 class="text-xl text-black">
+                        出発地点を更新する
+                    </h3>
+                    <button class="end-2.5 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
+                            data-modal-hide="startUpdateModal" id="startUpdateClose" type="button">
+                        <svg aria-hidden="true" class="w-3 h-3" fill="none" viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg">
+                            <path d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                        </svg>
+                        <span class="sr-only">Close modal</span>
+                    </button>
+                </div>
+                <!-- Modal body -->
+                <!-- todo: 親htmlで呼び出すobjectの引数名を合わせる 出発地点を更新するUpdate○○Formを指定 -->
+                <div class="p-4 sm:p-5" id="updateStartForm">
+                    <span id="updateStartError" class="text-danger text-sm mb-2 flex justify-center"></span>
+                    <div class="space-y-4 w-full">
+                        <input th:field="*{departurePoint.placeId}" id="startUpdatePlaceId" class="hidden" type="text"/>
+                        <input th:field="*{departurePoint.id}" id="startUpdateId" class="hidden" type="number">
+                        <input th:field="*{departurePoint.transporation}" class="hidden" type="text">
+                        <div>
+                            <label class="block mb-2" for="startUpdatePlace">出発地点<span class="ml-2 text-sm text-danger">必須</span></label>
+                            <input th:field="*{departurePoint.label}" class="w-full input focus:ring-0" id="startUpdatePlace" name="startUpdatePlace" type="text"/>
+                        </div>
+                        <div class="w-1/2">
+                            <label class="block mb-2" for="startUpdateTime">出発日時<span class="ml-2 text-sm text-danger">必須</span></label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 end-0 top-0 flex items-center pe-3.5 pointer-events-none">
+                                    <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path clip-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z" fill-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                                <input th:field="*{departurePoint.departureDatetime}" class="w-full input focus:ring-0" id="startUpdateTime" type="datetime-local"/>
+                            </div>
+                        </div>
+                        <div class="flex justify-center">
+                            <button class="button-primary" type="button">更新</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
 
-<!--<th:block th:fragment="startUpdateForm(updateStartForm)">-->
-<!--    &lt;!&ndash; Main modal &ndash;&gt;-->
-<!--    <div aria-hidden="true"-->
-<!--         class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full sm:inset-0 h-[calc(100%-1rem)] max-h-full text-label text-base"-->
-<!--         id="startUpdateModal" tabindex="-1">-->
-<!--        <div class="relative p-4 w-full max-w-md max-h-full">-->
-<!--            &lt;!&ndash; Modal content &ndash;&gt;-->
-<!--            <div class="relative bg-white rounded-lg shadow">-->
-<!--                &lt;!&ndash; Modal header &ndash;&gt;-->
-<!--                <div class="flex items-center justify-between p-4 sm:p-5 rounded-t border-b border-frame">-->
-<!--                    <h3 class="text-xl text-black">-->
-<!--                        出発地点を更新する-->
-<!--                    </h3>-->
-<!--                    <button class="end-2.5 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"-->
-<!--                            data-modal-hide="startUpdateModal" id="startUpdateClose" type="button">-->
-<!--                        <svg aria-hidden="true" class="w-3 h-3" fill="none" viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg">-->
-<!--                            <path d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>-->
-<!--                        </svg>-->
-<!--                        <span class="sr-only">Close modal</span>-->
-<!--                    </button>-->
-<!--                </div>-->
-<!--                &lt;!&ndash; Modal body &ndash;&gt;-->
-<!--                &lt;!&ndash; todo: 親htmlで呼び出すobjectの引数名を合わせる 出発地点を更新するUpdate○○Formを指定 &ndash;&gt;-->
-<!--                <form class="p-4 sm:p-5" th:object="${updateStartForm}" id="updateStartForm">-->
-<!--                    <span id="updateStartError" class="text-danger text-sm mb-2 flex justify-center"></span>-->
-<!--                    <div class="space-y-4 w-full">-->
-<!--                        <input th:field="*{googlePlaceId}" id="startUpdatePlaceId" class="hidden" type="text"/>-->
-<!--                        <input th:field="*{latitude}" id="startUpdateLat" class="hidden" type="text"/>-->
-<!--                        <input th:field="*{longitude}" id="startUpdateLng" class="hidden" type="text"/>-->
-<!--                        <input th:field="*{id}" id="startUpdateId" class="hidden" type="number">-->
-<!--                        <input th:field="*{dayId}" id="startUpdateDayId" class="hidden" type="number"/>-->
-<!--                        <input th:field="*{budget}" id="startUpdateBudget" class="hidden" type="number"/>-->
-<!--                        <input th:field="*{endTime}" id="startUpdateEndTime" class="hidden" type="time"/>-->
-<!--                        <input th:field="*{desiredStartTime}" id="startUpdateDesiredStart" class="hidden" type="time"/>-->
-<!--                        <input th:field="*{desiredEndTime}" id="startUpdateDesiredEnd" class="hidden" type="time"/>-->
-<!--                        <input th:field="*{toPolyLine}" id="startUpdatePolyline" class="hidden" type="text"/>-->
-<!--                        <input th:field="*{toTravelTime}" id="startUpdateTravel" class="hidden" type="number"/>-->
-<!--                        <input th:field="*{toTransportation}" id="startUpdateTrans" class="hidden" type="text"/>-->
-<!--                        <div>-->
-<!--                            <label class="block mb-2" for="startUpdatePlace">出発地点<span class="ml-2 text-sm text-danger">必須</span></label>-->
-<!--                            <input th:field="*{name}" class="w-full input focus:ring-0" id="startUpdatePlace" name="startUpdatePlace" type="text"/>-->
-<!--                        </div>-->
-<!--                        <div class="w-1/2">-->
-<!--                            <label class="block mb-2" for="startUpdateTime">予定時間<span class="ml-2 text-sm text-danger">必須</span></label>-->
-<!--                            <div class="relative">-->
-<!--                                <div class="absolute inset-y-0 end-0 top-0 flex items-center pe-3.5 pointer-events-none">-->
-<!--                                    <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">-->
-<!--                                        <path clip-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z" fill-rule="evenodd"/>-->
-<!--                                    </svg>-->
-<!--                                </div>-->
-<!--                                <input th:field="*{startTime}" class="w-full input focus:ring-0" id="startUpdateTime" max="23:59" min="00:00" placeholder="&#45;&#45;:&#45;&#45;" type="time"/>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                        <div class="flex justify-center">-->
-<!--                            <button class="button-primary" type="submit">更新</button>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </form>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</th:block>-->
+<th:block th:fragment="endUpdate">
+    <!-- 場所名、時間の表示 -->
+    <button class="input text-center text-label max-w-md w-4/5 h-10 sm:h-12 flex justify-center items-center"
+            data-modal-target="endUpdateModal" data-modal-toggle="endUpdateModal" id="endUpdateToggle" type="button">
+        <!-- todo: 到着時刻の表示 th:textの追加 -->
+<!--        <span class="text-[10px] sm:text-base">21:90</span>-->
+        <span class="text-base sm:text-xl truncate ... px-2" th:text="*{destinationPoint.label}">終了地点を入力する</span>
+    </button>
+    <div aria-hidden="true"
+         class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full sm:inset-0 h-[calc(100%-1rem)] max-h-full text-label text-base"
+         id="endUpdateModal" tabindex="-1">
+        <div class="relative p-4 w-full max-w-md max-h-full">
+            <!-- Modal content -->
+            <div class="relative bg-white rounded-lg shadow">
+                <!-- Modal header -->
+                <div class="flex items-center justify-between p-4 sm:p-5 rounded-t border-b border-frame">
+                    <h3 class="text-xl text-black">
+                        終了地点を更新する
+                    </h3>
+                    <button class="end-2.5 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
+                            data-modal-hide="endUpdateModal" id="endUpdateClose" type="button">
+                        <svg aria-hidden="true" class="w-3 h-3" fill="none" viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg">
+                            <path d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                        </svg>
+                        <span class="sr-only">Close modal</span>
+                    </button>
+                </div>
+                <!-- Modal Body -->
+                <div class="p-4 sm:p-5" id="updateEndForm">
+                    <span id="updateEndError" class="text-danger text-sm mb-2 flex justify-center"></span>
+                    <div class="space-y-4 w-full">
+                        <input th:field="*{destinationPoint.placeId}" class="hidden" id="endUpdatePlaceId" name="endPlaceId" type="text"/>
+                        <input th:field="*{destinationPoint.id}" id="endUpdateId" class="hidden" type="number">
+                        <div>
+                            <label class="block mb-2" for="endUpdatePlace">終了地点<span class="ml-2 text-sm text-danger">必須</span></label>
+                            <input th:field="*{destinationPoint.label}" class="w-full input focus:ring-0" id="endUpdatePlace" type="text"/>
+                        </div>
+                        <div class="flex justify-center">
+                            <button class="button-primary" type="button">更新</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
 
-<!--<th:block th:fragment="endUpdateToggle(updateEndForm)">-->
-<!--    &lt;!&ndash; todo: 終了地点更新Formを受け取って、場所名、時間の表示 &ndash;&gt;-->
-<!--    <button class="input text-center text-label max-w-md w-4/5 h-10 sm:h-12 flex justify-center items-center"-->
-<!--            data-modal-target="endUpdateModal" data-modal-toggle="endUpdateModal" id="endUpdateToggle" type="button">-->
-<!--        <span class="text-[10px] sm:text-base" th:text="${updateEndForm.endTime}"></span>-->
-<!--        <span class="text-base sm:text-xl truncate ... px-2" th:text="${updateEndForm.name}">終了地点を入力する</span>-->
-<!--    </button>-->
-<!--</th:block>-->
-
-<!--<th:block th:fragment="endUpdateForm(updateEndForm)">-->
-<!--    <div aria-hidden="true"-->
-<!--         class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full sm:inset-0 h-[calc(100%-1rem)] max-h-full text-label text-base"-->
-<!--         id="endUpdateModal" tabindex="-1">-->
-<!--        <div class="relative p-4 w-full max-w-md max-h-full">-->
-<!--            &lt;!&ndash; Modal content &ndash;&gt;-->
-<!--            <div class="relative bg-white rounded-lg shadow">-->
-<!--                &lt;!&ndash; Modal header &ndash;&gt;-->
-<!--                <div class="flex items-center justify-between p-4 sm:p-5 rounded-t border-b border-frame">-->
-<!--                    <h3 class="text-xl text-black">-->
-<!--                        終了地点を更新する-->
-<!--                    </h3>-->
-<!--                    <button class="end-2.5 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"-->
-<!--                            data-modal-hide="endUpdateModal" id="endUpdateClose" type="button">-->
-<!--                        <svg aria-hidden="true" class="w-3 h-3" fill="none" viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg">-->
-<!--                            <path d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>-->
-<!--                        </svg>-->
-<!--                        <span class="sr-only">Close modal</span>-->
-<!--                    </button>-->
-<!--                </div>-->
-<!--                &lt;!&ndash; Modal body &ndash;&gt;-->
-<!--                &lt;!&ndash; todo: 親htmlで呼び出すobjectの引数名を合わせ 終了地点を更新するUpdate○○Formを指定 &ndash;&gt;-->
-<!--                <form class="p-4 sm:p-5" th:object="${updateEndForm}" id="updateEndForm">-->
-<!--                    <span id="updateEndError" class="text-danger text-sm mb-2 flex justify-center"></span>-->
-<!--                    <div class="space-y-4 w-full">-->
-<!--                        <input th:field="*{googlePlaceId}" class="hidden" id="endUpdatePlaceId" name="endPlaceId" type="text"/>-->
-<!--                        <input th:field="*{latitude}" class="hidden" id="endUpdateLat" type="text"/>-->
-<!--                        <input th:field="*{longitude}" class="hidden" id="endUpdateLng" type="text"/>-->
-<!--                        <input th:field="*{id}" id="endUpdateId" class="hidden" type="number">-->
-<!--                        <input th:field="*{dayId}" class="hidden" type="number"/>-->
-<!--                        <input th:field="*{budget}" class="hidden" type="number"/>-->
-<!--                        <input th:field="*{startTime}" class="hidden" type="time"/>-->
-<!--                        <input th:field="*{endTime}" class="hidden" type="time"/>-->
-<!--                        <input th:field="*{desiredStartTime}" class="hidden" type="time"/>-->
-<!--                        <input th:field="*{desiredEndTime}" class="hidden" type="time"/>-->
-<!--                        <input th:field="*{toPolyLine}" class="hidden" type="text"/>-->
-<!--                        <input th:field="*{toTravelTime}" class="hidden" type="number"/>-->
-<!--                        <input th:field="*{toTransportation}" class="hidden" type="text"/>-->
-<!--                        <div>-->
-<!--                            <label class="block mb-2" for="endUpdatePlace">終了地点<span class="ml-2 text-sm text-danger">必須</span></label>-->
-<!--                            <input th:field="*{name}" class="w-full input focus:ring-0" id="endUpdatePlace" type="text"/>-->
-<!--                        </div>-->
-<!--                        <div class="flex justify-center">-->
-<!--                            <button class="button-primary" type="submit">更新</button>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </form>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</th:block>-->
-
-<!--<th:block th:fragment="placesUpdateToggle(num, updatePlaceForm, isCreateRoute)">-->
-<!--    <div class="flex items-center">-->
-<!--        &lt;!&ndash; Modal toggle &ndash;&gt;-->
-<!--        &lt;!&ndash; todo: 目的地更新用Formを受け取って 場所名、開始時間～終了時間、予算の表示 &ndash;&gt;-->
-<!--        <button class="input text-center text-label max-w-md w-4/5 flex justify-between items-center h-10 sm:h-12"-->
-<!--                th:data-modal-target="'placesUpdateModal' + ${num}" th:data-modal-toggle="'placesUpdateModal' + ${num}"-->
-<!--                th:id="'placesUpdateToggle' + ${num}" type="button">-->
-<!--            <span class="block text-[10px] sm:text-base" th:id="'placeUpdateTimeSpan' + ${num}" th:text="${updatePlaceForm.startTime + '~' + updatePlaceForm.endTime}"></span>-->
-<!--            <span class="flex-1 text-base sm:text-xl truncate ... px-2" th:id="'placeUpdateNameSpan' + ${num}"-->
-<!--                  th:text="${updatePlaceForm.name}">目的地を追加する</span>-->
-<!--            <span class="flex items-end text-[8px] sm:text-xs">-->
-<!--                <span class="block" th:text="${updatePlaceForm.budget==null ? '予算：－－－－円' : '予算：'+updatePlaceForm.budget+'円'}"></span>-->
-<!--            </span>-->
-<!--        </button>-->
-<!--        <button class="px-2" th:id="'modalDeleteBtn' + ${num}">-->
-<!--            <th:block th:replace="~{fragment/svg :: close}"/>-->
-<!--        </button>-->
-<!--    </div>-->
-<!--    &lt;!&ndash; 経路生成後に表示 &ndash;&gt;-->
-<!--    &lt;!&ndash; todo: 経路生成済みの時は移動手段・時間の表示 &ndash;&gt;-->
-<!--    <div class="flex justify-center" th:classappend="${isCreateRoute ? '' : 'hidden'}" th:id="${'placeTransportationData' + num}">-->
-<!--        <span class="inline-flex justify-between items-center space-x-4 w-48">-->
-<!--            &lt;!&ndash; todo: 移動手段のenumの比較 &ndash;&gt;-->
-<!--            <th:block th:if="${updatePlaceForm.toTransportation.name() == 'Driving'}" th:insert="~{fragment/svg :: car}"/>-->
-<!--            <th:block th:if="${updatePlaceForm.toTransportation.name() == 'Bicycling'}" th:insert="~{fragment/svg :: cycle}"/>-->
-<!--            <th:block th:if="${updatePlaceForm.toTransportation.name() == 'Transit'}" th:insert="~{fragment/svg :: train}"/>-->
-<!--            <th:block th:if="${updatePlaceForm.toTransportation.name() == 'Walking'}" th:insert="~{fragment/svg :: walk}"/>-->
-<!--            <span th:text="${updatePlaceForm.toTravelTime}"></span>-->
-<!--        </span>-->
-<!--        &lt;!&ndash; todo: 移動手段の変更 selectedにしてもいいかも &ndash;&gt;-->
-<!--        &lt;!&ndash;       参考:https://flowbite.com/docs/forms/select/#select-input-example &ndash;&gt;-->
-<!--    </div>-->
-<!--</th:block>-->
-
-<!--<th:block th:fragment="placesUpdateForm(num, updatePlaceForm)">-->
-<!--    &lt;!&ndash; Main modal &ndash;&gt;-->
-<!--    <div aria-hidden="true"-->
-<!--         class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full sm:inset-0 h-[calc(100%-1rem)] max-h-full text-label text-base"-->
-<!--         th:id="'placesUpdateModal'+${num}" tabindex="-1">-->
-<!--        <div class="relative p-4 w-full max-w-md max-h-full">-->
-<!--            &lt;!&ndash; Modal content &ndash;&gt;-->
-<!--            <div class="relative bg-white rounded-lg shadow">-->
-<!--                &lt;!&ndash; Modal header &ndash;&gt;-->
-<!--                <div class="flex items-center justify-between p-4 sm:p-5 rounded-t border-b border-frame">-->
-<!--                    <h3 class="text-xl text-black">-->
-<!--                        目的地を更新する-->
-<!--                    </h3>-->
-<!--                    <button class="end-2.5 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"-->
-<!--                            th:data-modal-hide="'placesUpdateModal'+${num}" th:id="'placesUpdateClose'+${num}" type="button">-->
-<!--                        <svg aria-hidden="true" class="w-3 h-3" fill="none" viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg">-->
-<!--                            <path d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>-->
-<!--                        </svg>-->
-<!--                        <span class="sr-only">Close modal</span>-->
-<!--                    </button>-->
-<!--                </div>-->
-<!--                &lt;!&ndash; Modal body &ndash;&gt;-->
-<!--                &lt;!&ndash; todo: 親htmlで呼び出すobjectの引数名を合わせる 目的地を更新するUpdate○○Formを指定 &ndash;&gt;-->
-<!--                <form class="p-4 sm:p-5" th:id="'updatePlaceForm'+${num}">-->
-<!--                    <span th:id="'updatePlaceError'+${num}" class="text-danger text-sm mb-2 flex justify-center"></span>-->
-<!--                    <div class="space-y-4 w-full">-->
-<!--                        &lt;!&ndash; todo: オブジェクトとfieldを合わせる &ndash;&gt;-->
-<!--                        <input name="googlePlaceId" th:value="${updatePlaceForm.googlePlaceId}" th:id="'placeUpdatePlaceId'+${num}" class="hidden" type="text"/>-->
-<!--                        <input name="latitude" th:value="${updatePlaceForm.latitude}" th:id="'placeUpdateLat'+${num}" class="hidden" type="text"/>-->
-<!--                        <input name="longitude" th:value="${updatePlaceForm.longitude}" th:id="'placeUpdateLng'+${num}" class="hidden" type="text"/>-->
-<!--                        <input th:value="${updatePlaceForm.id}" th:id="'id'+${num}" class="hidden" type="number">-->
-<!--                        <input name="dayId" th:value="${updatePlaceForm.dayId}" class="hidden" type="number"/>-->
-<!--                        <input name="startTime" th:value="${updatePlaceForm.startTime}" th:id="'placeUpdateStartTime'+${num}" class="hidden" type="time"/>-->
-<!--                        <input name="endTime" th:value="${updatePlaceForm.endTime}" th:id="'placeUpdateEndTime'+${num}" class="hidden" type="time"/>-->
-<!--                        <input name="toPolyLine" th:value="${updatePlaceForm.toPolyLine}" class="hidden" type="text"/>-->
-<!--                        <input name="toTravelTime" th:value="${updatePlaceForm.toTravelTime}" class="hidden" type="number"/>-->
-<!--                        <input name="toTransportation" th:value="${updatePlaceForm.toTransportation}" class="hidden" type="text"/>-->
-<!--                        <div>-->
-<!--                            <label class="block mb-2" th:for="'updatePlace'+${num}">目的地<span class="ml-2 text-sm text-danger">必須</span></label>-->
-<!--                            <input th:value="${updatePlaceForm.name}" class="w-full input focus:ring-0 bg-gray-100" th:id="'updatePlace'+${num}" th:name="'updatePlace'+${num}" type="text" disabled/>-->
-<!--                        </div>-->
-<!--                        <div class="flex items-center justify-between">-->
-<!--                            <div class="w-1/2 pr-3">-->
-<!--                                <label class="block mb-2" th:for="'placeUpdateBudget' + ${num}">予算</label>-->
-<!--                                <div class="flex items-end">-->
-<!--                                    <input name="budget" th:value="${updatePlaceForm.budget}" th:id="'placeUpdateBudget'+${num}" class="w-full input focus:ring-0" th:name="'placeUpdateBudget' + ${num}" type="number"/>-->
-<!--                                    <span>円</span>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                            <div class="w-1/2 pl-3">-->
-<!--                                <label class="block mb-2" th:for="'updateStayTime' + ${num}">滞在時間</label>-->
-<!--                                <div class="flex items-end">-->
-<!--                                    <input class="w-full input focus:ring-0" th:id="'updateStayTime' + ${num}" th:name="'updateStayTime' + ${num}" type="number" min="1"/>-->
-<!--                                    <span>分</span>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                        <div>-->
-<!--                            <label class="block" th:for="'placeUpdateDesiredStart' + ${num}">希望時間</label>-->
-<!--                            <p class="text-sm mb-2">入力された時刻の範囲内で目的地に向かうことが出来ます</p>-->
-<!--                            <div class="flex items-center justify-between">-->
-<!--                                <div class="relative w-1/2">-->
-<!--                                    <div class="absolute inset-y-0 end-0 top-0 flex items-center pe-3.5 pointer-events-none">-->
-<!--                                        <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">-->
-<!--                                            <path clip-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z" fill-rule="evenodd"/>-->
-<!--                                        </svg>-->
-<!--                                    </div>-->
-<!--                                    <input name="desiredStartTime" th:value="${updatePlaceForm.desiredStartTime}" class="w-full input focus:ring-0" max="23:59" min="00:00" placeholder="&#45;&#45;:&#45;&#45;" th:id="'placeUpdateDesiredStart' + ${num}" th:name="'placeUpdateDesiredStart' + ${num}" type="time"/>-->
-<!--                                </div>-->
-<!--                                <span class="pr-3 pl-3">～</span>-->
-<!--                                <div class="relative w-1/2">-->
-<!--                                    <div class="absolute inset-y-0 end-0 top-0 flex items-center pe-3.5 pointer-events-none">-->
-<!--                                        <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">-->
-<!--                                            <path clip-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z" fill-rule="evenodd"/>-->
-<!--                                        </svg>-->
-<!--                                    </div>-->
-<!--                                    <input name="desiredEndTime" th:value="${updatePlaceForm.desiredEndTime}" class="w-full input focus:ring-0" max="23:59" min="00:00" placeholder="&#45;&#45;:&#45;&#45;" th:id="'placeUpdateDesiredEnd' + ${num}" th:name="'placeUpdateDesiredEnd' + ${num}" type="time"/>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                        <div class="flex justify-center">-->
-<!--                            <button class="button-primary" type="submit">更新</button>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </form>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</th:block>-->
-<!--</body>-->
-<!--</html>-->
+<th:block th:fragment="placesUpdate">
+    <div class="flex items-center">
+        <!-- Modal toggle -->
+        <!-- todo: 目的地更新用Formを受け取って 場所名、開始時間～終了時間、予算の表示 -->
+        <button class="input text-center text-label max-w-md w-4/5 flex justify-between items-center h-10 sm:h-12"
+                th:data-modal-target="'placesUpdateModal' + ${stat.index}" th:data-modal-toggle="'placesUpdateModal' + ${stat.index}"
+                th:id="'placesUpdateToggle' + ${stat.index}" type="button">
+            <span class="block text-[10px] sm:text-base" th:id="'placeUpdateTimeSpan' + ${stat.index}" th:text="*{#temporals.format(waypointList[__${stat.index}__].preferredArrivalDatetime,'HH:mm')}"></span>
+            <span class="flex-1 text-base sm:text-xl truncate ... px-2" th:id="'placeUpdateNameSpan' + ${stat.index}"
+                  th:text="*{waypointList[__${stat.index}__].label}">目的地を追加する</span>
+            <span class="flex items-end text-[8px] sm:text-xs">
+                <span class="block" th:if="*{waypointList[__${stat.index}__].budget}" th:text="*{'予算: ' + waypointList[__${stat.index}__].budget + '円'}"></span>
+                <span class="block" th:unless="*{waypointList[__${stat.index}__].budget}">予算: ----円</span>
+            </span>
+        </button>
+        <!-- 削除ボタン -->
+        <button class="px-2" th:id="'modalDeleteBtn' + ${stat.index}">
+            <th:block th:replace="~{fragment/svg :: close}"/>
+        </button>
+    </div>
+    <!-- 移動手段・時間の表示 -->
+    <div class="flex justify-center" th:id="${'placeTransportationData' + num}">
+        <span class="inline-flex justify-between items-center space-x-4 w-48">
+            <!-- 移動手段のenumの比較 -->
+            <th:block th:if="*{waypointList[__${stat.index}__].transporation == T(com.tabisketch.constant.Transporation).DRIVE}" th:insert="~{fragment/svg :: car}"/>
+            <th:block th:if="*{waypointList[__${stat.index}__].transporation == T(com.tabisketch.constant.Transporation).BICYCLE}" th:insert="~{fragment/svg :: cycle}"/>
+            <th:block th:if="*{waypointList[__${stat.index}__].transporation == T(com.tabisketch.constant.Transporation).WALK}" th:insert="~{fragment/svg :: walk}"/>
+<!--             todo: 移動時間の表示 -->
+<!--            <span th:text="*{waypointList[__${stat.index}__]}"></span>-->
+        </span>
+        <!-- todo: 移動手段の変更 selectedにしてもいいかも -->
+        <!--       参考:https://flowbite.com/docs/forms/select/#select-input-example -->
+    </div>
+    <!-- Main modal -->
+    <div aria-hidden="true"
+         class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full sm:inset-0 h-[calc(100%-1rem)] max-h-full text-label text-base"
+         th:id="'placesUpdateModal'+${stat.index}" tabindex="-1">
+        <div class="relative p-4 w-full max-w-md max-h-full">
+            <!-- Modal content -->
+            <div class="relative bg-white rounded-lg shadow">
+                <!-- Modal header -->
+                <div class="flex items-center justify-between p-4 sm:p-5 rounded-t border-b border-frame">
+                    <h3 class="text-xl text-black">
+                        目的地を更新する
+                    </h3>
+                    <button class="end-2.5 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
+                            th:data-modal-hide="'placesUpdateModal'+${stat.index}" th:id="'placesUpdateClose'+${stat.index}" type="button">
+                        <svg aria-hidden="true" class="w-3 h-3" fill="none" viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg">
+                            <path d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                        </svg>
+                        <span class="sr-only">Close modal</span>
+                    </button>
+                </div>
+                <!-- Modal body -->
+                <div class="p-4 sm:p-5" th:id="'updatePlaceForm'+${stat.index}">
+                    <span th:id="'updatePlaceError'+${stat.index}" class="text-danger text-sm mb-2 flex justify-center"></span>
+                    <div class="space-y-4 w-full">
+                        <input th:field="*{waypointList[__${stat.index}__].placeId}" th:id="'placeUpdatePlaceId'+${stat.index}" class="hidden" type="text"/>
+                        <input th:field="*{waypointList[__${stat.index}__].id}" th:id="'id'+${stat.index}" class="hidden" type="number">
+                        <div>
+                            <label class="block mb-2" th:for="'updatePlace'+${stat.index}">目的地</label>
+                            <input th:field="*{waypointList[__${stat.index}__].label}" class="w-full input focus:ring-0 bg-gray-100" th:id="'updatePlace'+${stat.index}" type="text" readonly/>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="w-1/2 pr-3">
+                                <label class="block mb-2" th:for="'placeUpdateBudget' + ${stat.index}">予算</label>
+                                <div class="flex items-end">
+                                    <input th:field="*{waypointList[__${stat.index}__].budget}" th:id="'placeUpdateBudget'+${stat.index}" class="w-full input focus:ring-0" type="number"/>
+                                    <span>円</span>
+                                </div>
+                            </div>
+                            <div class="w-1/2 pl-3">
+                                <label class="block mb-2" th:for="'updateStayTime' + ${stat.index}">滞在時間</label>
+                                <div class="flex items-end">
+                                    <input th:field="*{waypointList[__${stat.index}__].stayTime}" th:id="'updateStayTime' + ${stat.index}" class="w-full input focus:ring-0" type="number" min="1"/>
+                                    <span>分</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div>
+                                <label class="block" th:for="'preferredArrivalDatetime' + ${stat.index}">希望到着日時</label>
+                                <p class="text-sm mb-2">指定した時間に到着するように経路を生成します。</p>
+                                <input th:field="*{waypointList[__${stat.index}__].preferredArrivalDatetime}" class="w-full input focus:ring-0" th:id="'updatePlaceDatetime' + ${stat.index}" type="datetime-local">
+                            </div>
+                        </div>
+                        <div class="flex justify-center">
+                            <button class="button-primary" type="button">更新</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+</body>
+</html>

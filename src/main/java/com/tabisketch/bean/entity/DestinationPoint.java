@@ -1,6 +1,5 @@
 package com.tabisketch.bean.entity;
 
-import com.tabisketch.constant.Transporation;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

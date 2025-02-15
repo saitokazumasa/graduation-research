@@ -25,11 +25,15 @@ public class EditWaypointForm {
 
     private LocalDateTime preferredArrivalDatetime;
 
+    private LocalDateTime arrivalDatetime;
+
     @Min(0)
     private int stayTime;
 
     @NotNull
     private Transporation transporation;
+
+    private int duration;
 
     @Min(0)
     private int budget;

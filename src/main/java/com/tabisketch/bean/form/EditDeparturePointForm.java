@@ -28,4 +28,6 @@ public class EditDeparturePointForm {
 
     @NotNull
     private Transporation transporation;
+
+    private int duration;
 }

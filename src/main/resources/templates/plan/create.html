@@ -14,8 +14,8 @@
             </div>
         </div>
         <!-- todo: th:actionを設定 -->
-        <form th:action="@{/}" th:object="${createWaypointListForm}" method="post">
-            <div class="flex flex-col">
+        <form th:action="@{/plan/create}" method="post">
+            <div class="flex flex-col" th:object="${editPlanForm}">
                 <label class="text-center flex justify-center items-center w-full" style="aspect-ratio: 5/1">
                     <th:block th:replace="~{fragment/popup :: cover-image(${editPlanForm.thumbnailPath})}"/>
                 </label>
@@ -38,7 +38,7 @@
                         <span th:text="${selectedDay} + '日目'" class="text-4xl"></span>
                     </div>
                     <!-- 各種地点の表示 -->
-                    <div class="flex flex-col mt-6 mb-10">
+                    <div class="flex flex-col mt-6 mb-10" th:object="${createWaypointListForm}">
                         <!-- 出発地点 -->
                         <div class="mb-6">
                             <p class="mb-2 sm:text-lg text-base">出発地点<span class="sm:ml-2 ml-1 text-sm text-danger">必須</span></p>
@@ -103,22 +103,10 @@
             </div>
         </form>
     </div>
-    <!-- 以下使用するform一覧なので全部コメント化 -->
-    <div>
-        <form th:object="${editPlanForm}" id="editPlanForm" class="invisible">
-            <input type="text" th:field="*{uuid}">
-            <input type="text" th:field="*{thumbnailPath}">
-            <!-- checkboxがtrueでもfalseでも送られる -->
-            <input type="hidden" name="editable" value="false">
-            <input type="checkbox" th:field="*{editable}">
-            <input type="hidden" name="publiclyViewable" value="false">
-            <input type="checkbox" th:field="*{publiclyViewable}">
-        </form>
 <!--    おすすめ目的のform    -->
 <!--        <div id="recommendFormDiv">-->
 <!--            <th:block th:if="${!#lists.isEmpty(recommendList)}" th:insert="~{fragment/recommend :: recommendForm(${recommendList})}"/>-->
 <!--        </div>-->
-    </div>
 </main>
 <th:block th:replace="~{fragment/footer :: footer}"/>
 <!-- todo: 一旦scriptもコメント化 -->

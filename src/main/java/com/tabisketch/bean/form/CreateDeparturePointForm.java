@@ -24,4 +24,14 @@ public class CreateDeparturePointForm {
 
     private Transporation transporation;
     private int duration;
+
+    public CreateDeparturePointForm(
+            final String label,
+            final String placeId,
+            final LocalDateTime departureDatetime
+    ) {
+        this.label = label;
+        this.placeId = placeId;
+        this.departureDatetime = departureDatetime;
+    }
 }

@@ -34,4 +34,18 @@ public class CreateWaypointForm {
 
     @Min(0)
     private int budget;
+
+    public CreateWaypointForm(
+            final String label,
+            final String placeId,
+            final LocalDateTime preferredArrivalDatetime,
+            final int stayTime,
+            final int budget
+    ) {
+        this.label = label;
+        this.placeId = placeId;
+        this.preferredArrivalDatetime = preferredArrivalDatetime;
+        this.stayTime = stayTime;
+        this.budget = budget;
+    }
 }

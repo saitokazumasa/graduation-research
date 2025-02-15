@@ -18,4 +18,9 @@ public class CreateDestinationPointForm {
     private String placeId;
 
     private LocalDateTime arrivalDatetime;
+
+    public CreateDestinationPointForm(final String label, final String placeId) {
+        this.label = label;
+        this.placeId = placeId;
+    }
 }

@@ -19,9 +19,9 @@
     <div class="flex justify-center" id="startTransportationData">
         <span class="inline-flex justify-between items-center space-x-4 w-48">
             <!-- 移動手段のenumの比較 -->
-            <th:block th:if="*{departurePoint.transportation == T(com.tabisketch.constant.Transporation).DRIVE}" th:insert="~{fragment/svg :: car}"/>
-            <th:block th:if="*{departurePoint.transportation == T(com.tabisketch.constant.Transporation).BICYCLE}" th:insert="~{fragment/svg :: cycle}"/>
-            <th:block th:if="*{departurePoint.transportation == T(com.tabisketch.constant.Transporation).WALK}" th:insert="~{fragment/svg :: walk}"/>
+            <th:block th:if="*{departurePoint.transporation == T(com.tabisketch.constant.Transporation).DRIVE}" th:insert="~{fragment/svg :: car}"/>
+            <th:block th:if="*{departurePoint.transporation == T(com.tabisketch.constant.Transporation).BICYCLE}" th:insert="~{fragment/svg :: cycle}"/>
+            <th:block th:if="*{departurePoint.transporation == T(com.tabisketch.constant.Transporation).WALK}" th:insert="~{fragment/svg :: walk}"/>
 <!--            todo: 移動時間の表示 -->
 <!--            <span th:text="${departurePoint.toTravelTime}"></span>-->
         </span>
@@ -85,8 +85,8 @@
     <!-- 場所名、時間の表示 -->
     <button class="input text-center text-label max-w-md w-4/5 h-10 sm:h-12 flex justify-center items-center"
             data-modal-target="endUpdateModal" data-modal-toggle="endUpdateModal" id="endUpdateToggle" type="button">
-        <!-- todo: 時間の表示 th:textの追加 -->
-        <span class="text-[10px] sm:text-base">21:90</span>
+        <!-- todo: 到着時刻の表示 th:textの追加 -->
+<!--        <span class="text-[10px] sm:text-base">21:90</span>-->
         <span class="text-base sm:text-xl truncate ... px-2" th:text="*{destinationPoint.label}">終了地点を入力する</span>
     </button>
     <div aria-hidden="true"
@@ -108,8 +108,8 @@
                         <span class="sr-only">Close modal</span>
                     </button>
                 </div>
-                <!--  -->
-                <form class="p-4 sm:p-5" id="updateEndForm">
+                <!-- Modal Body -->
+                <div class="p-4 sm:p-5" id="updateEndForm">
                     <span id="updateEndError" class="text-danger text-sm mb-2 flex justify-center"></span>
                     <div class="space-y-4 w-full">
                         <input th:field="*{destinationPoint.placeId}" class="hidden" id="endUpdatePlaceId" name="endPlaceId" type="text"/>
@@ -122,7 +122,7 @@
                             <button class="button-primary" type="button">更新</button>
                         </div>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>
@@ -137,24 +137,26 @@
                 th:id="'placesUpdateToggle' + ${stat.index}" type="button">
             <span class="block text-[10px] sm:text-base" th:id="'placeUpdateTimeSpan' + ${stat.index}" th:text="*{#temporals.format(waypointList[__${stat.index}__].preferredArrivalDatetime,'HH:mm')}"></span>
             <span class="flex-1 text-base sm:text-xl truncate ... px-2" th:id="'placeUpdateNameSpan' + ${stat.index}"
-                  th:text="*{waypoint[__${stat.index}__].label}">目的地を追加する</span>
+                  th:text="*{waypointList[__${stat.index}__].label}">目的地を追加する</span>
             <span class="flex items-end text-[8px] sm:text-xs">
-                <span class="block" th:text="${updatePlaceForm.budget==null ? '予算：－－－－円' : '予算：'+updatePlaceForm.budget+'円'}"></span>
+                <span class="block" th:if="*{waypointList[__${stat.index}__].budget}" th:text="*{'予算: ' + waypointList[__${stat.index}__].budget + '円'}"></span>
+                <span class="block" th:unless="*{waypointList[__${stat.index}__].budget}">予算: ----円</span>
             </span>
         </button>
+        <!-- 削除ボタン -->
         <button class="px-2" th:id="'modalDeleteBtn' + ${stat.index}">
             <th:block th:replace="~{fragment/svg :: close}"/>
         </button>
     </div>
     <!-- 移動手段・時間の表示 -->
-    <div class="flex justify-center" th:classappend="${isCreateRoute ? '' : 'hidden'}" th:id="${'placeTransportationData' + num}">
+    <div class="flex justify-center" th:id="${'placeTransportationData' + num}">
         <span class="inline-flex justify-between items-center space-x-4 w-48">
             <!-- 移動手段のenumの比較 -->
-            <th:block th:if="*{waypoint[__${stat.index}__].transporation == T(com.tabisketch.constant.Transporation).DRIVE}" th:insert="~{fragment/svg :: car}"/>
-            <th:block th:if="*{waypoint[__${stat.index}__].transporation == T(com.tabisketch.constant.Transporation).BICYCLE}" th:insert="~{fragment/svg :: cycle}"/>
-            <th:block th:if="*{waypoint[__${stat.index}__].transporation == T(com.tabisketch.constant.Transporation).WALK}" th:insert="~{fragment/svg :: walk}"/>
+            <th:block th:if="*{waypointList[__${stat.index}__].transporation == T(com.tabisketch.constant.Transporation).DRIVE}" th:insert="~{fragment/svg :: car}"/>
+            <th:block th:if="*{waypointList[__${stat.index}__].transporation == T(com.tabisketch.constant.Transporation).BICYCLE}" th:insert="~{fragment/svg :: cycle}"/>
+            <th:block th:if="*{waypointList[__${stat.index}__].transporation == T(com.tabisketch.constant.Transporation).WALK}" th:insert="~{fragment/svg :: walk}"/>
 <!--             todo: 移動時間の表示 -->
-<!--            <span th:text="${waypoint[__${stat.index}__]}"></span>-->
+<!--            <span th:text="*{waypointList[__${stat.index}__]}"></span>-->
         </span>
         <!-- todo: 移動手段の変更 selectedにしてもいいかも -->
         <!--       参考:https://flowbite.com/docs/forms/select/#select-input-example -->
@@ -183,24 +185,24 @@
                 <div class="p-4 sm:p-5" th:id="'updatePlaceForm'+${stat.index}">
                     <span th:id="'updatePlaceError'+${stat.index}" class="text-danger text-sm mb-2 flex justify-center"></span>
                     <div class="space-y-4 w-full">
-                        <input th:field="*{waypoint[__${stat.index}__].placeId}" th:id="'placeUpdatePlaceId'+${stat.index}" class="hidden" type="text"/>
-                        <input th:field="*{waypoint[__${stat.index}__].id}" th:id="'id'+${stat.index}" class="hidden" type="number">
+                        <input th:field="*{waypointList[__${stat.index}__].placeId}" th:id="'placeUpdatePlaceId'+${stat.index}" class="hidden" type="text"/>
+                        <input th:field="*{waypointList[__${stat.index}__].id}" th:id="'id'+${stat.index}" class="hidden" type="number">
                         <div>
                             <label class="block mb-2" th:for="'updatePlace'+${stat.index}">目的地</label>
-                            <input th:field="*{waypoint[__${stat.index}__].label}" class="w-full input focus:ring-0 bg-gray-100" th:id="'updatePlace'+${stat.index}" type="text" readonly/>
+                            <input th:field="*{waypointList[__${stat.index}__].label}" class="w-full input focus:ring-0 bg-gray-100" th:id="'updatePlace'+${stat.index}" type="text" readonly/>
                         </div>
                         <div class="flex items-center justify-between">
                             <div class="w-1/2 pr-3">
                                 <label class="block mb-2" th:for="'placeUpdateBudget' + ${stat.index}">予算</label>
                                 <div class="flex items-end">
-                                    <input th:field="*{waypoint[__${stat.index}__].budget}" th:id="'placeUpdateBudget'+${stat.index}" class="w-full input focus:ring-0" type="number"/>
+                                    <input th:field="*{waypointList[__${stat.index}__].budget}" th:id="'placeUpdateBudget'+${stat.index}" class="w-full input focus:ring-0" type="number"/>
                                     <span>円</span>
                                 </div>
                             </div>
                             <div class="w-1/2 pl-3">
                                 <label class="block mb-2" th:for="'updateStayTime' + ${stat.index}">滞在時間</label>
                                 <div class="flex items-end">
-                                    <input th:field="*{waypoint[__${stat.index}__].stayTime}" th:id="'updateStayTime' + ${stat.index}" class="w-full input focus:ring-0" type="number" min="1"/>
+                                    <input th:field="*{waypointList[__${stat.index}__].stayTime}" th:id="'updateStayTime' + ${stat.index}" class="w-full input focus:ring-0" type="number" min="1"/>
                                     <span>分</span>
                                 </div>
                             </div>

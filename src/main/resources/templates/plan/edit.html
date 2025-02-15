@@ -45,7 +45,7 @@
                         <div th:each="index : ${#numbers.sequence(1, travelDays)}">
                             <!-- todo: selectedDayにはパラメータのdayを入れる -->
                             <a th:href="@{/plan/edit/__${editPlanForm.uuid}__(day=__${index}__)}"
-                               th:classappend="${index == selectedDay} ? 'pt-5 pb-3 sm:px-6 lg:px-12 px-8 bg-green-600 text-white text-lg h-12' : 'pt-3 pb-3 sm:px-4 lg:px-10 px-6 bg-green-400 text-white'"
+                               th:classappend="${index == currentDay} ? 'pt-5 pb-3 sm:px-6 lg:px-12 px-8 bg-green-600 text-white text-lg h-12' : 'pt-3 pb-3 sm:px-4 lg:px-10 px-6 bg-green-400 text-white'"
                                class="rounded-t-md text-center items-center cursor-pointer">
                                 <span th:text="${index} + '日目'"></span>
                             </a>
@@ -72,9 +72,9 @@
                             <th:block th:replace="~{fragment/update-modal :: endUpdate}"/>
                         </div>
                         <!-- 経路生成後の目的地追加表示 -->
-                        <div class="addPlaces">
-                            <th:block th:replace="~{fragment/modal :: places}"/>
-                        </div>
+<!--                        <div class="addPlaces">-->
+<!--                            <th:block th:replace="~{fragment/modal :: places}"/>-->
+<!--                        </div>-->
                         <!-- おすすめ目的地のセクション　一旦コメント化-->
 <!--                        <section class="pt-10">-->
 <!--                            <details open class="p-4 group overflow-hidden transition-[max-height] duration-500">-->

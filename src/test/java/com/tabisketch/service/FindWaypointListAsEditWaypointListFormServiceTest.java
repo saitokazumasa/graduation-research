@@ -29,8 +29,8 @@ public class FindWaypointListAsEditWaypointListFormServiceTest {
 
     @Test
     public void testExecute() {
-        final var waypointList = ExampleWaypointList.gen();
-        when(this.waypointListsMapper.selectByPlanUUIDAndTravelDayAndEmail(any(), anyInt(), anyString())).thenReturn(waypointList);
+//        final var waypointList = ExampleWaypointList.gen();
+//        when(this.waypointListsMapper.selectByPlanUUIDAndTravelDayAndEmail(any(), anyInt(), anyString())).thenReturn(waypointList);
         // TODO: テスト書く
     }
 }

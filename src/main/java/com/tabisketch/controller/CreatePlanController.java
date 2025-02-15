@@ -64,6 +64,6 @@ public class CreatePlanController {
 
         redirectAttributes.addFlashAttribute("editPlanForm", editPlanForm);
         redirectAttributes.addFlashAttribute("editWaypointListForm", editWaypointListForm);
-        return "redirect:/plan/edit/" + editPlanForm.getUuid();
+        return String.format("redirect:/plan/edit/%s/%s", editPlanForm.getUuid(), 1);
     }
 }

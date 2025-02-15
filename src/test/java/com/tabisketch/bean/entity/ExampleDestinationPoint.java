@@ -11,7 +11,7 @@ public class ExampleDestinationPoint {
                 1,
                 "label",
                 "placeId",
-                LocalDateTime.now(),
+                LocalDateTime.of(2025, 1, 1, 0, 0, 0),
                 1
         );
     }

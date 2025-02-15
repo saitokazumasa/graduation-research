@@ -1,5 +1,6 @@
 package com.tabisketch.bean.form;
 
+import com.tabisketch.constant.Transporation;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -20,4 +21,7 @@ public class CreateDeparturePointForm {
 
     @NotNull
     private LocalDateTime departureDatetime;
+
+    private Transporation transporation;
+    private int duration;
 }

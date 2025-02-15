@@ -1,5 +1,6 @@
 package com.tabisketch.bean.form;
 
+import com.tabisketch.constant.Transporation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
@@ -17,6 +18,9 @@ import java.util.UUID;
 public class CreateWaypointListForm {
     @Min(1)
     private int travelDay;
+
+    @NotNull
+    private Transporation mainTransporation;
 
     @NotNull
     private UUID planUUID;

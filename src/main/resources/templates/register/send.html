@@ -12,8 +12,10 @@
         <span class="sm:text-2xl text-lg font-medium my-2" th:text="${email}"></span>
         <p class="my-2">メールが届かない場合は再送信を押してください</p>
     </div>
-<!--    TODO:onclickの処理を記述-->
-    <button type="button" class="button-primary" style="max-width: 7.375rem" onclick="">再送信</button>
+    <form th:action="@{/register/send}" th:object="${sendVerifyEmailMailFrom}" method="post">
+        <input type="hidden" th:field="*{email}">
+        <button type="submit" class="button-primary" style="max-width: 7.375rem">再送信</button>
+    </form>
 </main>
 
 <th:block th:replace="~{fragment/footer :: footer}"/>

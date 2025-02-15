@@ -1,7 +1,6 @@
 package com.tabisketch.service;
 
 import com.tabisketch.bean.form.ExampleRegisterForm;
-import com.tabisketch.mapper.IEmailVerificationTokensMapper;
 import com.tabisketch.mapper.IUsersMapper;
 import com.tabisketch.service.implement.RegisterService;
 import jakarta.mail.MessagingException;
@@ -24,9 +23,7 @@ public class RegisterServiceTest {
     @Mock
     private IUsersMapper usersMapper;
     @Mock
-    private IEmailVerificationTokensMapper emailVerificationTokensMapper;
-    @Mock
-    private ISendMailService sendMailService;
+    private ISendVerifyEmailMailService sendVerifyEmailMailService;
     @Mock
     private PasswordEncoder passwordEncoder;
 
@@ -34,14 +31,12 @@ public class RegisterServiceTest {
     public void testExecute() throws MessagingException {
         when(this.passwordEncoder.encode(anyString())).thenReturn("encrypted");
         when(this.usersMapper.insert(any())).thenReturn(1);
-        when(this.emailVerificationTokensMapper.insert(any())).thenReturn(1);
 
         final var form = ExampleRegisterForm.gen();
         this.registerService.execute(form);
 
         verify(this.passwordEncoder).encode(anyString());
         verify(this.usersMapper).insert(any());
-        verify(this.emailVerificationTokensMapper).insert(any());
-        verify(this.sendMailService).execute(any());
+        verify(this.sendVerifyEmailMailService).execute(any());
     }
 }

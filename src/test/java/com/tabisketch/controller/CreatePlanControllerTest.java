@@ -1,9 +1,9 @@
 package com.tabisketch.controller;
 
-import com.tabisketch.bean.entity.ExampleUser;
 import com.tabisketch.bean.form.*;
 import com.tabisketch.service.ICreatePlanService;
 import com.tabisketch.service.ICreateWaypointListService;
+import com.tabisketch.service.IEditPlanService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.stream.Stream;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -29,6 +30,8 @@ public class CreatePlanControllerTest {
     private MockMvc mockMvc;
     @MockitoBean
     private ICreatePlanService createPlanService;
+    @MockitoBean
+    private IEditPlanService editPlanService;
     @MockitoBean
     private ICreateWaypointListService createWaypointListService;
 
@@ -53,16 +56,16 @@ public class CreatePlanControllerTest {
             final boolean isSuccess
     ) throws Exception {
         if (isSuccess) {
-            final var email = ExampleUser.gen().getEmail();
-            final var editWaypointListForm = ExampleEditWaypointListForm.gen();
-            when(this.createWaypointListService.execute(email, createWaypointListForm)).thenReturn(editWaypointListForm);
+            when(this.editPlanService.execute(anyString(), any())).thenReturn(editPlanForm);
+            when(this.createWaypointListService.execute(anyString(), any())).thenReturn(ExampleEditWaypointListForm.gen());
+
             this.mockMvc.perform(post("/plan/create")
                             .flashAttr("editPlanForm", editPlanForm)
                             .flashAttr("createWaypointListForm", createWaypointListForm)
                             .with(csrf()))
                     .andExpect(status().is3xxRedirection())
                     .andExpect(model().hasNoErrors())
-                    .andExpect(redirectedUrl("/plan/edit/" + editPlanForm.getUuid().toString()));
+                    .andExpect(redirectedUrl("/plan/edit/" + editPlanForm.getUuid()));
             return;
         }
 

@@ -6,6 +6,7 @@ import com.tabisketch.bean.form.EditWaypointListForm;
 import com.tabisketch.constant.AuthenticationPrincipalExpression;
 import com.tabisketch.service.ICreatePlanService;
 import com.tabisketch.service.ICreateWaypointListService;
+import com.tabisketch.service.IEditPlanService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,13 +21,16 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping("/plan/create")
 public class CreatePlanController {
     private final ICreatePlanService createPlanService;
+    private final IEditPlanService editPlanService;
     private final ICreateWaypointListService createWaypointListService;
 
     public CreatePlanController(
             final ICreatePlanService createPlanService,
+            final IEditPlanService editPlanService,
             final ICreateWaypointListService createWaypointListService
     ) {
         this.createPlanService = createPlanService;
+        this.editPlanService = editPlanService;
         this.createWaypointListService = createWaypointListService;
     }
 
@@ -59,11 +63,17 @@ public class CreatePlanController {
         if (bindingResult1.hasErrors()) return "plan/create";
         if (bindingResult2.hasErrors()) return "plan/create";
 
-        // TODO: 経路最適化
-        final EditWaypointListForm editWaypointListForm = this.createWaypointListService.execute(email, createWaypointListForm);
+        try {
+            // TODO: 経路最適化
+            final EditPlanForm newEditPlanForm = this.editPlanService.execute(email, editPlanForm);
+            final EditWaypointListForm editWaypointListForm = this.createWaypointListService.execute(email, createWaypointListForm);
 
-        redirectAttributes.addFlashAttribute("editPlanForm", editPlanForm);
-        redirectAttributes.addFlashAttribute("editWaypointListForm", editWaypointListForm);
-        return "redirect:/plan/edit/" + editPlanForm.getUuid();
+            redirectAttributes.addFlashAttribute("editPlanForm", newEditPlanForm);
+            redirectAttributes.addFlashAttribute("editWaypointListForm", editWaypointListForm);
+            return "redirect:/plan/edit/" + newEditPlanForm.getUuid();
+        } catch (final Exception e) {
+            System.err.println(e.getMessage());
+            return "plan/create";
+        }
     }
 }

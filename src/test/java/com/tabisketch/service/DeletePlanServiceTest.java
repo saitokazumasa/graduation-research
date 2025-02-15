@@ -11,7 +11,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.mockito.ArgumentMatchers.*;
+import java.util.UUID;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -29,7 +32,7 @@ public class DeletePlanServiceTest {
         final var plan = ExamplePlan.gen();
         when(this.plansMapper.deleteByUUIDAndEmail(any(), anyString())).thenReturn(1);
 
-        final String uuid = plan.getUuid().toString();
+        final UUID uuid = plan.getUuid();
         final String email = ExampleUser.gen().getEmail();
         this.deletePlanService.execute(uuid, email);
 

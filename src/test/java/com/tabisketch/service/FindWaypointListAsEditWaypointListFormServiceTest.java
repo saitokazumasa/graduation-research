@@ -1,23 +1,20 @@
 package com.tabisketch.service;
 
-import com.tabisketch.bean.entity.ExampleWaypointList;
 import com.tabisketch.mapper.IDeparturePointsMapper;
 import com.tabisketch.mapper.IDestinationPointsMapper;
 import com.tabisketch.mapper.IWaypointListsMapper;
 import com.tabisketch.mapper.IWaypointsMapper;
+import com.tabisketch.service.implement.FindWaypointListAsEditWaypointListFormService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.when;
-
 @ExtendWith(MockitoExtension.class)
 public class FindWaypointListAsEditWaypointListFormServiceTest {
     @InjectMocks
-    private IFindWaypointListAsEditWaypointListFormService findWaypointListAsEditWaypointListFormService;
+    private FindWaypointListAsEditWaypointListFormService findWaypointListAsEditWaypointListFormService;
     @Mock
     private IWaypointListsMapper waypointListsMapper;
     @Mock

@@ -1,12 +1,9 @@
 package com.tabisketch.controller;
 
-import com.tabisketch.bean.entity.ExamplePlan;
-import com.tabisketch.bean.entity.ExampleWaypointList;
-import com.tabisketch.bean.form.CreateWaypointListForm;
-import com.tabisketch.bean.form.EditPlanForm;
-import com.tabisketch.bean.form.ExampleCreateWaypointListForm;
-import com.tabisketch.bean.form.ExampleEditPlanForm;
+import com.tabisketch.bean.entity.ExampleUser;
+import com.tabisketch.bean.form.*;
 import com.tabisketch.service.ICreatePlanService;
+import com.tabisketch.service.ICreateWaypointListService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -32,6 +29,8 @@ public class CreatePlanControllerTest {
     private MockMvc mockMvc;
     @MockitoBean
     private ICreatePlanService createPlanService;
+    @MockitoBean
+    private ICreateWaypointListService createWaypointListService;
 
     @Test
     @WithMockUser
@@ -53,17 +52,17 @@ public class CreatePlanControllerTest {
             final CreateWaypointListForm createWaypointListForm,
             final boolean isSuccess
     ) throws Exception {
-        final var uuid = ExamplePlan.gen().getUuid().toString();
-
         if (isSuccess) {
+            final var email = ExampleUser.gen().getEmail();
+            final var editWaypointListForm = ExampleEditWaypointListForm.gen();
+            when(this.createWaypointListService.execute(email, createWaypointListForm)).thenReturn(editWaypointListForm);
             this.mockMvc.perform(post("/plan/create")
                             .flashAttr("editPlanForm", editPlanForm)
                             .flashAttr("createWaypointListForm", createWaypointListForm)
                             .with(csrf()))
                     .andExpect(status().is3xxRedirection())
                     .andExpect(model().hasNoErrors())
-                    // TODO: UUIDを末尾につける
-                    .andExpect(redirectedUrl("/plan/edit"));
+                    .andExpect(redirectedUrl("/plan/edit/" + editPlanForm.getUuid().toString()));
             return;
         }
 

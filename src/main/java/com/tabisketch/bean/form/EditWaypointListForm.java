@@ -1,5 +1,9 @@
 package com.tabisketch.bean.form;
 
+import com.tabisketch.bean.entity.DeparturePoint;
+import com.tabisketch.bean.entity.DestinationPoint;
+import com.tabisketch.bean.entity.Waypoint;
+import com.tabisketch.bean.entity.WaypointList;
 import com.tabisketch.constant.Transporation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -32,4 +36,17 @@ public class EditWaypointListForm {
     @Valid
     @NotNull
     private EditDestinationPointForm destinationPoint;
+
+    public EditWaypointListForm(
+            final WaypointList waypointList,
+            final DeparturePoint departurePoint,
+            final List<Waypoint> waypoints,
+            final DestinationPoint destinationPoint
+    ) {
+        this.id = waypointList.getId();
+        this.mainTransporation = waypointList.getMainTransporation();
+        this.departurePoint = new EditDeparturePointForm(departurePoint);
+        this.waypointList = waypoints.stream().map(EditWaypointForm::new).toList();
+        this.destinationPoint = new EditDestinationPointForm(destinationPoint);
+    }
 }

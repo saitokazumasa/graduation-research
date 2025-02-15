@@ -1,5 +1,6 @@
 package com.tabisketch.bean.form;
 
+import com.tabisketch.bean.entity.Waypoint;
 import com.tabisketch.constant.Transporation;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -25,12 +26,44 @@ public class EditWaypointForm {
 
     private LocalDateTime preferredArrivalDatetime;
 
+    private LocalDateTime arrivalDatetime;
+
     @Min(0)
     private int stayTime;
 
     @NotNull
     private Transporation transporation;
 
+    private int duration;
+
     @Min(0)
     private int budget;
+
+    public EditWaypointForm(
+            final int id,
+            final String label,
+            final String placeId,
+            final int stayTime,
+            final Transporation transporation,
+            final int budget
+    ) {
+        this.id = id;
+        this.label = label;
+        this.placeId = placeId;
+        this.stayTime = stayTime;
+        this.transporation = transporation;
+        this.budget = budget;
+    }
+
+    public EditWaypointForm(final Waypoint waypoint) {
+        this.id = waypoint.getId();
+        this.label = waypoint.getLabel();
+        this.placeId = waypoint.getPlaceId();
+        this.preferredArrivalDatetime = waypoint.getPreferredArrivalDatetime();
+        this.arrivalDatetime = waypoint.getArrivalDatetime();
+        this.stayTime = waypoint.getStayTime();
+        this.transporation = waypoint.getTransporation();
+        this.duration = waypoint.getDuration();
+        this.budget = waypoint.getBudget();
+    }
 }

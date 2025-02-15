@@ -1,8 +1,8 @@
 package com.tabisketch.service;
 
-import com.tabisketch.bean.entity.WaypointList;
 import com.tabisketch.bean.form.CreateWaypointListForm;
+import com.tabisketch.bean.form.EditWaypointListForm;
 
 public interface ICreateWaypointListService {
-    WaypointList execute(final String email, final CreateWaypointListForm form);
+    EditWaypointListForm execute(final String email, final CreateWaypointListForm form);
 }

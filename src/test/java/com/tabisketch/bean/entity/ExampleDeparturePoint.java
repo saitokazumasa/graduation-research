@@ -13,7 +13,7 @@ public class ExampleDeparturePoint {
                 1,
                 "label",
                 "placeId",
-                LocalDateTime.now(),
+                LocalDateTime.of(2025, 1, 1, 0, 0, 0),
                 Transporation.WALK,
                 0,
                 1

@@ -19,7 +19,7 @@ public class EditPlanService implements IEditPlanService {
 
     @Override
     @Transactional
-    public void execute(final String email, final EditPlanForm form) {
+    public EditPlanForm execute(final String email, final EditPlanForm form) {
         // プラン取得
         final Plan plan = this.plansMapper.selectByUUIDAndEmail(form.getUuid(), email);
         if (plan == null) throw new FailedSelectException("failed to find plan");
@@ -36,5 +36,7 @@ public class EditPlanService implements IEditPlanService {
         );
         final boolean wasUpdatedPlan = this.plansMapper.update(newPlan) == 1;
         if (!wasUpdatedPlan) throw new FailedUpdateException("failed to update plan");
+
+        return new EditPlanForm(newPlan);
     }
 }
